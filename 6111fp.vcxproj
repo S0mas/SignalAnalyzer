@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D360A360-0047-4913-B84D-CBEB0D1B2DBA}</ProjectGuid>
+    <Keyword>QtVS_v302</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>qt5.13</QtInstall>
+    <QtModules>core;gui;network;opengl;printsupport;widgets;concurrent;svg</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>qt5.13</QtInstall>
+    <QtModules>core;gui;widgets;network</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>..\..\..\visa\include;libs\qwt\src;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>QWT_DLL;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>visa64.lib;qwtd.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>libs;..\..\..\win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <QtMoc>
+      <CompilerFlavor>
+      </CompilerFlavor>
+      <Include>
+      </Include>
+    </QtMoc>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat />
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalIncludeDirectories>..\..\..\visa\include;libs\qwt\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>visa64.lib;qwt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>libs;..\..\..\win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\AbstractDevice.cpp" />
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\AbstractHardwareConnector.cpp" />
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\ChannelsIF.cpp" />
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\DeviceIdentityResources.IF.cpp" />
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\ScpiDevice.cpp" />
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestController.cpp" />
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestSender.cpp" />
+    <ClCompile Include="CanvasMover.cpp" />
+    <ClCompile Include="ContextMenuController.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="CanvasSelector.cpp" />
+    <ClCompile Include="MyPlotIntervalCurve.cpp" />
+    <ClCompile Include="MyPlotItem.cpp" />
+    <ClCompile Include="MyScaleDraw.cpp" />
+    <ClCompile Include="PlotRangeMarkers.cpp" />
+    <ClCompile Include="ScalePicker.cpp" />
+    <ClCompile Include="sfp6100.cpp" />
+    <ClCompile Include="MyPlotMarker.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="sfp6100.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="sfp6100.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractDataResource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractDevice.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractHardwareConnector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AppicationSettings.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ChannelsIF.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\DeviceIdentityResourcesIF.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ErrorChecker.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\Exceptions.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\HardwareConnector6111.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\Resource.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ResourceContentValidationStrategies.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ResourceManagementStrategies.h" />
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\UserCommunicationObject.h" />
+    <QtMoc Include="ScalePicker.h" />
+    <QtMoc Include="CurveBuilderDialog.h" />
+    <QtMoc Include="ChannelStatus.h" />
+    <QtMoc Include="DataController.h" />
+    <QtMoc Include="CanvasMover.h" />
+    <QtMoc Include="ContextMenuController.h" />
+    <ClInclude Include="CurvesPositioner.h" />
+    <ClInclude Include="DataAcquisitor.h" />
+    <ClInclude Include="DataGenerator.h" />
+    <QtMoc Include="CanvasSelector.h" />
+    <ClInclude Include="PlotRangeMarkers.h" />
+    <ClInclude Include="MyPlotMarker.h" />
+    <ClInclude Include="MyCurve.h" />
+    <ClInclude Include="MyIntervalSymbol.h" />
+    <QtMoc Include="MyPlot.h" />
+    <ClInclude Include="MyPickerDragRectMachine.h" />
+    <ClInclude Include="MyPlotItem.h" />
+    <ClInclude Include="MyPlotMagnifier.h" />
+    <ClInclude Include="MyPlotPanner.h" />
+    <ClInclude Include="MyPlotPicker.h" />
+    <ClInclude Include="MyScaleDraw.h" />
+    <QtMoc Include="Plot.h" />
+    <ClInclude Include="MyPlotIntervalCurve.h" />
+    <QtMoc Include="IdentificationGroupView.h" />
+    <QtMoc Include="LatchButton.h" />
+    <QtMoc Include="AcquisitionGroupView.h" />
+    <QtMoc Include="ChannelsSelectionView.h" />
+    <QtMoc Include="ChannelsGroupSelectionButton.h" />
+    <ClInclude Include="Defines.h" />
+    <QtMoc Include="Controller.h" />
+    <QtMoc Include="View.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\UserActionRequestSender.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\UserActionRequestController.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\ScpiDevice.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\ResourcesHandler.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\Promises.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\PrintInterface.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\LoggingObject.h" />
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\Device6111.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

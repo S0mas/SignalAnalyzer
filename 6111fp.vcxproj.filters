@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="sfp6100.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\AbstractDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\AbstractHardwareConnector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\ChannelsIF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\DeviceIdentityResources.IF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestSender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\ScpiDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScalePicker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasMover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasSelector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ContextMenuController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlotItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlotIntervalCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlotMarker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyScaleDraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotRangeMarkers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files\backend">
+      <UniqueIdentifier>{1c98d412-84bc-45ac-b37f-f0661712c952}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\frontend">
+      <UniqueIdentifier>{b3e03ebb-3a6b-433c-a24b-8d6aa4ee5b85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui">
+      <UniqueIdentifier>{9b93e3b1-0351-454f-ad29-399a18d38a7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{d9bd71c3-5a08-4773-9db3-c8d17eeefd2f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractDataResource.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractDevice.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractHardwareConnector.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AppicationSettings.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\Device6111.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\LoggingObject.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\PrintInterface.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\Promises.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\ResourcesHandler.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\ScpiDevice.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="sfp6100.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\UserActionRequestSender.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\UserActionRequestController.h">
+      <Filter>Header Files\frontend</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller.h">
+      <Filter>Header Files\frontend</Filter>
+    </QtMoc>
+    <QtMoc Include="View.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="AcquisitionGroupView.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="IdentificationGroupView.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="LatchButton.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="Plot.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="CurveBuilderDialog.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="ChannelsGroupSelectionButton.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="ChannelsSelectionView.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="ChannelStatus.h">
+      <Filter>Header Files\frontend</Filter>
+    </QtMoc>
+    <QtMoc Include="DataController.h">
+      <Filter>Header Files\frontend</Filter>
+    </QtMoc>
+    <QtMoc Include="ScalePicker.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="MyPlot.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="CanvasMover.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="CanvasSelector.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="ContextMenuController.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="sfp6100.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ChannelsIF.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\DeviceIdentityResourcesIF.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ErrorChecker.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\Exceptions.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\HardwareConnector6111.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\Resource.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ResourceContentValidationStrategies.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ResourceManagementStrategies.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\UserCommunicationObject.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="MyIntervalSymbol.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotIntervalCurve.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="MyScaleDraw.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotMagnifier.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotPanner.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="DataGenerator.h">
+      <Filter>Header Files\frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="DataAcquisitor.h">
+      <Filter>Header Files\frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="MyCurve.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPickerDragRectMachine.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotPicker.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotMarker.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="CurvesPositioner.h">
+      <Filter>Header Files\frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotItem.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="PlotRangeMarkers.h">
+      <Filter>Header Files\gui</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
