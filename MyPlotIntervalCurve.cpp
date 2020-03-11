@@ -69,7 +69,7 @@ double MyPlotIntervalCurve::position() const noexcept {
 	return plot_->positioner().position(this);
 }
 
-void MyPlotIntervalCurve::move(const QPointF& destination) noexcept {}
+void MyPlotIntervalCurve::move(const double distanceX, const double distanceY) noexcept {}
 
 void MyPlotIntervalCurve::setColor(const QColor color) noexcept {
 	auto p = pen();

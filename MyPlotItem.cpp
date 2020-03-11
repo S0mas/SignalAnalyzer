@@ -4,7 +4,7 @@
 #include "MyPlot.h"
 #include "qwt_scale_widget.h"
 
-MyPlotItem::MyPlotItem(MyPlot* plot) {
+MyPlotItem::MyPlotItem(MyPlot* plot, MyPlotItem* parent) : root_(parent ? parent : this) {
 	plot_ = plot;
 	//auto canvas = dynamic_cast<QwtPlotCanvas*>(plot->canvas());
 	//canvas->installEventFilter(this);

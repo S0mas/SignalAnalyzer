@@ -53,6 +53,9 @@
     <ClCompile Include="PlotRangeMarkers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CanvasManipulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -171,6 +174,9 @@
     <QtMoc Include="ContextMenuController.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
+    <QtMoc Include="CanvasManipulator.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="sfp6100.qrc">
@@ -249,6 +255,9 @@
     </ClInclude>
     <ClInclude Include="PlotRangeMarkers.h">
       <Filter>Header Files\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="PlotItemsContainer.h">
+      <Filter>Header Files\frontend</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

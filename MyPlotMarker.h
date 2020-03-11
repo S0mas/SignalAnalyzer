@@ -2,12 +2,15 @@
 
 #include <qwt_plot_marker.h>
 #include "MyPlotItem.h"
+#include <QDebug>
 
 class MyPlotMarker : public QwtPlotMarker, public MyPlotItem {
 public:
-	MyPlotMarker(const double x, MyPlot* plot);
-	virtual ~MyPlotMarker() = default;
-	void move(const QPointF& destination) noexcept override;
+	MyPlotMarker(const double x, MyPlot* plot, MyPlotItem* parent = nullptr);
+	virtual ~MyPlotMarker() {
+		qDebug() << "elo";
+	}
+	void move(const double distanceX, const double distanceY) noexcept override;
 	void setColor(const QColor color) noexcept override;
 	QRectF boundingRect() const noexcept override {
 		auto rect = QwtPlotMarker::boundingRect();
@@ -17,9 +20,5 @@ public:
 		rect.setRight(rect.right() - 2.5);
 		rect.setBottom(1000000);
 		return rect;
-	}
-
-	void remove() noexcept override {
-		detach();
 	}
 };

@@ -12,16 +12,23 @@ protected:
 	QColor mainColor_ = Qt::GlobalColor::green;
 	MyPlot* plot_;
 	bool isPositionedExclusive_ = false;
+	MyPlotItem* root_ = this;
 public:
-	MyPlotItem(MyPlot* plot);
-	virtual ~MyPlotItem() = default;
+	MyPlotItem(MyPlot* plot, MyPlotItem* parent = nullptr);
+	virtual ~MyPlotItem() {}
 
-	virtual void move(const QPointF& destination) noexcept = 0;
+	virtual void move(const double distanceX, const double distanceY) noexcept = 0;
 	virtual void setColor(const QColor color) noexcept = 0;
 	virtual QRectF boundingRect() const noexcept = 0;
-	virtual void remove() noexcept = 0;
 	virtual bool contains(const QPointF& point) const noexcept;
 	virtual bool intersects(const QRectF& point) const noexcept;
+	bool isRoot() const noexcept {
+		return root_ == this;
+	}
+
+	MyPlotItem* root() const noexcept {
+		return root_;
+	}
 
 	void deselect() noexcept;
 	bool isPositionedExclusive() const noexcept;

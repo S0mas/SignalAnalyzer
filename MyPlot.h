@@ -11,6 +11,8 @@
 #include "MyPlotMarker.h"
 #include "PlotRangeMarkers.h"
 #include "CurvesPositioner.h"
+#include "CanvasManipulator.h"
+#include "PlotItemsContainer.h"
 
 #include <QAction>
 #include <QMenu>
@@ -40,6 +42,7 @@ class MyPlot : public QwtPlot {
 	}
 
 	Positioner<MyPlotItem> positioner_;
+	PlotItemsContainer itemsContainer_;
 	std::set<Position> selectedPositions_;
 public:
 	MyPlot(QWidget* parent = nullptr) : QwtPlot(parent) {
@@ -52,8 +55,9 @@ public:
 		setAxisTitle(QwtPlot::xBottom, xText);
 		setCanvasBackground(QColor(Qt::black));
 
-		(void) new CanvasSelector(this);
-		(void) new CanvasMover(this);
+		//(void) new CanvasSelector(this);
+		//(void) new CanvasMover(this);
+		(void) new CanvasManipulator(this);
 		(void) new ContextMenuController(this);
 
 		// panning with the wheel mouse button pressed
@@ -86,6 +90,10 @@ public:
 		grid->attach(this);
 		setAutoReplot(true);
 		updatePlot();
+	}
+
+	virtual ~MyPlot() {
+		detachItems(0, false);
 	}
 
 	void forEachCurve(const std::function<void(MyPlotIntervalCurve*)>& function, const std::function<bool()>& continueCondition = []() { return true; }) const noexcept {
@@ -122,13 +130,10 @@ public:
 	}
 
 	void removeItems() {
-		auto const& items = selection();
-		for (auto item : items) {
-			item->remove();
+		for (auto item : selection()) {
 			positioner_.remove(item);
-			delete item;
-		}
-			
+			itemsContainer_.remove(item);
+		}	
 		updatePlot();
 	}
 
@@ -212,17 +217,20 @@ public:
 	}
 public slots:
 	void addCurve(const QString& nameId, const DataGetterFunction& dataGetter, int type) {
-		auto newCurve = new MyPlotIntervalCurve(nameId, dataGetter, type == 0 ? dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol()) : dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol2()), this);
-		auto position = positioner_.add(newCurve);
+		auto newCurve = std::make_unique<MyPlotIntervalCurve>(nameId, dataGetter, type == 0 ? dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol()) : dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol2()), this);
+		auto position = positioner_.addExclusive(newCurve.get());
+		itemsContainer_.add(std::move(newCurve));
 		updatePlot();
 	}
 
 	void addMarkerAction() {
-		auto marker = new MyPlotMarker(100, this);
+		auto marker = std::make_unique<MyPlotMarker>(100, this);
+		itemsContainer_.add(std::move(marker));
 	}
 
 	void addRangeMarkersAction() {
-		auto range = new PlotMarkerPair(20, 300, this);
+		auto range = std::make_unique<PlotMarkerPair>(20, 300, this);
+		itemsContainer_.add(std::move(range));
 	}
 signals:
 	void addCurveActionStarted() const;

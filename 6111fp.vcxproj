@@ -102,6 +102,7 @@
     <ClCompile Include="..\..\..\TestWizardFramework\Common\src\ScpiDevice.cpp" />
     <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestController.cpp" />
     <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestSender.cpp" />
+    <ClCompile Include="CanvasManipulator.cpp" />
     <ClCompile Include="CanvasMover.cpp" />
     <ClCompile Include="ContextMenuController.cpp" />
     <ClCompile Include="main.cpp" />
@@ -148,10 +149,12 @@
     <QtMoc Include="DataController.h" />
     <QtMoc Include="CanvasMover.h" />
     <QtMoc Include="ContextMenuController.h" />
+    <QtMoc Include="CanvasManipulator.h" />
     <ClInclude Include="CurvesPositioner.h" />
     <ClInclude Include="DataAcquisitor.h" />
     <ClInclude Include="DataGenerator.h" />
     <QtMoc Include="CanvasSelector.h" />
+    <ClInclude Include="PlotItemsContainer.h" />
     <ClInclude Include="PlotRangeMarkers.h" />
     <ClInclude Include="MyPlotMarker.h" />
     <ClInclude Include="MyCurve.h" />
