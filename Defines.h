@@ -2,8 +2,10 @@
 #include <QApplication>
 #include <QEvent>
 #include <QMouseEvent>
+#include <QDebug>
 #include <QString>
 #include <vector>
+#include <functional>
 
 enum class Frequency {
 	_1MHz,
@@ -56,7 +58,19 @@ inline QString toString(const Operation operation) {
 	}
 }
 
+inline QString toHex(unsigned int const value, int const width = 2) noexcept {
+	return QString("0x%1").arg(value, width, 16, QLatin1Char('0'));
+}
 
+template<typename T>
+inline QString inputMask() noexcept {
+	return "\\0\\x" + QString(inputWidth(T()), 'H');
+}
+
+template<typename T>
+inline QString toHex(T const obj) noexcept {
+	return toHex(toUInt(obj), inputWidth(obj));
+}
 
 using ChannelId = int;
 
@@ -64,10 +78,29 @@ inline bool isControlButtonHold() noexcept {
 	return QApplication::keyboardModifiers() & Qt::ControlModifier;
 }
 
+inline bool isShiftButtonHold() noexcept {
+	return QApplication::keyboardModifiers() & Qt::ShiftModifier;
+}
+
+inline bool isAltButtonHold() noexcept {
+	return QApplication::keyboardModifiers() & Qt::AltModifier;
+}
+
 inline bool isMouseLeftButtonHold(const QEvent* event) noexcept {
 	return static_cast<const QMouseEvent*>(event)->buttons().testFlag(Qt::MouseButton::LeftButton);
 }
-#include <functional>
+
+enum class Mode {
+	LISTENER,
+	CONTROLLER
+};
+
+struct Status {
+	QString state_;
+	Mode mode_;
+	//unsigned int controllerId_;
+	std::map<int, bool> streams_;
+};
 
 struct Range {
 	std::function<double()> start_;
@@ -167,3 +200,4 @@ struct Range {
 		return length() > range.length();
 	}
 };
+

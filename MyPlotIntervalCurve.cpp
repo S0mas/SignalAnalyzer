@@ -38,31 +38,32 @@ MyPlotIntervalCurve::~MyPlotIntervalCurve() {}
 
 void MyPlotIntervalCurve::drawSymbols(QPainter* painter, const QwtIntervalSymbol& symbol, const QwtScaleMap& xMap, const QwtScaleMap& yMap,
 	const QRectF& canvasRect, int from, int to) const {
-	painter->save();
-	QPen pen = symbol.pen();
-	pen.setCapStyle(Qt::FlatCap);
-	painter->setPen(pen);
-	painter->setBrush(symbol.brush());
+	if (isVisibleOnScreen()) {
+		painter->save();
+		QPen pen = symbol.pen();
+		pen.setCapStyle(Qt::FlatCap);
+		painter->setPen(pen);
+		painter->setBrush(symbol.brush());
+		auto mySymbol1 = dynamic_cast<const MyIntervalSymbol*>(&symbol);
+		auto mySymbol2 = dynamic_cast<const MyIntervalSymbol2*>(&symbol);
 
-	auto mySymbol1 = dynamic_cast<const MyIntervalSymbol*>(&symbol);
-	auto mySymbol2 = dynamic_cast<const MyIntervalSymbol2*>(&symbol);
-
-	//todo: can be optimize to draw only when visible samples
-	bool lastValue = false;
-	for (int i = from; i <= to; i++) {
-		auto const s = sample(i);
-		const double x1 = xMap.transform(s.interval.minValue());
-		const double x2 = xMap.transform(s.interval.maxValue());
-		const double y1 = yMap.transform(position());
-		auto size = abs(plot_->yMap().transform(1) - plot_->yMap().transform(0)) * 0.9;
-		if (mySymbol1)
-			mySymbol1->draw(painter, orientation(), QPointF(x1, y1), QPointF(x2, y1), s.value, size);
-		else if (mySymbol2) {
-			mySymbol2->draw(painter, orientation(), QPointF(x1, y1), QPointF(x2, y1), static_cast<bool>(s.value), size, lastValue != static_cast<bool>(s.value));
-			lastValue = static_cast<bool>(s.value);
+		bool lastValue = false;
+		for (int i = from; i <= to; i++) {
+			auto const s = sample(i);
+			const double x1 = xMap.transform(s.interval.minValue());
+			const double x2 = xMap.transform(s.interval.maxValue());
+			const double y1 = yMap.transform(position());
+			auto size = abs(plot_->yMap().transform(1) - plot_->yMap().transform(0)) * 0.9;
+			if (mySymbol1)
+				mySymbol1->draw(painter, orientation(), QPointF(x1, y1), QPointF(x2, y1), s.value, size);
+			else if (mySymbol2) {
+				mySymbol2->draw(painter, orientation(), QPointF(x1, y1), QPointF(x2, y1), static_cast<bool>(s.value), size, lastValue != static_cast<bool>(s.value));
+				lastValue = static_cast<bool>(s.value);
+			}
 		}
+
+		painter->restore();
 	}
-	painter->restore();
 }
 
 double MyPlotIntervalCurve::position() const noexcept {
@@ -83,4 +84,22 @@ void MyPlotIntervalCurve::refresh() noexcept {
 
 QString MyPlotIntervalCurve::nameId() const noexcept {
 	return nameId_;
+}
+
+static inline bool qwtIsHSampleInside(const QwtIntervalSample &sample,
+	double xMin, double xMax, double yMin, double yMax) {
+	const double y = sample.value;
+	const double x1 = sample.interval.minValue();
+	const double x2 = sample.interval.maxValue();
+
+	const bool isOffScreen = (y < yMin) || (y > yMax)
+		|| (x1 < xMin && x2 < xMin) || (x1 > xMax && x2 > xMax);
+
+	return !isOffScreen;
+}
+
+bool MyPlotIntervalCurve::isVisibleOnScreen() const noexcept {
+	auto const range = plot_->visibleYRange();
+	auto const pos = position();
+	return pos >= range.first && pos <= range.second;
 }

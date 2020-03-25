@@ -9,6 +9,7 @@ class MyScaleDraw : public QwtScaleDraw {
 	MyPlot* plot_;
 public:
 	MyScaleDraw(MyPlot* plot);
+	virtual ~MyScaleDraw() = default;
 
 	void refresh() noexcept;
 	QwtText label(double value) const override;

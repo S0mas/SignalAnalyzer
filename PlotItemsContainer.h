@@ -5,6 +5,7 @@
 
 #include <set>
 #include <memory>
+
 inline bool operator<(const std::unique_ptr<MyPlotItem>& unique, const MyPlotItem* raw) {
 	return unique.get() < raw;
 }

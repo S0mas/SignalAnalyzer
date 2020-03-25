@@ -13,13 +13,13 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D360A360-0047-4913-B84D-CBEB0D1B2DBA}</ProjectGuid>
     <Keyword>QtVS_v302</Keyword>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -42,8 +42,8 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>qt5.13</QtInstall>
-    <QtModules>core;gui;network;opengl;printsupport;widgets;concurrent;svg</QtModules>
+    <QtInstall>5.14</QtInstall>
+    <QtModules>core;gui;network;opengl;printsupport;widgets;concurrent;svg;charts</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <QtInstall>qt5.13</QtInstall>
@@ -67,7 +67,7 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>visa64.lib;qwtd.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qwtd.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>libs;..\..\..\win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <QtMoc>
@@ -95,54 +95,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\AbstractDevice.cpp" />
-    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\AbstractHardwareConnector.cpp" />
-    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\ChannelsIF.cpp" />
-    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\DeviceIdentityResources.IF.cpp" />
-    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\ScpiDevice.cpp" />
-    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestController.cpp" />
-    <ClCompile Include="..\..\..\TestWizardFramework\Common\src\UserActionRequestSender.cpp" />
     <ClCompile Include="CanvasManipulator.cpp" />
     <ClCompile Include="CanvasMover.cpp" />
     <ClCompile Include="ContextMenuController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CanvasSelector.cpp" />
+    <ClCompile Include="MyPlot.cpp" />
     <ClCompile Include="MyPlotIntervalCurve.cpp" />
     <ClCompile Include="MyPlotItem.cpp" />
     <ClCompile Include="MyScaleDraw.cpp" />
+    <ClCompile Include="MySuperScaleDraw.cpp" />
     <ClCompile Include="PlotRangeMarkers.cpp" />
     <ClCompile Include="ScalePicker.cpp" />
-    <ClCompile Include="sfp6100.cpp" />
     <ClCompile Include="MyPlotMarker.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="sfp6100.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtRcc Include="sfp6100.qrc" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractDataResource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractDevice.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AbstractHardwareConnector.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\AppicationSettings.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ChannelsIF.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\DeviceIdentityResourcesIF.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ErrorChecker.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\Exceptions.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\HardwareConnector6111.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\Resource.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ResourceContentValidationStrategies.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\ResourceManagementStrategies.h" />
-    <ClInclude Include="..\..\..\TestWizardFramework\Common\include\UserCommunicationObject.h" />
+    <ClInclude Include="Command.h" />
+    <QtMoc Include="Controller6991.h" />
+    <ClInclude Include="CustomTransitions.h" />
+    <ClInclude Include="Test.h" />
+    <QtMoc Include="AbstractDevice.h" />
+    <ClInclude Include="RegisterTypes.h" />
     <QtMoc Include="ScalePicker.h" />
     <QtMoc Include="CurveBuilderDialog.h" />
     <QtMoc Include="ChannelStatus.h" />
@@ -150,10 +123,17 @@
     <QtMoc Include="CanvasMover.h" />
     <QtMoc Include="ContextMenuController.h" />
     <QtMoc Include="CanvasManipulator.h" />
+    <QtMoc Include="AutoTestController.h" />
+    <ClInclude Include="Category.h" />
+    <ClInclude Include="ChartsPositioner.h" />
+    <ClInclude Include="CommandTypes.h" />
     <ClInclude Include="CurvesPositioner.h" />
     <ClInclude Include="DataAcquisitor.h" />
     <ClInclude Include="DataGenerator.h" />
     <QtMoc Include="CanvasSelector.h" />
+    <QtMoc Include="ExpandingBar.h" />
+    <QtMoc Include="MySuperScaleDraw.h" />
+    <QtMoc Include="RegisterController.h" />
     <ClInclude Include="PlotItemsContainer.h" />
     <ClInclude Include="PlotRangeMarkers.h" />
     <ClInclude Include="MyPlotMarker.h" />
@@ -176,14 +156,6 @@
     <ClInclude Include="Defines.h" />
     <QtMoc Include="Controller.h" />
     <QtMoc Include="View.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\UserActionRequestSender.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\UserActionRequestController.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\ScpiDevice.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\ResourcesHandler.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\Promises.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\PrintInterface.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\LoggingObject.h" />
-    <QtMoc Include="..\..\..\TestWizardFramework\Common\include\Device6111.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

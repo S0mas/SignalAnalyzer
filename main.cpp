@@ -1,10 +1,13 @@
-#include "sfp6100.h"
-#include "../../../TestWizardFramework/Common/include/Device6111.h"
+//#include "sfp6100.h"
+//#include "../../../TestWizardFramework/Common/include/Device6111.h"
 #include <QApplication>
 #include <QDebug>
 #include "View.h"
 #include "CurveBuilderDialog.h"
 #include "CurvesPositioner.h"
+#include "AutoTestController.h"
+#include "Controller6991.h"
+#include "RegisterController.h"
 
 int main(int argc, char *argv[])
 {
@@ -19,16 +22,20 @@ int main(int argc, char *argv[])
 	QObject::connect(&w, &View::setDlLinkClockFrequency, &c, &Controller::setDlLinkClockFrequency);
 	QObject::connect(&c, &Controller::acquisitionStarted, &w, &View::acquisitionStarted);
 	QObject::connect(&c, &Controller::acquisitionStopped, &w, &View::acquisitionStopped);
-	Device6111 dev("Eloszka");
-	qDebug() << dev.channels().size();
-	qDebug() << dev.nameId();
+
 	w.show();
-	Positioner<QString> p;
-	QString s1 = "A";
-	QString s2 = "B";
-	QString s3 = "C";
-	QString s4 = "D";
-	QString s5 = "E";
+
+	//auto device = new AbstractDevice;
+	//auto device2 = new AbstractDevice;
+
+	//auto controller6991 = new Controller6991(device, 1);
+	//auto resgisterController = new RegisterController(device, device2);
+	//auto testController = new AutoTestController(device);
+
+	//controller6991->show();
+	//resgisterController->show();
+	//testController->show();
+	//controller6991->show();
 
 	return a.exec();
 }

@@ -124,7 +124,7 @@ protected:
     void scaleChange();
     void layoutScale( bool update_geometry = true );
 
-private:
+public:
     void initScale( QwtScaleDraw::Alignment );
 
     class PrivateData;

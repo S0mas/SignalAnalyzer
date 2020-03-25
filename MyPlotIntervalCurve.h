@@ -14,11 +14,14 @@ using DataGetterFunction = std::function<std::vector<double>()>;
 class MyPlotIntervalCurve : public QwtPlotIntervalCurve, public MyPlotItem {
 	DataGetterFunction dataGetter_;
 	QString nameId_;
+
 public:
+	inline static int counter = 0;
 	MyPlotIntervalCurve(const QString& nameId, const DataGetterFunction& dataGetter, QwtIntervalSymbol* symbol, MyPlot* plot);
 	virtual ~MyPlotIntervalCurve();
-	void drawSymbols(QPainter* painter, const QwtIntervalSymbol& symbol,const QwtScaleMap& xMap, const QwtScaleMap& yMap,
-		const QRectF& canvasRect, int from, int to) const override;
+	void drawSymbols(QPainter*, const QwtIntervalSymbol&,const QwtScaleMap&, const QwtScaleMap&, const QRectF&, int, int) const override;
+	void drawTube(QPainter*, const QwtScaleMap&, const QwtScaleMap&, const QRectF&, int, int) const override {}
+
 	void move(const double distanceX, const double distanceY) noexcept override;
 	void setColor(const QColor color) noexcept override;
 	QString nameId() const noexcept;
@@ -29,7 +32,8 @@ public:
 		return rect;
 	}
 
-	double MyPlotIntervalCurve::position() const noexcept;
+	bool isVisibleOnScreen() const noexcept;
+	double position() const noexcept;
 
 	void refresh() noexcept;
 };

@@ -293,7 +293,7 @@ private Q_SLOTS:
     void updateLegendItems( const QVariant &itemInfo,
         const QList<QwtLegendData> &legendData );
 
-private:
+protected:
     friend class QwtPlotItem;
     void attachItem( QwtPlotItem *, bool );
 

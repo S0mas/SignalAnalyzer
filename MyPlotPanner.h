@@ -1,6 +1,7 @@
 #pragma once
-
+#include "Defines.h"
 #include <qwt_plot_panner.h>
+#include <qwt_plot_canvas.h>
 #include <qwt_plot.h>
 
 class MyPlotPanner final : public QwtPlotPanner {
@@ -45,4 +46,14 @@ protected:
 	}
 public:
 	MyPlotPanner(QWidget* parent = nullptr) : QwtPlotPanner(parent) {}
+
+	void wheelEvent(QWheelEvent *event) override {
+		if (isAltButtonHold() || isShiftButtonHold() || isControlButtonHold())
+			event->ignore();
+		else {
+			auto stepsNo = event->angleDelta().y() / 8 / 15;
+			moveCanvas(0, stepsNo * 20);
+			event->accept();
+		}
+	}
 };
