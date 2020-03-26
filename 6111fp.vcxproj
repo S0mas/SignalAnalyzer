@@ -95,24 +95,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AcquisitionStartModeView.cpp" />
+    <ClCompile Include="AcquisitionStopModeView.cpp" />
+    <ClCompile Include="AutoTestController.cpp" />
     <ClCompile Include="CanvasManipulator.cpp" />
     <ClCompile Include="CanvasMover.cpp" />
     <ClCompile Include="ContextMenuController.cpp" />
+    <ClCompile Include="Controller6991.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CanvasSelector.cpp" />
     <ClCompile Include="MyPlot.cpp" />
     <ClCompile Include="MyPlotIntervalCurve.cpp" />
     <ClCompile Include="MyPlotItem.cpp" />
     <ClCompile Include="MyScaleDraw.cpp" />
-    <ClCompile Include="MySuperScaleDraw.cpp" />
     <ClCompile Include="PlotRangeMarkers.cpp" />
+    <ClCompile Include="RegisterController.cpp" />
     <ClCompile Include="ScalePicker.cpp" />
     <ClCompile Include="MyPlotMarker.cpp" />
+    <ClCompile Include="ScanRateView.cpp" />
+    <ClCompile Include="ConnectButton.cpp" />
+    <ClCompile Include="StatusView.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="AcquisitionStopModeView.h" />
+    <QtMoc Include="AcquisitionStartModeView.h" />
     <ClInclude Include="Command.h" />
     <QtMoc Include="Controller6991.h" />
     <ClInclude Include="CustomTransitions.h" />
+    <QtMoc Include="StatusView.h" />
+    <QtMoc Include="ScanRateView.h" />
+    <QtMoc Include="ConnectButton.h" />
     <ClInclude Include="Test.h" />
     <QtMoc Include="AbstractDevice.h" />
     <ClInclude Include="RegisterTypes.h" />
@@ -125,14 +137,11 @@
     <QtMoc Include="CanvasManipulator.h" />
     <QtMoc Include="AutoTestController.h" />
     <ClInclude Include="Category.h" />
-    <ClInclude Include="ChartsPositioner.h" />
     <ClInclude Include="CommandTypes.h" />
     <ClInclude Include="CurvesPositioner.h" />
     <ClInclude Include="DataAcquisitor.h" />
     <ClInclude Include="DataGenerator.h" />
     <QtMoc Include="CanvasSelector.h" />
-    <QtMoc Include="ExpandingBar.h" />
-    <QtMoc Include="MySuperScaleDraw.h" />
     <QtMoc Include="RegisterController.h" />
     <ClInclude Include="PlotItemsContainer.h" />
     <ClInclude Include="PlotRangeMarkers.h" />

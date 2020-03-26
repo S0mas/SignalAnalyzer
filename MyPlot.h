@@ -13,7 +13,6 @@
 #include "CurvesPositioner.h"
 #include "CanvasManipulator.h"
 #include "PlotItemsContainer.h"
-#include "MySuperScaleDraw.h"
 
 #include <QAction>
 #include <QMenu>

@@ -11,11 +11,15 @@
 #include "Command.h"
 #include "Test.h"
 
+
+#include <thread>
+#include <chrono>
+
 class AbstractDevice : public QObject {
 	Q_OBJECT
 	QString name_;
 	std::map<int, int> dataStreams_;
-	std::map<int, Mode> controllersModes_;
+	std::map<int, ControlMode> controllersModes_;
 	mutable bool state = false;
 	virtual bool isDeviceAvailable() const noexcept {
 		state = !state;
@@ -80,24 +84,17 @@ public slots:
 
 	int controlId() const noexcept {
 		for (auto controller : controllersModes_)
-			if (controller.second == Mode::CONTROLLER)
+			if (controller.second == ControlMode::CONTROLLER)
 				return controller.first;
 		return 0;
 	}
 
-	void handleControllerModeReq(int const id) noexcept {
-		if (controlId() == 0 && isConnected(id)) {
-			qDebug() << "Control Mode requested by id: " << id;
-			controllersModes_[id] = Mode::CONTROLLER;
-			emit controllerModeGranted(id);
-		}
-	}
-
-	void handleControllerModeResignation(int const id) noexcept {
-		if (id == controlId() && isConnected(id)) {
-			qDebug() << "Control Mode resignation by id: " << id;
-			controllersModes_[id] = Mode::LISTENER;
-			emit controllerModeFreed();
+	void handleChangeControlModeReq(int const id, ControlMode const mode) noexcept {
+		if (isConnected(id)) {
+			if (mode == ControlMode::CONTROLLER && !controlId() || mode == ControlMode::LISTENER) {
+				controllersModes_[id] = mode;
+				emit controlModeChanged(id, controllersModes_[id]);
+			}	
 		}
 	}
 
@@ -105,8 +102,12 @@ public slots:
 		if (isConnected(id))
 			emit connected(id);
 		else if (dataStreams_[port] == 0) {
+			for (auto i = 0; i < 100; ++i) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(60));
+				QApplication::processEvents();
+			}
 			dataStreams_[port] = id;
-			controllersModes_.insert({ id, Mode::LISTENER });
+			controllersModes_.insert({ id, ControlMode::LISTENER });
 			emit connected(id);
 		}
 	}
@@ -122,11 +123,12 @@ public slots:
 	void handleStatusReq(int const id) const noexcept {
 		if (isConnected(id)) {
 			Status s;
+			s.id_ = id;
 			s.mode_ = controllersModes_.at(id);
 			s.state_ = "IDLE";
 			for (auto stream : dataStreams_)
 				s.streams_[stream.first] = stream.second == 0;
-			emit status(id, s);
+			emit status(s);
 		}
 	}
 signals:
@@ -135,9 +137,8 @@ signals:
 	void testsStarted() const;
 	void testsStopped() const;
 	void sendCounters(std::vector<Test> const& tests) const;
-	void controllerModeGranted(unsigned int const id) const;
-	void controllerModeFreed() const;
+	void controlModeChanged(unsigned int const id, ControlMode const mode) const;
 	void connected(int const id) const;
 	void dataStreamsState() const;
-	void status(int const id, Status const status) const;
+	void status(Status const status) const;
 };

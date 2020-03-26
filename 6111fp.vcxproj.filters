@@ -32,10 +32,31 @@
     <ClCompile Include="CanvasManipulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MySuperScaleDraw.cpp">
+    <ClCompile Include="MyPlot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MyPlot.cpp">
+    <ClCompile Include="AutoTestController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RegisterController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AcquisitionStopModeView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AcquisitionStartModeView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller6991.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScanRateView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -120,12 +141,6 @@
     <QtMoc Include="CanvasManipulator.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
-    <QtMoc Include="MySuperScaleDraw.h">
-      <Filter>Header Files\gui</Filter>
-    </QtMoc>
-    <QtMoc Include="ExpandingBar.h">
-      <Filter>Header Files\gui</Filter>
-    </QtMoc>
     <QtMoc Include="RegisterController.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
@@ -136,6 +151,21 @@
       <Filter>Header Files\frontend</Filter>
     </QtMoc>
     <QtMoc Include="Controller6991.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="StatusView.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="AcquisitionStopModeView.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="AcquisitionStartModeView.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="ScanRateView.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="ConnectButton.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
   </ItemGroup>
@@ -184,9 +214,6 @@
     </ClInclude>
     <ClInclude Include="PlotItemsContainer.h">
       <Filter>Header Files\frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="ChartsPositioner.h">
-      <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="Category.h">
       <Filter>Header Files\frontend</Filter>

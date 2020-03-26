@@ -23,19 +23,19 @@ int main(int argc, char *argv[])
 	QObject::connect(&c, &Controller::acquisitionStarted, &w, &View::acquisitionStarted);
 	QObject::connect(&c, &Controller::acquisitionStopped, &w, &View::acquisitionStopped);
 
-	w.show();
+	//w.show();
 
-	//auto device = new AbstractDevice;
-	//auto device2 = new AbstractDevice;
+	auto device = new AbstractDevice;
+	auto device2 = new AbstractDevice;
 
-	//auto controller6991 = new Controller6991(device, 1);
-	//auto resgisterController = new RegisterController(device, device2);
-	//auto testController = new AutoTestController(device);
+	auto controller6991 = new Controller6991(device, 1);
+	auto resgisterController = new RegisterController(device, device2);
+	auto testController = new AutoTestController(device);
 
-	//controller6991->show();
-	//resgisterController->show();
-	//testController->show();
-	//controller6991->show();
+	controller6991->show();
+	resgisterController->show();
+	testController->show();
+	controller6991->show();
 
 	return a.exec();
 }
