@@ -6,6 +6,8 @@
 #include <QSpinBox>
 #include <QTimeEdit>
 
+struct AcquisitionStopModeModel;
+
 class AcquisitionStopModeView : public QGroupBox {
 	Q_OBJECT
 	QComboBox* modeComboBox_ = new QComboBox;
@@ -18,5 +20,7 @@ class AcquisitionStopModeView : public QGroupBox {
 	void createConnections() noexcept;
 public:
 	AcquisitionStopModeView(QWidget* parent = nullptr);
+	AcquisitionStopModeModel model() const noexcept;
+	void setModel(AcquisitionStopModeModel const& model) noexcept;
 };
 

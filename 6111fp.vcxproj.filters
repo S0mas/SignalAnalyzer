@@ -56,7 +56,7 @@
     <ClCompile Include="ScanRateView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConnectButton.cpp">
+    <ClCompile Include="TwoStateButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -165,7 +165,7 @@
     <QtMoc Include="ScanRateView.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
-    <QtMoc Include="ConnectButton.h">
+    <QtMoc Include="TwoStateButton.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
   </ItemGroup>
@@ -190,9 +190,6 @@
     </ClInclude>
     <ClInclude Include="DataAcquisitor.h">
       <Filter>Header Files\frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="MyCurve.h">
-      <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="MyPickerDragRectMachine.h">
       <Filter>Header Files\gui</Filter>

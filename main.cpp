@@ -29,10 +29,12 @@ int main(int argc, char *argv[])
 	auto device2 = new AbstractDevice;
 
 	auto controller6991 = new Controller6991(device, 1);
+	auto controller6991_2 = new Controller6991(device, 2);
 	auto resgisterController = new RegisterController(device, device2);
 	auto testController = new AutoTestController(device);
 
 	controller6991->show();
+	controller6991_2->show();
 	resgisterController->show();
 	testController->show();
 	controller6991->show();

@@ -62,3 +62,19 @@ AcquisitionStopModeView::AcquisitionStopModeView(QWidget * parent) : QGroupBox("
 	createConnections();
 	emit modeComboBox_->currentIndexChanged(0);
 }
+
+AcquisitionStopModeModel AcquisitionStopModeView::model() const noexcept {
+	AcquisitionStopModeModel values;
+	values.mode_ = static_cast<AcquisitionStopMode>(modeComboBox_->currentData().toInt());
+	values.scansThreshold_ = numberOfScansSpinBox_->value();
+	values.time_ = acquisitionTimeEdit_->time();
+	values.stopOnError_ = stopOnErrorChckBox_->isChecked();
+	return values;
+}
+
+void AcquisitionStopModeView::setModel(AcquisitionStopModeModel const& model) noexcept {
+	modeComboBox_->setCurrentIndex(static_cast<int>(model.mode_));
+	numberOfScansSpinBox_->setValue(model.scansThreshold_);
+	acquisitionTimeEdit_->setTime(model.time_);
+	stopOnErrorChckBox_->setCheckState(model.stopOnError_ ? Qt::Checked : Qt::Unchecked);
+}

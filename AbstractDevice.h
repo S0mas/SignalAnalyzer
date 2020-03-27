@@ -11,7 +11,7 @@
 #include "Command.h"
 #include "Test.h"
 
-
+//dbg
 #include <thread>
 #include <chrono>
 
@@ -20,6 +20,8 @@ class AbstractDevice : public QObject {
 	QString name_;
 	std::map<int, int> dataStreams_;
 	std::map<int, ControlMode> controllersModes_;
+	AcquisitionConfigurationDataModel acqConfigModel_;
+	bool isAcqActive_ = false;
 	mutable bool state = false;
 	virtual bool isDeviceAvailable() const noexcept {
 		state = !state;
@@ -109,6 +111,8 @@ public slots:
 			dataStreams_[port] = id;
 			controllersModes_.insert({ id, ControlMode::LISTENER });
 			emit connected(id);
+			if (isAcqActive_)
+				emit acqStarted(acqConfigModel_);
 		}
 	}
 
@@ -131,6 +135,23 @@ public slots:
 			emit status(s);
 		}
 	}
+
+	void handleStartAcqReq(int const id, AcquisitionConfigurationDataModel const& configModel) noexcept {
+		if (id == controlId()) {
+			qDebug() << "acq started";
+			isAcqActive_ = true;
+			acqConfigModel_ = configModel;
+			emit acqStarted(acqConfigModel_);
+		}
+	}
+
+	void handleStopAcqReq(int const id) noexcept {
+		if (id == controlId() && isAcqActive_) {
+			qDebug() << "acq stopped";
+			isAcqActive_ = false;
+			emit acqStopped();
+		}
+	}
 signals:
 	void disable() const;
 	void enable() const;
@@ -141,4 +162,6 @@ signals:
 	void connected(int const id) const;
 	void dataStreamsState() const;
 	void status(Status const status) const;
+	void acqStarted(AcquisitionConfigurationDataModel const& confifgModel) const;
+	void acqStopped() const;
 };

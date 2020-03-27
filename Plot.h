@@ -21,7 +21,6 @@
 #include "MyScaleDraw.h"
 #include "MyPlotMagnifier.h"
 #include "MyPlotPanner.h"
-#include "MyCurve.h"
 
 #include "CanvasSelector.h"
 #include "ScalePicker.h"

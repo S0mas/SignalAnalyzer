@@ -3,6 +3,8 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QDateTime>
+#include <QTime>
 #include <QString>
 #include <vector>
 #include <functional>
@@ -292,3 +294,26 @@ struct Range {
 	}
 };
 
+struct AcquisitionStartModeModel {
+	AcquisitionStartMode mode_;
+	QDateTime dateTime_;
+};
+
+struct AcquisitionStopModeModel {
+	AcquisitionStopMode mode_;
+	int scansThreshold_;
+	QTime time_;
+	bool stopOnError_;
+};
+
+struct ScanRateModel {
+	ScanRateUnits units_;
+	int value_;
+};
+
+struct AcquisitionConfigurationDataModel {
+	AcquisitionStartModeModel startModeModel_;
+	AcquisitionStopModeModel stopModeModel_;
+	ScanRateModel scanRateModel_;
+	ClockSource clockSource_;
+};

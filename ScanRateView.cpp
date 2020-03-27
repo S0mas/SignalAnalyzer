@@ -34,3 +34,15 @@ ScanRateView::ScanRateView(QWidget* parent) : QGroupBox("Scan Rate", parent) {
 	createConnections();
 	emit unitComboBox_->currentIndexChanged(0);
 }
+
+ScanRateModel ScanRateView::model() const noexcept {
+	ScanRateModel value;
+	value.units_ = static_cast<ScanRateUnits>(unitComboBox_->currentData().toInt());
+	value.value_ = valueSpinBox_->value();
+	return value;
+}
+
+void ScanRateView::setModel(ScanRateModel const & model) noexcept {
+	unitComboBox_->setCurrentIndex(static_cast<int>(model.units_));
+	valueSpinBox_->setValue(model.value_);
+}

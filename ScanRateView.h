@@ -3,6 +3,8 @@
 #include <QComboBox>
 #include <QSpinBox>
 
+struct ScanRateModel;
+
 class ScanRateView : public QGroupBox {
 	Q_OBJECT
 	int const HZ_LIMIT = 1'000'000;
@@ -14,4 +16,6 @@ class ScanRateView : public QGroupBox {
 	void createConnections() noexcept;
 public:
 	ScanRateView(QWidget* parent = nullptr);
+	ScanRateModel model() const noexcept;
+	void setModel(ScanRateModel const& model) noexcept;
 };

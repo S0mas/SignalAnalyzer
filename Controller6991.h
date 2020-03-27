@@ -18,12 +18,14 @@
 #include "AbstractDevice.h"
 #include "AcquisitionStopModeView.h"
 #include "AcquisitionStartModeView.h"
-#include "ConnectButton.h"
+#include "TwoStateButton.h"
 #include "Defines.h"
 #include "ScanRateView.h"
 #include "StatusView.h"
 
 class Controller6991 : public QGroupBox {
+	//TODO
+	// INPUT MODEL DATA INTO VIEWS
 	Q_OBJECT
 	QStateMachine sm_;
 	QTime time_;
@@ -33,7 +35,8 @@ class Controller6991 : public QGroupBox {
 	QPushButton* setModeButton_ = new QPushButton("Set");
 	QWidget* dataStreamGroup_ = new QGroupBox("Data Stream");
 	QComboBox* dataStreamComboBox_ = new QComboBox;
-	ConnectButton* connectDisconnectButton_ = new ConnectButton([this]() { emit connectReq(id_, dataStreamComboBox_->currentText().toUInt()); }, [this]() { emit disconnectReq(id_); });
+	TwoStateButton* connectDisconnectButton_ = new TwoStateButton("Connect", [this]() { emit connectReq(id_, dataStreamComboBox_->currentText().toUInt()); }, "Disconnect", [this]() { emit disconnectReq(id_); });
+	TwoStateButton* acqStartStopButton_ = new TwoStateButton("Start", [this]() { emit startAcqReq(id_, model()); }, "Stop",  [this]() { emit stopAcqReq(id_); });
 	ScanRateView* scanRateView_ = new ScanRateView;
 	QWidget* clockSourceGroup_ = new QGroupBox("Clock Source");
 	QComboBox* clockSourceComboBox = new QComboBox;
@@ -48,16 +51,21 @@ class Controller6991 : public QGroupBox {
 
 	QStringList streams = { "1", "2", "3", "4" };
 signals:
-	void changeControllerModeReq(unsigned int id_, ControlMode const mode) const;
-	void changeToControlMode() const;
-	void changeToListenerMode() const;
+	void changeControlModeReq(unsigned int id_, ControlMode const mode) const;
+	void changeToController() const;
+	void changeToListener() const;
 	void connectReq(int const id, int const port) const;
 	void disconnectReq(int const id) const;
 	void connected() const;
 	void statusReq(int const id) const;
+	void startAcqReq(int const id, AcquisitionConfigurationDataModel const& configModel);
+	void stopAcqReq(int const id);
 private:
 	void createConnections(AbstractDevice* device) noexcept;
 	void initializeStateMachine(AbstractDevice* device) noexcept;
+	AcquisitionConfigurationDataModel model() const noexcept;
+private slots:
+	void setModel(AcquisitionConfigurationDataModel const& model) noexcept;
 public:
 	Controller6991(AbstractDevice* device, unsigned int const id, QWidget* parent = nullptr);
 };
