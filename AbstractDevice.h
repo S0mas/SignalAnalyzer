@@ -28,13 +28,19 @@ class AbstractDevice : public QObject {
 		return state;
 	}
 	void updateCounters() noexcept {
-		auto testErrorId = QRandomGenerator::global()->bounded(0, tests_.size());
-		tests_[testErrorId].set(tests_[testErrorId].count(), tests_[testErrorId].errors() + 1);
-		for (auto& test : tests_)
-			test.set(test.count() + 1, test.errors());
+		std::vector<TestType> activetests;
+		for (auto test : testTypes)
+			if (testSelectionModel_.at(test))
+				activetests.push_back(test);
+		auto testErrorId = QRandomGenerator::global()->bounded(0, activetests.size());
+
+		resultModel_.at(activetests[testErrorId]).errors_++;
+		for (auto test : activetests)
+			resultModel_.at(test).count_++;
 	}
 	QTimer* timer_;
-	std::vector<Test> tests_;
+	TestsSelectionModel testSelectionModel_;
+	TestsResultModel resultModel_;
 
 	bool isConnected(int const id) const noexcept {
 		for(auto stream : dataStreams_)
@@ -48,11 +54,16 @@ public:
 		dataStreams_[2] = 0;
 		dataStreams_[3] = 0;
 		dataStreams_[4] = 0;
+		for (auto test : testTypes) {
+			testSelectionModel_[test] = false;
+			resultModel_[test] = { 0, 0 };
+		}
+			
 		timer_ = new QTimer(this);
 		connect(timer_, &QTimer::timeout, 
 			[this]() {
 				updateCounters();
-				emit sendCounters(tests_);
+				emit sendCounters(resultModel_);
 			}
 		);
 	}
@@ -66,12 +77,16 @@ public slots:
 		qDebug() << "Device: " << name_ << " handles: " << cmd.toString();
 	}
 
-	void handleStartTestsReq(std::vector<TestType> const& selection) noexcept {
-		if (!selection.empty()) {
+	void handleStartTestsReq(TestsSelectionModel const& model) noexcept {
+		bool empty = true;
+		for (auto test : model)
+			if (test.second)
+				empty = false;
+		if (!empty) {
 			qDebug() << "Tests Started";
-			tests_.clear();
-			for (auto type : selection)
-				tests_.push_back(Test(type));
+			for (auto& result : resultModel_)
+				result.second = { 0, 0 };
+			testSelectionModel_ = model;
 			timer_->start(500);
 			emit testsStarted();
 		}
@@ -81,7 +96,7 @@ public slots:
 		qDebug() << "Tests Stopped";
 		timer_->stop();
 		emit testsStopped();
-		emit sendCounters(tests_);
+		emit sendCounters(resultModel_);
 	}
 
 	int controlId() const noexcept {
@@ -157,7 +172,7 @@ signals:
 	void enable() const;
 	void testsStarted() const;
 	void testsStopped() const;
-	void sendCounters(std::vector<Test> const& tests) const;
+	void sendCounters(TestsResultModel const& result) const;
 	void controlModeChanged(unsigned int const id, ControlMode const mode) const;
 	void connected(int const id) const;
 	void dataStreamsState() const;

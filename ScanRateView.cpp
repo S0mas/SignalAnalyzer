@@ -42,7 +42,7 @@ ScanRateModel ScanRateView::model() const noexcept {
 	return value;
 }
 
-void ScanRateView::setModel(ScanRateModel const & model) noexcept {
+void ScanRateView::setModel(ScanRateModel const& model) noexcept {
 	unitComboBox_->setCurrentIndex(static_cast<int>(model.units_));
 	valueSpinBox_->setValue(model.value_);
 }

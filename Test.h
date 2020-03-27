@@ -1,32 +1,7 @@
 #pragma once
 #include <QString>
 
-enum class TestType {
-	CL0,
-	CL1,
-	DL0,
-	DL1,
-	FIFO,
-	UNKNOWN
-};
 
-inline std::vector<TestType> testTypes = { TestType::CL0 , TestType::CL1, TestType::DL0, TestType::DL1, TestType::FIFO };
-inline QString toString(TestType const test) noexcept {
-	switch (test) {
-	case TestType::CL0:
-		return "CL0";
-	case TestType::CL1:
-		return "CL1";
-	case TestType::DL0:
-		return "DL0";
-	case TestType::DL1:
-		return "DL1";
-	case TestType::FIFO:
-		return "FIFO";
-	default:
-		return "UNKNOWN";
-	}
-}
 
 class Test {
 	TestType testType_;

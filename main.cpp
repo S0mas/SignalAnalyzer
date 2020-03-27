@@ -5,7 +5,7 @@
 #include "View.h"
 #include "CurveBuilderDialog.h"
 #include "CurvesPositioner.h"
-#include "AutoTestController.h"
+#include "TestsView.h"
 #include "Controller6991.h"
 #include "RegisterController.h"
 
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	auto controller6991 = new Controller6991(device, 1);
 	auto controller6991_2 = new Controller6991(device, 2);
 	auto resgisterController = new RegisterController(device, device2);
-	auto testController = new AutoTestController(device);
+	auto testController = new TestsView(device);
 
 	controller6991->show();
 	controller6991_2->show();

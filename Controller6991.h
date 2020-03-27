@@ -25,7 +25,7 @@
 
 class Controller6991 : public QGroupBox {
 	//TODO
-	// INPUT MODEL DATA INTO VIEWS
+	// Data Storage implementation
 	Q_OBJECT
 	QStateMachine sm_;
 	QTime time_;

@@ -97,7 +97,6 @@
   <ItemGroup>
     <ClCompile Include="AcquisitionStartModeView.cpp" />
     <ClCompile Include="AcquisitionStopModeView.cpp" />
-    <ClCompile Include="AutoTestController.cpp" />
     <ClCompile Include="CanvasManipulator.cpp" />
     <ClCompile Include="CanvasMover.cpp" />
     <ClCompile Include="ContextMenuController.cpp" />
@@ -113,10 +112,12 @@
     <ClCompile Include="ScalePicker.cpp" />
     <ClCompile Include="MyPlotMarker.cpp" />
     <ClCompile Include="ScanRateView.cpp" />
+    <ClCompile Include="TestsView.cpp" />
     <ClCompile Include="TwoStateButton.cpp" />
     <ClCompile Include="StatusView.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="TestsView.h" />
     <QtMoc Include="AcquisitionStopModeView.h" />
     <QtMoc Include="AcquisitionStartModeView.h" />
     <ClInclude Include="Command.h" />
@@ -135,7 +136,6 @@
     <QtMoc Include="CanvasMover.h" />
     <QtMoc Include="ContextMenuController.h" />
     <QtMoc Include="CanvasManipulator.h" />
-    <QtMoc Include="AutoTestController.h" />
     <ClInclude Include="Category.h" />
     <ClInclude Include="CommandTypes.h" />
     <ClInclude Include="CurvesPositioner.h" />

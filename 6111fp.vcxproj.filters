@@ -35,9 +35,6 @@
     <ClCompile Include="MyPlot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AutoTestController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RegisterController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TwoStateButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestsView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -144,9 +144,6 @@
     <QtMoc Include="RegisterController.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
-    <QtMoc Include="AutoTestController.h">
-      <Filter>Header Files\gui</Filter>
-    </QtMoc>
     <QtMoc Include="AbstractDevice.h">
       <Filter>Header Files\frontend</Filter>
     </QtMoc>
@@ -166,6 +163,9 @@
       <Filter>Header Files\gui</Filter>
     </QtMoc>
     <QtMoc Include="TwoStateButton.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="TestsView.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
   </ItemGroup>
