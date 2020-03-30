@@ -131,7 +131,7 @@ void Controller6991::setModel(AcquisitionConfigurationDataModel const& model) no
 Controller6991::Controller6991(AbstractDevice * device, unsigned int const id, QWidget * parent) : QGroupBox("Controller", parent), id_(id) {
 	comboBoxMode_->setMaximumWidth(100);
 	for (auto mode : CONTROL_MODES)
-		comboBoxMode_->insertItem(comboBoxMode_->count(), toString(mode), static_cast<int>(mode));
+		comboBoxMode_->addItem(toString(mode), static_cast<int>(mode));
 
 	auto hlayout = new QHBoxLayout;
 	hlayout->addWidget(comboBoxMode_);
@@ -147,7 +147,7 @@ Controller6991::Controller6991(AbstractDevice * device, unsigned int const id, Q
 	dataStreamGroup_->setLayout(hlayout);
 
 	for (auto clock : CLOCK_SOURCES)
-		clockSourceComboBox->insertItem(clockSourceComboBox->count(), toString(clock), static_cast<int>(clock));
+		clockSourceComboBox->addItem(toString(clock), static_cast<int>(clock));
 
 	auto vlayout = new QVBoxLayout;
 	vlayout->addWidget(clockSourceComboBox);

@@ -64,16 +64,6 @@ inline QString toHex(unsigned int const value, int const width = 2) noexcept {
 	return QString("0x%1").arg(value, width, 16, QLatin1Char('0'));
 }
 
-template<typename T>
-inline QString inputMask() noexcept {
-	return "\\0\\x" + QString(inputWidth(T()), 'H');
-}
-
-template<typename T>
-inline QString toHex(T const obj) noexcept {
-	return toHex(toUInt(obj), inputWidth(obj));
-}
-
 using ChannelId = int;
 
 inline bool isControlButtonHold() noexcept {

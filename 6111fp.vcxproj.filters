@@ -59,6 +59,9 @@
     <ClCompile Include="TestsView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EnumSelector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -168,6 +171,12 @@
     <QtMoc Include="TestsView.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
+    <QtMoc Include="SmartEnum.h">
+      <Filter>Header Files\frontend</Filter>
+    </QtMoc>
+    <QtMoc Include="EnumSelector.h">
+      <Filter>Header Files\gui</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyIntervalSymbol.h">
@@ -210,9 +219,6 @@
       <Filter>Header Files\gui</Filter>
     </ClInclude>
     <ClInclude Include="PlotItemsContainer.h">
-      <Filter>Header Files\frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Category.h">
       <Filter>Header Files\frontend</Filter>
     </ClInclude>
     <ClInclude Include="CommandTypes.h">

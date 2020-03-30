@@ -1,43 +1,42 @@
 #pragma once
-#include <QString>
-#include <vector>
+#include "SmartEnum.h"
 
-enum class CommandsTypes {
-	READ,
-	WRITE,
-	WRITE_LOOPBACK,
-	CUSTOM
+class CommandTypes : public SmartEnum {
+public:
+	enum Types {
+		READ,
+		WRITE,
+		WRITE_LOOPBACK,
+	};
+
+	CommandTypes() : SmartEnum({ READ , WRITE, WRITE_LOOPBACK }, true) {}
+	QString toString(int const command) const noexcept override {
+		switch (command) {
+		case READ:
+			return "READ";
+		case WRITE:
+			return "WRITE";
+		case WRITE_LOOPBACK:
+			return "WRITE_LOOPBACK";
+		default:
+			return SmartEnum::toString(command);
+		}
+	}
+
+	unsigned int toUInt(int const command) const noexcept override {
+		switch (command) {
+		case READ:
+			return 0x51;
+		case WRITE:
+			return 0x52;
+		case WRITE_LOOPBACK:
+			return 0x53;
+		default:
+			return 0x00;
+		}
+	}
+
+	int inputWidth() const noexcept override {
+		return 2;
+	}
 };
-
-inline std::vector<CommandsTypes> cmdTypes = { CommandsTypes::READ , CommandsTypes::WRITE, CommandsTypes::WRITE_LOOPBACK, CommandsTypes::CUSTOM };
-
-inline QString toString(CommandsTypes const cmd) noexcept {
-	switch (cmd) {
-	case CommandsTypes::READ:
-		return "READ";
-	case CommandsTypes::WRITE:
-		return "WRITE";
-	case CommandsTypes::WRITE_LOOPBACK:
-		return "WRITE_LOOPBACK";
-	default:
-		return "CUSTOM";
-	}
-}
-
-inline unsigned int toUInt(CommandsTypes const cmd) noexcept {
-	switch (cmd) {
-	case CommandsTypes::READ:
-		return 0x51;
-	case CommandsTypes::WRITE:
-		return 0x52;
-	case CommandsTypes::WRITE_LOOPBACK:
-		return 0x53;
-	default:
-		return 0x00;
-	}
-}
-
-inline int inputWidth(CommandsTypes const cmd) noexcept {
-	return 2;
-}
-

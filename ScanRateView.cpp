@@ -24,7 +24,7 @@ ScanRateView::ScanRateView(QWidget* parent) : QGroupBox("Scan Rate", parent) {
 	valueSpinBox_->setMaximumWidth(130);
 	valueSpinBox_->setMinimumWidth(130);
 	for (auto unit : SCAN_RATE_UNITS)
-		unitComboBox_->insertItem(unitComboBox_->count(), toString(unit), static_cast<int>(unit));
+		unitComboBox_->addItem(toString(unit), static_cast<int>(unit));
 
 	auto layout = new QHBoxLayout;
 	layout->addWidget(valueSpinBox_);

@@ -29,7 +29,7 @@ void AcquisitionStopModeView::createConnections() noexcept {
 
 AcquisitionStopModeView::AcquisitionStopModeView(QWidget * parent) : QGroupBox("Stop Mode", parent) {
 	for (auto mode : ACQ_STOP_MODES)
-		modeComboBox_->insertItem(modeComboBox_->count(), toString(mode), static_cast<int>(mode));
+		modeComboBox_->addItem(toString(mode), static_cast<int>(mode));
 	modeComboBox_->setMaximumWidth(130);
 
 	numberOfScansSpinBox_->setRange(1, 1000000);

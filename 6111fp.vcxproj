@@ -101,6 +101,7 @@
     <ClCompile Include="CanvasMover.cpp" />
     <ClCompile Include="ContextMenuController.cpp" />
     <ClCompile Include="Controller6991.cpp" />
+    <ClCompile Include="EnumSelector.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CanvasSelector.cpp" />
     <ClCompile Include="MyPlot.cpp" />
@@ -126,6 +127,8 @@
     <QtMoc Include="StatusView.h" />
     <QtMoc Include="ScanRateView.h" />
     <QtMoc Include="TwoStateButton.h" />
+    <QtMoc Include="SmartEnum.h" />
+    <QtMoc Include="EnumSelector.h" />
     <ClInclude Include="Test.h" />
     <QtMoc Include="AbstractDevice.h" />
     <ClInclude Include="RegisterTypes.h" />
@@ -136,7 +139,6 @@
     <QtMoc Include="CanvasMover.h" />
     <QtMoc Include="ContextMenuController.h" />
     <QtMoc Include="CanvasManipulator.h" />
-    <ClInclude Include="Category.h" />
     <ClInclude Include="CommandTypes.h" />
     <ClInclude Include="CurvesPositioner.h" />
     <ClInclude Include="DataAcquisitor.h" />

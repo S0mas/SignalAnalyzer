@@ -1,17 +1,30 @@
 #include "RegisterController.h"
 
-void FrontendCardController::initializeStateMachine(AbstractDevice* device, QLineEdit* lineEdit, QCheckBox* checkBox) noexcept {
+void TargetFrontendCardView::createConnections(AbstractDevice* device) noexcept {
+	connect(this, &TargetFrontendCardView::sendCommand,
+		[this](unsigned int const cmd, unsigned int const address) {
+			if (isEnabled() && checkBox_->isChecked())
+				emit commandExecutionReq({ cmd , address, lineEdit_->text().toUInt(nullptr, 16) });
+		}
+	);
+	connect(this, &TargetFrontendCardView::stateReq, device, &AbstractDevice::handleDeviceStatusReq);
+	connect(this, &TargetFrontendCardView::commandExecutionReq, device, &AbstractDevice::handleCommandExecutionReq);
+
+	initializeStateMachine(device);
+}
+
+void TargetFrontendCardView::initializeStateMachine(AbstractDevice* device) noexcept {
 	auto enabled = new QState();
 	auto active = new QState(enabled);
 	auto inactive = new QState(enabled);
 	auto disabled = new QState();
 
 	enabled->setInitialState(inactive);
-	auto checkTransition = new CheckedTransition(checkBox);
+	auto checkTransition = new CheckedTransition(checkBox_);
 	checkTransition->setTargetState(active);
 	inactive->addTransition(checkTransition);
 
-	auto unchecktransition = new UncheckedTransition(checkBox);
+	auto unchecktransition = new UncheckedTransition(checkBox_);
 	unchecktransition->setTargetState(inactive);
 	active->addTransition(unchecktransition);
 
@@ -27,67 +40,56 @@ void FrontendCardController::initializeStateMachine(AbstractDevice* device, QLin
 		}
 	);
 	connect(active, &QState::entered,
-		[lineEdit]() {
-			lineEdit->setEnabled(true);
+		[this]() {
+			lineEdit_->setEnabled(true);
 		}
 	);
 	connect(inactive, &QState::entered,
-		[lineEdit]() {
-			lineEdit->setEnabled(false);
+		[this]() {
+			lineEdit_->setEnabled(false);
 		}
 	);
 	connect(disabled, &QState::entered,
-		[this, checkBox]() {
+		[this]() {
 			setEnabled(false);
-			checkBox->setChecked(false);
+			checkBox_->setChecked(false);
 		}
 	);
 	sm_.setInitialState(disabled);
 	sm_.start();
 }
 
-FrontendCardController::FrontendCardController(AbstractDevice* device, int const index, QWidget* parent) : QGroupBox(QString("Front End %1").arg(index), parent) {
-	auto lineEdit = new QLineEdit;
-	lineEdit->setMaximumWidth(70);
-	lineEdit->setInputMask("\\0\\xHHHHHHHH;0");
-	lineEdit->setEnabled(false);
+TargetFrontendCardView::TargetFrontendCardView(AbstractDevice* device, int const index, QWidget* parent) : QGroupBox(QString("Front End %1").arg(index), parent) {
+	lineEdit_->setMaximumWidth(70);
+	lineEdit_->setInputMask("\\0\\xHHHHHHHH;0");
+	lineEdit_->setEnabled(false);
 
-	auto checkBox = new QCheckBox;
-	checkBox->setChecked(false);
+	checkBox_->setChecked(false);
 
 	auto layout = new QHBoxLayout;
-	layout->addWidget(lineEdit);
-	layout->addWidget(checkBox);
+	layout->addWidget(lineEdit_);
+	layout->addWidget(checkBox_);
 	setLayout(layout);
 
-	connect(this, &FrontendCardController::sendCommand,
-		[this, lineEdit, checkBox](unsigned int const cmd, unsigned int const address) {
-			if (isEnabled() && checkBox->isChecked())
-				emit commandExecutionReq({ cmd , address, lineEdit->text().toUInt(nullptr, 16) });
-		}
-	);
-	connect(this, &FrontendCardController::stateReq, device, &AbstractDevice::handleDeviceStatusReq);
-	connect(this, &FrontendCardController::commandExecutionReq, device, &AbstractDevice::handleCommandExecutionReq);
-
-	initializeStateMachine(device, lineEdit, checkBox);
+	createConnections(device);
 }
 
+void RegisterController::createConnections(AbstractDevice* device1, AbstractDevice* device2) noexcept {
+	connect(refreshButton, &QPushButton::clicked, frontend1_, &TargetFrontendCardView::stateReq);
+	connect(refreshButton, &QPushButton::clicked, frontend2_, &TargetFrontendCardView::stateReq);
+	connect(executeButton, &QPushButton::clicked,
+		[this]() {
+			emit frontend1_->sendCommand(commandSelector_->value(), addressSelector_->value());
+			emit frontend2_->sendCommand(commandSelector_->value(), addressSelector_->value());
+		}
+	);
+}
 
-
-RegisterController::RegisterController(AbstractDevice* device1, AbstractDevice* device2, QWidget* parent) : QGroupBox("Register Controller", parent) {
-	auto commandSelector = Selector::createSelector(Category(cmdTypes), "Command");
-	auto addressSelector = Selector::createSelector(Category(regTypes), "Address");
-
-	auto dataLabel = new QLabel("Data");
-	auto frontend1 = new FrontendCardController(device1, 1);
-	auto frontend2 = new FrontendCardController(device2, 2);
-
-	auto refreshButton = new QPushButton("Refresh");
-	auto executeButton = new QPushButton("Execute");
-
-	auto dataRow = new QHBoxLayout;
-	dataRow->addWidget(frontend1);
-	dataRow->addWidget(frontend2);
+RegisterController::RegisterController(AbstractDevice* device1, AbstractDevice* device2, QWidget* parent)
+	: QGroupBox("Register Controller", parent), frontend1_(new TargetFrontendCardView(device1, 1)), frontend2_(new TargetFrontendCardView(device2, 2)){
+	auto frontendsLayout = new QHBoxLayout;
+	frontendsLayout->addWidget(frontend1_);
+	frontendsLayout->addWidget(frontend2_);
 
 	auto acceptRow = new QHBoxLayout;
 	acceptRow->addWidget(refreshButton);
@@ -95,23 +97,11 @@ RegisterController::RegisterController(AbstractDevice* device1, AbstractDevice* 
 	acceptRow->addWidget(executeButton, 1, Qt::AlignRight);
 
 	auto layout = new QVBoxLayout;
-	layout->addWidget(commandSelector);
-	layout->addWidget(addressSelector);
-	layout->addLayout(dataRow);
+	layout->addWidget(commandSelector_);
+	layout->addWidget(addressSelector_);
+	layout->addLayout(frontendsLayout);
 	layout->addLayout(acceptRow);
 	setLayout(layout);
 
-	connect(refreshButton, &QPushButton::clicked,
-		[frontend1, frontend2]() {
-			emit frontend1->stateReq();
-			emit frontend2->stateReq();
-		}
-	);
-
-	connect(executeButton, &QPushButton::clicked,
-		[this, commandSelector, addressSelector, frontend1, frontend2]() {
-			emit frontend1->sendCommand(commandSelector->value(), addressSelector->value());
-			emit frontend2->sendCommand(commandSelector->value(), addressSelector->value());
-		}
-	);
+	createConnections(device1, device2);
 }

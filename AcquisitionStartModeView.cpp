@@ -24,7 +24,7 @@ void AcquisitionStartModeView::createConnections() noexcept {
 AcquisitionStartModeView::AcquisitionStartModeView(QWidget * parent) : QGroupBox("Start Mode", parent) {
 	modeComboBox_->setMaximumWidth(130);
 	for (auto mode : ACQ_START_MODES)
-		modeComboBox_->insertItem(modeComboBox_->count(), toString(mode), static_cast<int>(mode));
+		modeComboBox_->addItem(toString(mode), static_cast<int>(mode));
 
 	startDateTime_->setDisplayFormat("dd.MM.yyyy, hh:mm:ss");
 	startDateTime_->setMaximumWidth(130);
