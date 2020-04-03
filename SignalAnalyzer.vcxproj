@@ -15,6 +15,7 @@
     <Keyword>QtVS_v302</Keyword>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+    <ProjectName>SignalAnalyzer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -95,20 +96,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\WizardFramework\Common\src\AbstractDevice.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\AbstractHardwareConnector.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\ChannelsIF.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\AcquisitionStartModeView.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\AcquisitionStopModeView.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\Controller6991.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\RegisterController.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\ScanRateView.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\StatusView.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\TestsView.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\gui\EnumSelector.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\gui\TwoStateButton.cpp" />
-    <ClCompile Include="..\WizardFramework\Common\src\ScpiDevice.cpp" />
-    <ClCompile Include="..\WizardFramework\Mock\src\HardwareConnectorMock.cpp" />
     <ClCompile Include="CanvasManipulator.cpp" />
     <ClCompile Include="CanvasMover.cpp" />
     <ClCompile Include="ContextMenuController.cpp" />
@@ -130,42 +117,6 @@
     <QtMoc Include="CanvasMover.h" />
     <QtMoc Include="ContextMenuController.h" />
     <QtMoc Include="CanvasManipulator.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\AcquisitionStartModeView.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\AcquisitionStopModeView.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\Controller6991.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\RegisterController.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\ScanRateView.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\StatusView.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\TestsView.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\AbstractDeviceXX.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\AbstractDataResource.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\AbstractDevice.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\AbstractHardwareConnector.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\ChannelsIF.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\CustomTransitions.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\Device6991\Command.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\Device6991\CommandTypes.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\Device6991\Defines6991.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991\Device6991.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\Device6991\HardwareConnector6991.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\Device6991\RegisterTypes.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\gui\EnumSelector.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\gui\TwoStateButton.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\DeviceIdentityResourcesIF.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\ErrorChecker.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\Exceptions.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\LoggingObject.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\PrintInterface.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\Promises.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\Resource.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\ResourceContentValidationStrategies.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\ResourceManagementStrategies.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\ScpiDevice.h" />
-    <ClInclude Include="..\WizardFramework\Common\include\ScpiIF.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\SmartEnum.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestController.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestSender.h" />
-    <QtMoc Include="..\WizardFramework\Common\include\UserCommunicationObject.h" />
     <ClInclude Include="CurvesPositioner.h" />
     <ClInclude Include="DataAcquisitor.h" />
     <ClInclude Include="DataGenerator.h" />

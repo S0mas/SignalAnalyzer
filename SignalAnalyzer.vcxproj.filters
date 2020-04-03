@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ScalePicker.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotRangeMarkers.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MyScaleDraw.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlotMarker.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlotItem.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlotIntervalCurve.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPlot.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ContextMenuController.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasSelector.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasMover.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CanvasManipulator.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PlotItemsContainer.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyScaleDraw.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotPicker.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotPanner.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotMarker.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotMagnifier.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotItem.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPlotIntervalCurve.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPickerDragRectMachine.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MyIntervalSymbol.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DataGenerator.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DataAcquisitor.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CurvesPositioner.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="PlotRangeMarkers.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="ScalePicker.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="Plot.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="MyPlot.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="LatchButton.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="IdentificationGroupView.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="DataController.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="CurveBuilderDialog.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="Controller.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="ContextMenuController.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="ChannelStatus.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="ChannelsGroupSelectionButton.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="ChannelsSelectionView.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="CanvasSelector.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="CanvasMover.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="CanvasManipulator.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="View.h">
+      <Filter>headers\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="AcquisitionGroupView.h">
+      <Filter>headers\gui</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="headers">
+      <UniqueIdentifier>{5c4d5bf0-4521-4c9f-9eda-468bdf6620f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources">
+      <UniqueIdentifier>{5258d5bb-c649-4110-9bb0-912d6c9015dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\gui">
+      <UniqueIdentifier>{47427de6-fade-4df5-bd39-522125b644d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\gui">
+      <UniqueIdentifier>{2e4af73b-6eb5-45a8-8184-87f3f3010d3f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
