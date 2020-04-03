@@ -61,10 +61,6 @@ inline QString toString(const Operation operation) {
 	}
 }
 
-inline QString toHex(unsigned int const value, int const width = 2) noexcept {
-	return QString("0x%1").arg(value, width, 16, QLatin1Char('0'));
-}
-
 using ChannelId = int;
 
 inline bool isControlButtonHold() noexcept {
@@ -181,38 +177,3 @@ struct Range {
 		return length() > range.length();
 	}
 };
-
-enum class TestType {
-	CL0,
-	CL1,
-	DL0,
-	DL1,
-	FIFO,
-	UNKNOWN
-};
-
-inline std::vector<TestType> testTypes = { TestType::CL0 , TestType::CL1, TestType::DL0, TestType::DL1, TestType::FIFO };
-inline QString toString(TestType const test) noexcept {
-	switch (test) {
-	case TestType::CL0:
-		return "CL0";
-	case TestType::CL1:
-		return "CL1";
-	case TestType::DL0:
-		return "DL0";
-	case TestType::DL1:
-		return "DL1";
-	case TestType::FIFO:
-		return "FIFO";
-	default:
-		return "UNKNOWN";
-	}
-}
-
-struct Result {
-	int count_;
-	int errors_;
-};
-
-using TestsResultModel = std::map<TestType, Result>;
-using TestsSelectionModel = std::map<TestType, bool>;

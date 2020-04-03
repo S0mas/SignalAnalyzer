@@ -35,32 +35,26 @@
     <ClCompile Include="MyPlot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RegisterController.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\Controller6991.cpp">
+      <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="StatusView.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\AcquisitionStartModeView.cpp">
+      <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="AcquisitionStopModeView.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\AcquisitionStopModeView.cpp">
+      <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="AcquisitionStartModeView.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\RegisterController.cpp">
+      <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="Controller6991.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\ScanRateView.cpp">
+      <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="ScanRateView.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\StatusView.cpp">
+      <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="TwoStateButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestsView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EnumSelector.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\WizardFramework\Common\src\Device6991\gui\TestsView.cpp">
+      <Filter>Source Files\backend</Filter>
     </ClCompile>
     <ClCompile Include="..\WizardFramework\Common\src\AbstractDevice.cpp">
       <Filter>Source Files\backend</Filter>
@@ -71,16 +65,13 @@
     <ClCompile Include="..\WizardFramework\Common\src\ChannelsIF.cpp">
       <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="..\WizardFramework\Common\src\DeviceIdentityResources.IF.cpp">
-      <Filter>Source Files\backend</Filter>
-    </ClCompile>
     <ClCompile Include="..\WizardFramework\Common\src\ScpiDevice.cpp">
       <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="..\WizardFramework\Common\src\UserActionRequestController.cpp">
+    <ClCompile Include="..\WizardFramework\Common\src\gui\EnumSelector.cpp">
       <Filter>Source Files\backend</Filter>
     </ClCompile>
-    <ClCompile Include="..\WizardFramework\Common\src\UserActionRequestSender.cpp">
+    <ClCompile Include="..\WizardFramework\Common\src\gui\TwoStateButton.cpp">
       <Filter>Source Files\backend</Filter>
     </ClCompile>
     <ClCompile Include="..\WizardFramework\Mock\src\HardwareConnectorMock.cpp">
@@ -171,40 +162,46 @@
     <QtMoc Include="CanvasManipulator.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
-    <QtMoc Include="RegisterController.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\AcquisitionStartModeView.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="Controller6991.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\AcquisitionStopModeView.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="StatusView.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\Controller6991.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="AcquisitionStopModeView.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\RegisterController.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="AcquisitionStartModeView.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\ScanRateView.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="ScanRateView.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\StatusView.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="TwoStateButton.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\gui\TestsView.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="TestsView.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\AbstractDeviceXX.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="EnumSelector.h">
-      <Filter>Header Files\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991\Device6991.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\gui\EnumSelector.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\gui\TwoStateButton.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
     <QtMoc Include="..\WizardFramework\Common\include\AbstractDataResource.h">
       <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="..\WizardFramework\Common\include\AbstractHardwareConnector.h">
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractDevice.h">
       <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="..\WizardFramework\Common\include\Device6111.h">
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractHardwareConnector.h">
       <Filter>Header Files\backend</Filter>
     </QtMoc>
     <QtMoc Include="..\WizardFramework\Common\include\LoggingObject.h">
@@ -219,25 +216,16 @@
     <QtMoc Include="..\WizardFramework\Common\include\ScpiDevice.h">
       <Filter>Header Files\backend</Filter>
     </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\SmartEnum.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
     <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestController.h">
       <Filter>Header Files\backend</Filter>
     </QtMoc>
     <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestSender.h">
       <Filter>Header Files\backend</Filter>
     </QtMoc>
-    <QtMoc Include="..\WizardFramework\Common\include\Device6991.h">
-      <Filter>Header Files\backend</Filter>
-    </QtMoc>
-    <QtMoc Include="AbstractDeviceXX.h">
-      <Filter>Header Files\frontend</Filter>
-    </QtMoc>
     <QtMoc Include="..\WizardFramework\Common\include\UserCommunicationObject.h">
-      <Filter>Header Files\backend</Filter>
-    </QtMoc>
-    <QtMoc Include="..\WizardFramework\Common\include\AbstractDevice.h">
-      <Filter>Header Files\backend</Filter>
-    </QtMoc>
-    <QtMoc Include="..\WizardFramework\Common\include\SmartEnum.h">
       <Filter>Header Files\backend</Filter>
     </QtMoc>
   </ItemGroup>
@@ -284,25 +272,31 @@
     <ClInclude Include="PlotItemsContainer.h">
       <Filter>Header Files\frontend</Filter>
     </ClInclude>
-    <ClInclude Include="CommandTypes.h">
-      <Filter>Header Files\frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="RegisterTypes.h">
-      <Filter>Header Files\frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="Command.h">
-      <Filter>Header Files\frontend</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomTransitions.h">
-      <Filter>Header Files\frontend</Filter>
-    </ClInclude>
     <ClInclude Include="Defines.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="Test.h">
-      <Filter>Header Files\frontend</Filter>
+    <ClInclude Include="..\WizardFramework\Common\include\Device6991\Command.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Device6991\CommandTypes.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Device6991\Defines6991.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Device6991\HardwareConnector6991.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Device6991\RegisterTypes.h">
+      <Filter>Header Files\backend</Filter>
     </ClInclude>
     <ClInclude Include="..\WizardFramework\Common\include\ChannelsIF.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\CustomTransitions.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\DeviceIdentityResourcesIF.h">
       <Filter>Header Files\backend</Filter>
     </ClInclude>
     <ClInclude Include="..\WizardFramework\Common\include\ErrorChecker.h">
@@ -321,12 +315,6 @@
       <Filter>Header Files\backend</Filter>
     </ClInclude>
     <ClInclude Include="..\WizardFramework\Common\include\ScpiIF.h">
-      <Filter>Header Files\backend</Filter>
-    </ClInclude>
-    <ClInclude Include="..\WizardFramework\Common\include\Defines6991.h">
-      <Filter>Header Files\backend</Filter>
-    </ClInclude>
-    <ClInclude Include="..\WizardFramework\Mock\include\HardwareConnectorMock.h">
       <Filter>Header Files\backend</Filter>
     </ClInclude>
   </ItemGroup>

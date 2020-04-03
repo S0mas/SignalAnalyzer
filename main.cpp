@@ -5,10 +5,10 @@
 #include "View.h"
 #include "CurveBuilderDialog.h"
 #include "CurvesPositioner.h"
-#include "TestsView.h"
-#include "Controller6991.h"
-#include "RegisterController.h"
-#include "../WizardFramework/Common/include/Device6111.h"
+#include "../WizardFramework/Common/include/Device6991/gui/TestsView.h"
+#include "../WizardFramework/Common/include/Device6991/gui/Controller6991.h"
+#include "../WizardFramework/Common/include/Device6991/gui/RegisterController.h"
+#include "../WizardFramework/Common/include/Device6991/Device6991.h"
 #include "../WizardFramework/Mock/include/HardwareConnectorMock.h"
 
 int main(int argc, char *argv[])
