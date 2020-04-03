@@ -62,6 +62,30 @@
     <ClCompile Include="EnumSelector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\WizardFramework\Common\src\AbstractDevice.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WizardFramework\Common\src\AbstractHardwareConnector.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WizardFramework\Common\src\ChannelsIF.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WizardFramework\Common\src\DeviceIdentityResources.IF.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WizardFramework\Common\src\ScpiDevice.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WizardFramework\Common\src\UserActionRequestController.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WizardFramework\Common\src\UserActionRequestSender.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WizardFramework\Mock\src\HardwareConnectorMock.cpp">
+      <Filter>Source Files\backend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -90,6 +114,9 @@
     </Filter>
     <Filter Include="Header Files\common">
       <UniqueIdentifier>{d9bd71c3-5a08-4773-9db3-c8d17eeefd2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\backend">
+      <UniqueIdentifier>{1787134a-1ac9-4dc5-9752-17ea27be4f7b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -147,9 +174,6 @@
     <QtMoc Include="RegisterController.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
-    <QtMoc Include="AbstractDevice.h">
-      <Filter>Header Files\frontend</Filter>
-    </QtMoc>
     <QtMoc Include="Controller6991.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
@@ -171,11 +195,50 @@
     <QtMoc Include="TestsView.h">
       <Filter>Header Files\gui</Filter>
     </QtMoc>
-    <QtMoc Include="SmartEnum.h">
-      <Filter>Header Files\frontend</Filter>
-    </QtMoc>
     <QtMoc Include="EnumSelector.h">
       <Filter>Header Files\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractDataResource.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractHardwareConnector.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6111.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\LoggingObject.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\PrintInterface.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\Promises.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\ScpiDevice.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestController.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestSender.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="AbstractDeviceXX.h">
+      <Filter>Header Files\frontend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\UserCommunicationObject.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractDevice.h">
+      <Filter>Header Files\backend</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\SmartEnum.h">
+      <Filter>Header Files\backend</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +301,33 @@
     </ClInclude>
     <ClInclude Include="Test.h">
       <Filter>Header Files\frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\ChannelsIF.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\ErrorChecker.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Exceptions.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Resource.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\ResourceContentValidationStrategies.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\ResourceManagementStrategies.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\ScpiIF.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Defines6991.h">
+      <Filter>Header Files\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Mock\include\HardwareConnectorMock.h">
+      <Filter>Header Files\backend</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #include "EnumSelector.h"
-#include "SmartEnum.h"
+#include "../WizardFramework/Common/include/SmartEnum.h"
 
 #include <QHBoxLayout>
 #include <QLabel>

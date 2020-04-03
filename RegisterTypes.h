@@ -1,5 +1,5 @@
 #pragma once
-#include "SmartEnum.h"
+#include "../WizardFramework/Common/include/SmartEnum.h"
 
 class RegistersTypes : public SmartEnum {
 public:
@@ -21,6 +21,17 @@ public:
 		default:
 			return SmartEnum::toString(reg);
 		}
+	}
+
+	int fromString(QString const& str) const noexcept override {
+		if (str == "REG_1")
+			return REG_1;
+		else if (str == "REG_2")
+			return REG_2;
+		else if (str == "REG_3")
+			return REG_3;
+		else
+			return SmartEnum::fromString(str);
 	}
 
 	unsigned int toUInt(int const reg) const noexcept override {

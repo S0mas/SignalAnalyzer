@@ -1,4 +1,4 @@
-#include "AutoTestController.h"
+#include "TestsView.h"
 
 TestsResultView::ResultView::ResultView(TestType const & type) noexcept : type_(type), testName_(new QLabel(toString(type))) {}
 
@@ -68,19 +68,19 @@ TestsSelectionModel TestSelectionView::model() const noexcept {
 }
 
 
-void TestsView::createConnections(AbstractDevice * device) noexcept {
-	connect(device, &AbstractDevice::testsStarted, startStopTestsButton_, &TwoStateButton::connected);
-	connect(device, &AbstractDevice::testsStopped, startStopTestsButton_, &TwoStateButton::disconnected);
-	connect(device, &AbstractDevice::sendCounters, resultView_, &TestsResultView::setModel);
+void TestsView::createConnections(AbstractDeviceXX * device) noexcept {
+	connect(device, &AbstractDeviceXX::testsStarted, startStopTestsButton_, &TwoStateButton::connected);
+	connect(device, &AbstractDeviceXX::testsStopped, startStopTestsButton_, &TwoStateButton::disconnected);
+	connect(device, &AbstractDeviceXX::sendCounters, resultView_, &TestsResultView::setModel);
 	initializeStateMachine(device);
 }
 
-void TestsView::initializeStateMachine(AbstractDevice * device) noexcept {
+void TestsView::initializeStateMachine(AbstractDeviceXX * device) noexcept {
 	auto idle = new QState();
 	auto running = new QState();
 
-	idle->addTransition(device, &AbstractDevice::testsStarted, running);
-	running->addTransition(device, &AbstractDevice::testsStopped, idle);
+	idle->addTransition(device, &AbstractDeviceXX::testsStarted, running);
+	running->addTransition(device, &AbstractDeviceXX::testsStopped, idle);
 
 	auto timer = new QTimer(this);
 	connect(timer, &QTimer::timeout, this, &TestsView::updateTime);
@@ -114,7 +114,7 @@ void TestsView::updateTime() const noexcept {
 	testElapsedTimeLabel_->setText(QString("Time elapsed: %1m %2s").arg(minutes).arg(seconds));
 }
 
-TestsView::TestsView(AbstractDevice * device, QWidget * parent) : QGroupBox("", parent) {
+TestsView::TestsView(AbstractDeviceXX * device, QWidget * parent) : QGroupBox("", parent) {
 	startStopTestsButton_ = new TwoStateButton("Start", [device, this]() { device->handleStartTestsReq(selectionView_->model()); }, "Stop", [device]() {device->handleStopTestsReq(); });
 	auto hlayout = new QHBoxLayout;
 	hlayout->addWidget(selectionView_);

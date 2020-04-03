@@ -1,5 +1,5 @@
 #pragma once
-#include "SmartEnum.h"
+#include "../WizardFramework/Common/include/SmartEnum.h"
 
 class CommandTypes : public SmartEnum {
 public:
@@ -21,6 +21,17 @@ public:
 		default:
 			return SmartEnum::toString(command);
 		}
+	}
+
+	int fromString(QString const& str) const noexcept override {
+		if (str == "READ")
+			return READ;
+		else if (str == "WRITE")
+			return WRITE;
+		else if (str == "WRITE_LOOPBACK")
+			return WRITE_LOOPBACK;
+		else
+			return SmartEnum::fromString(str);
 	}
 
 	unsigned int toUInt(int const command) const noexcept override {

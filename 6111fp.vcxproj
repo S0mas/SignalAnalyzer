@@ -60,7 +60,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>..\..\..\visa\include;libs\qwt\src;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\visa\include;libs\qwt\src;$(Qt_INCLUDEPATH_);D:\Programowanie\WizardFramework\Common\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>QWT_DLL;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -95,6 +95,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\WizardFramework\Common\src\AbstractDevice.cpp" />
+    <ClCompile Include="..\WizardFramework\Common\src\AbstractHardwareConnector.cpp" />
+    <ClCompile Include="..\WizardFramework\Common\src\ChannelsIF.cpp" />
+    <ClCompile Include="..\WizardFramework\Common\src\DeviceIdentityResources.IF.cpp" />
+    <ClCompile Include="..\WizardFramework\Common\src\ScpiDevice.cpp" />
+    <ClCompile Include="..\WizardFramework\Common\src\UserActionRequestController.cpp" />
+    <ClCompile Include="..\WizardFramework\Common\src\UserActionRequestSender.cpp" />
+    <ClCompile Include="..\WizardFramework\Mock\src\HardwareConnectorMock.cpp" />
     <ClCompile Include="AcquisitionStartModeView.cpp" />
     <ClCompile Include="AcquisitionStopModeView.cpp" />
     <ClCompile Include="CanvasManipulator.cpp" />
@@ -121,16 +129,37 @@
     <QtMoc Include="TestsView.h" />
     <QtMoc Include="AcquisitionStopModeView.h" />
     <QtMoc Include="AcquisitionStartModeView.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractDataResource.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractDevice.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\AbstractHardwareConnector.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\ChannelsIF.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\Device6111.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\Device6991.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\Defines6991.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\ErrorChecker.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\Exceptions.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\LoggingObject.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\PrintInterface.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\Promises.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\Resource.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\ResourceContentValidationStrategies.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\ResourceManagementStrategies.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\ScpiDevice.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestController.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\UserActionRequestSender.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\ScpiIF.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\UserCommunicationObject.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\SmartEnum.h" />
+    <ClInclude Include="..\WizardFramework\Mock\include\HardwareConnectorMock.h" />
     <ClInclude Include="Command.h" />
     <QtMoc Include="Controller6991.h" />
     <ClInclude Include="CustomTransitions.h" />
     <QtMoc Include="StatusView.h" />
     <QtMoc Include="ScanRateView.h" />
     <QtMoc Include="TwoStateButton.h" />
-    <QtMoc Include="SmartEnum.h" />
     <QtMoc Include="EnumSelector.h" />
     <ClInclude Include="Test.h" />
-    <QtMoc Include="AbstractDevice.h" />
+    <QtMoc Include="AbstractDeviceXX.h" />
     <ClInclude Include="RegisterTypes.h" />
     <QtMoc Include="ScalePicker.h" />
     <QtMoc Include="CurveBuilderDialog.h" />

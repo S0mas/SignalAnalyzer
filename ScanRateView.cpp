@@ -1,16 +1,16 @@
 #include "ScanRateView.h"
-#include "Defines.h"
+#include "Defines6991.h"
 #include <QHBoxLayout>
 
 void ScanRateView::createConnections() noexcept {
 	connect(unitComboBox_, QOverload<int>::of(&QComboBox::currentIndexChanged),
 		[this]() {
-			if (unitComboBox_->currentData().toInt() == static_cast<int>(ScanRateUnits::HZ)) {
+			if (unitComboBox_->currentData().toInt() == static_cast<int>(ScanRateUnitsEnum::HZ)) {
 				valueSpinBox_->setSingleStep(HZ_STEP);
 				valueSpinBox_->setRange(HZ_STEP, HZ_LIMIT);
 				valueSpinBox_->disconnect();
 			}
-			else if (unitComboBox_->currentData().toInt() == static_cast<int>(ScanRateUnits::US)) {
+			else if (unitComboBox_->currentData().toInt() == static_cast<int>(ScanRateUnitsEnum::US)) {
 				valueSpinBox_->setSingleStep(US_STEP);
 				valueSpinBox_->setRange(US_STEP, US_LIMIT);
 				connect(valueSpinBox_, &QAbstractSpinBox::editingFinished, [this, step = US_STEP]() {if (valueSpinBox_->value() % step != 0) valueSpinBox_->setValue(valueSpinBox_->value() - valueSpinBox_->value() % step); });
@@ -23,8 +23,8 @@ void ScanRateView::createConnections() noexcept {
 ScanRateView::ScanRateView(QWidget* parent) : QGroupBox("Scan Rate", parent) {
 	valueSpinBox_->setMaximumWidth(130);
 	valueSpinBox_->setMinimumWidth(130);
-	for (auto unit : SCAN_RATE_UNITS)
-		unitComboBox_->addItem(toString(unit), static_cast<int>(unit));
+	for (auto unit : ScanRateUnitsEnum::TYPES)
+		unitComboBox_->addItem(ScanRateUnitsEnum::toString(static_cast<ScanRateUnitsEnum::Type>(unit)), unit);
 
 	auto layout = new QHBoxLayout;
 	layout->addWidget(valueSpinBox_);
@@ -37,7 +37,7 @@ ScanRateView::ScanRateView(QWidget* parent) : QGroupBox("Scan Rate", parent) {
 
 ScanRateModel ScanRateView::model() const noexcept {
 	ScanRateModel value;
-	value.units_ = static_cast<ScanRateUnits>(unitComboBox_->currentData().toInt());
+	value.units_ = static_cast<ScanRateUnitsEnum::Type>(unitComboBox_->currentData().toInt());
 	value.value_ = valueSpinBox_->value();
 	return value;
 }

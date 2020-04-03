@@ -8,6 +8,8 @@
 #include "TestsView.h"
 #include "Controller6991.h"
 #include "RegisterController.h"
+#include "../WizardFramework/Common/include/Device6111.h"
+#include "../WizardFramework/Mock/include/HardwareConnectorMock.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,11 +27,15 @@ int main(int argc, char *argv[])
 
 	//w.show();
 
-	auto device = new AbstractDevice;
-	auto device2 = new AbstractDevice;
+	auto device = new AbstractDeviceXX;
+	auto device2 = new AbstractDeviceXX;
 
-	auto controller6991 = new Controller6991(device, 1);
-	auto controller6991_2 = new Controller6991(device, 2);
+	auto connector1 = new HardwareConnectorMock("Mock Connector");
+	auto connector2 = new HardwareConnectorMock("Mock Connector");
+	auto scpiIF = new ScpiIFMock;
+
+	auto controller6991 = new Controller6991(connector1, scpiIF, 1);
+	auto controller6991_2 = new Controller6991(connector2, scpiIF, 2);
 	auto resgisterController = new RegisterController(device, device2);
 	auto testController = new TestsView(device);
 

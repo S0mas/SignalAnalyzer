@@ -1,53 +1,34 @@
 #include "Controller6991.h"
 
-void Controller6991::createConnections(AbstractDevice* device) noexcept {
-	connect(this, &Controller6991::connected, connectDisconnectButton_, &TwoStateButton::connected);
-	connect(this, &Controller6991::disconnectReq, connectDisconnectButton_, &TwoStateButton::disconnected);
-	connect(device, &AbstractDevice::acqStarted, acqStartStopButton_, &TwoStateButton::connected);
-	connect(device, &AbstractDevice::acqStopped, acqStartStopButton_, &TwoStateButton::disconnected);
-	connect(device, &AbstractDevice::controlModeChanged,
-		[this](int const id, ControlMode const mode) {
-			if (id == id_) {
-				if (mode == ControlMode::CONTROLLER)
-					emit changeToController();
-				else if (mode == ControlMode::LISTENER)
-					emit changeToListener();
-			}
-		}
-	);
-	connect(device, &AbstractDevice::status,
-		[this](Status const& status) {
-			if (status.id_ == id_)
-				statusView_->update(status);
-		}
-	);
-	connect(device, &AbstractDevice::connected,
-		[this](int const id) {
-			if (id == id_)
-				emit connected();
-		}
-	);
-	connect(device, &AbstractDevice::acqStarted, this, &Controller6991::setModel);
-	connect(this, &Controller6991::changeControlModeReq, device, &AbstractDevice::handleChangeControlModeReq);
-	connect(this, &Controller6991::connectReq, device, &AbstractDevice::handleConnect);
-	connect(this, &Controller6991::disconnectReq, device, &AbstractDevice::handleDisconnect);
-	connect(this, &Controller6991::statusReq, device, &AbstractDevice::handleStatusReq);
-	connect(this, &Controller6991::startAcqReq, device, &AbstractDevice::handleStartAcqReq);
-	connect(this, &Controller6991::stopAcqReq, device, &AbstractDevice::handleStopAcqReq);
-	connect(setModeButton_, &QPushButton::clicked, [this]() { emit changeControlModeReq(id_, static_cast<ControlMode>(comboBoxMode_->currentData().toInt())); });
+void Controller6991::createConnections() noexcept {
+	connect(deviceIF_, &Device6991::acquisitionStarted, acqStartStopButton_, &TwoStateButton::connected);
+	connect(deviceIF_, &Device6991::acquisitionStopped, acqStartStopButton_, &TwoStateButton::disconnected);
+	connect(deviceIF_, &Device6991::connectedDataStream, connectDisconnectButton_, &TwoStateButton::connected);
+	connect(deviceIF_, &Device6991::disconnectedDataStream, connectDisconnectButton_, &TwoStateButton::disconnected);
+	connect(deviceIF_, &Device6991::state, statusView_, &StatusView::update);
+	connect(deviceIF_, &Device6991::configuration, this, &Controller6991::setModel);
 
-	auto autoRefreshTimer = new QTimer(this);
-	connect(autoRefreshTimer, &QTimer::timeout, [this]() { emit statusReq(id_); });
-	connect(statusAutoRefreshCheckBox_, &QCheckBox::stateChanged,
-		[autoRefreshTimer](int const state) {
-			state == Qt::Checked ? autoRefreshTimer->start(500) : autoRefreshTimer->stop();
+	connect(setModeButton_, &QPushButton::clicked,
+		[this]() {
+			if (comboBoxMode_->currentData().toInt() == ControlModeEnum::CONTROLLER)
+				deviceIF_->takeControlRequest(id_);
+			else
+				deviceIF_->releaseControlRequest();
+
+			auto autoRefreshTimer = new QTimer(this);
+			connect(autoRefreshTimer, &QTimer::timeout, deviceIF_, &Device6991::deviceStateRequest);
+			connect(statusAutoRefreshCheckBox_, &QCheckBox::stateChanged,
+				[autoRefreshTimer](int const state) {
+					state == Qt::Checked ? autoRefreshTimer->start(500) : autoRefreshTimer->stop();
+				}
+			);
+			connect(resfreshButton_, &QPushButton::clicked, deviceIF_, &Device6991::deviceStateRequest);
 		}
 	);
-	connect(resfreshButton_, &QPushButton::clicked, [this]() { emit statusReq(id_); });
-	initializeStateMachine(device);
+	initializeStateMachine();
 }
 
-void Controller6991::initializeStateMachine(AbstractDevice* device) noexcept {
+void Controller6991::initializeStateMachine() noexcept {
 	auto connected = new QState();
 	auto disconnected = new QState();
 	auto controller = new QState(connected);
@@ -55,16 +36,16 @@ void Controller6991::initializeStateMachine(AbstractDevice* device) noexcept {
 
 	connected->setInitialState(listener);
 
-	listener->addTransition(this, &Controller6991::changeToController, controller);
-	controller->addTransition(this, &Controller6991::changeToListener, listener);
-	disconnected->addTransition(this, &Controller6991::connected, listener);
-	connected->addTransition(this, &Controller6991::disconnectReq, disconnected);
+	listener->addTransition(deviceIF_, &Device6991::controlGranted, controller);
+	controller->addTransition(deviceIF_, &Device6991::controlReleased, listener);
+	disconnected->addTransition(deviceIF_, &Device6991::connectedDataStream, listener);
+	connected->addTransition(deviceIF_, &Device6991::disconnectedDataStream, disconnected);
 
 	sm_.addState(connected);
 	sm_.addState(disconnected);
 
 	connect(disconnected, &QState::entered,
-		[this, device]() {
+		[this]() {
 			modeGroup_->setEnabled(false);
 			comboBoxMode_->setCurrentIndex(0);
 			dataStreamComboBox_->setEnabled(true);
@@ -78,7 +59,6 @@ void Controller6991::initializeStateMachine(AbstractDevice* device) noexcept {
 			statusAutoRefreshCheckBox_->setChecked(false);
 			dataStorageCheckBox_->setEnabled(false);
 			dataStorageCheckBox_->setChecked(false);
-
 		}
 	);
 	connect(connected, &QState::entered,
@@ -112,26 +92,42 @@ void Controller6991::initializeStateMachine(AbstractDevice* device) noexcept {
 	sm_.start();
 }
 
-AcquisitionConfigurationDataModel Controller6991::model() const noexcept {
-	AcquisitionConfigurationDataModel request;
-	request.startModeModel_ = startModeView_->model();
-	request.stopModeModel_ = stopModeView_->model();
-	request.scanRateModel_ = scanRateView_->model();
-	request.clockSource_ = static_cast<ClockSource>(clockSourceComboBox->currentData().toInt());
-	return request;
+Configuration6991 Controller6991::model() const noexcept {
+	Configuration6991 config;
+	config.scanRate_ = scanRateView_->model();
+	config.startMode_ = startModeView_->model();
+	config.stopMode_ = stopModeView_->model();
+	config.clockSource_ = static_cast<ClockSourceEnum::Type>(clockSourceComboBox->currentData().toInt());
+	//config.timestamps_ =
+	//config.scansPerDirectReadPacket_ = 
+	//config.fansMode_ =
+	return config;
 }
 
-void Controller6991::setModel(AcquisitionConfigurationDataModel const& model) noexcept {
-	startModeView_->setModel(model.startModeModel_);
-	stopModeView_->setModel(model.stopModeModel_);
-	scanRateView_->setModel(model.scanRateModel_);
-	clockSourceComboBox->setCurrentIndex(static_cast<int>(model.clockSource_));
+void Controller6991::setModel(Configuration6991 const& configuration) noexcept {
+	if (configuration.scanRate_)
+		scanRateView_->setModel(*configuration.scanRate_);
+	startModeView_->setModel(configuration.startMode_);
+	stopModeView_->setModel(configuration.stopMode_);
+	if (configuration.clockSource_)
+		clockSourceComboBox->setCurrentIndex(*configuration.clockSource_);
+
+	//if (configuration.fansMode_)
+	//	//
+	//if (configuration.timestamps_)
+	//	//
+	//if (configuration.scansPerDirectReadPacket_)
+	//	//
+	//if (configuration.ptpTime_)
+	//	//
 }
 
-Controller6991::Controller6991(AbstractDevice * device, unsigned int const id, QWidget * parent) : QGroupBox("Controller", parent), id_(id) {
+Controller6991::Controller6991(AbstractHardwareConnector* hwConnector, ScpiIF* scpiIF, unsigned int const id, QWidget * parent) : QGroupBox("Controller", parent), id_(id) {
+	deviceIF_ = new Device6991("Device6111", hwConnector, scpiIF, 256, this);
+
 	comboBoxMode_->setMaximumWidth(100);
-	for (auto mode : CONTROL_MODES)
-		comboBoxMode_->addItem(toString(mode), static_cast<int>(mode));
+	for (auto mode : ControlModeEnum::TYPES)
+		comboBoxMode_->addItem(ControlModeEnum::toString(mode), mode);
 
 	auto hlayout = new QHBoxLayout;
 	hlayout->addWidget(comboBoxMode_);
@@ -146,8 +142,8 @@ Controller6991::Controller6991(AbstractDevice * device, unsigned int const id, Q
 	hlayout->addWidget(connectDisconnectButton_);
 	dataStreamGroup_->setLayout(hlayout);
 
-	for (auto clock : CLOCK_SOURCES)
-		clockSourceComboBox->addItem(toString(clock), static_cast<int>(clock));
+	for (auto clock : ClockSourceEnum::TYPES)
+		clockSourceComboBox->addItem(ClockSourceEnum::toString(clock), clock);
 
 	auto vlayout = new QVBoxLayout;
 	vlayout->addWidget(clockSourceComboBox);
@@ -179,5 +175,5 @@ Controller6991::Controller6991(AbstractDevice * device, unsigned int const id, Q
 	layout->addLayout(hButtonslayout);
 	setLayout(layout);
 
-	createConnections(device);
+	createConnections();
 }

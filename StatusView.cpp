@@ -3,7 +3,7 @@
 #include <QHBoxLayout>
 #include <QString>
 #include <QVBoxLayout>
-#include "Defines.h"
+#include "Defines6991.h"
 
 StatusView::StatusView(QWidget * parent) : QWidget(parent) {
 	auto layout = new QVBoxLayout;
@@ -36,13 +36,13 @@ StatusView::StatusView(QWidget * parent) : QWidget(parent) {
 	setLayout(layout);
 }
 
-void StatusView::update(Status const& status) noexcept {
-	idValue_->setText(toHex(status.id_));
-	modeValue_->setText(toString(status.mode_));
-	stateValue_->setText(status.state_);
+void StatusView::update(DeviceState const& state) noexcept {
+	//idValue_->setText(toHex(state.id_));
+	//modeValue_->setText(toString(state.mode_));
+	//stateValue_->setText(state.state_);
 	QString list;
-	for (auto stream : status.streams_)
-		stream.second ? list.append(QString("[<font color=\"green\">%1</font>]").arg(stream.first)) : list.append(QString("[<font color=\"red\">%1</font>]").arg(stream.first));
+	//for (auto stream : state.streams_)
+	//	stream.second ? list.append(QString("[<font color=\"green\">%1</font>]").arg(stream.first)) : list.append(QString("[<font color=\"red\">%1</font>]").arg(stream.first));
 	dataStreamValue_->setText(list);
 	currentTimeValue_->setText(QDateTime::currentDateTime().toString("dd.MM.yyyy, hh:mm:ss"));
 }

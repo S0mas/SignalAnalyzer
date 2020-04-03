@@ -2,7 +2,7 @@
 #include <QLabel>
 #include <QWidget>
 
-struct Status;
+class DeviceState;
 
 class StatusView : public QWidget {
 	Q_OBJECT
@@ -19,5 +19,5 @@ class StatusView : public QWidget {
 public:
 	StatusView(QWidget* parent = nullptr);
 public slots:
-	void update(Status const& status) noexcept;
+	void update(DeviceState const& status) noexcept;
 };

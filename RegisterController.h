@@ -11,7 +11,7 @@
 #include <QPushButton>
 #include <QDebug>
 
-#include "AbstractDevice.h"
+#include "AbstractDeviceXX.h"
 #include "Command.h"
 #include "CommandTypes.h"
 #include "CustomTransitions.h"
@@ -23,12 +23,12 @@ class TargetFrontendCardView : public QGroupBox {
 	QLineEdit* lineEdit_ = new QLineEdit;
 	QCheckBox* checkBox_ = new QCheckBox;
 	QStateMachine sm_;
-	void createConnections(AbstractDevice* device) noexcept;
-	void initializeStateMachine(AbstractDevice* device) noexcept;
+	void createConnections(AbstractDeviceXX* device) noexcept;
+	void initializeStateMachine(AbstractDeviceXX* device) noexcept;
 signals:
 	void commandExecutionReq(Command const cmd) const;
 public:
-	TargetFrontendCardView(AbstractDevice* device, int const index, QWidget* parent = nullptr);
+	TargetFrontendCardView(AbstractDeviceXX* device, int const index, QWidget* parent = nullptr);
 signals:
 	void sendCommand(unsigned int const cmd, unsigned int const address) const;
 	void stateReq() const;
@@ -42,7 +42,7 @@ class RegisterController : public QGroupBox {
 	TargetFrontendCardView* frontend2_;
 	QPushButton* refreshButton = new QPushButton("Refresh");
 	QPushButton* executeButton = new QPushButton("Execute");
-	void createConnections(AbstractDevice* device1, AbstractDevice* device2) noexcept;
+	void createConnections(AbstractDeviceXX* device1, AbstractDeviceXX* device2) noexcept;
 public:
-	RegisterController(AbstractDevice* device1, AbstractDevice* device2, QWidget* parent = nullptr);
+	RegisterController(AbstractDeviceXX* device1, AbstractDeviceXX* device2, QWidget* parent = nullptr);
 };

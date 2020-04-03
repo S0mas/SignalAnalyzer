@@ -8,6 +8,7 @@
 #include <QString>
 #include <vector>
 #include <functional>
+#include <cstdint>
 
 enum class Frequency {
 	_1MHz,
@@ -81,109 +82,6 @@ inline bool isAltButtonHold() noexcept {
 inline bool isMouseLeftButtonHold(const QEvent* event) noexcept {
 	return static_cast<const QMouseEvent*>(event)->buttons().testFlag(Qt::MouseButton::LeftButton);
 }
-
-enum class ControlMode {
-	LISTENER,
-	CONTROLLER
-};
-
-inline const std::vector<ControlMode> CONTROL_MODES = { ControlMode::LISTENER, ControlMode::CONTROLLER };
-
-inline QString toString(ControlMode const mode) noexcept {
-	switch (mode) {
-	case ControlMode::LISTENER:
-		return "Listener";
-	case ControlMode::CONTROLLER:
-		return "Controller";
-	default:
-		return "none";
-	}
-}
-
-enum class AcquisitionStopMode {
-	MANUAL,
-	SCANS_TRESHOLD,
-	TIME
-};
-
-inline const std::vector<AcquisitionStopMode> ACQ_STOP_MODES = { AcquisitionStopMode::MANUAL, AcquisitionStopMode::SCANS_TRESHOLD, AcquisitionStopMode::TIME };
-
-inline QString toString(AcquisitionStopMode const mode) noexcept {
-	switch (mode) {
-	case AcquisitionStopMode::MANUAL:
-		return "Manual";
-	case AcquisitionStopMode::SCANS_TRESHOLD:
-		return "Scans treshold";
-	case AcquisitionStopMode::TIME:
-		return "Time";
-	default:
-		return "none";
-	}
-}
-
-enum class AcquisitionStartMode {
-	IMMEDIATE,
-	PTP_ALARM
-};
-
-inline const std::vector<AcquisitionStartMode> ACQ_START_MODES = { AcquisitionStartMode::IMMEDIATE, AcquisitionStartMode::PTP_ALARM};
-
-inline QString toString(AcquisitionStartMode const mode) noexcept {
-	switch (mode) {
-	case AcquisitionStartMode::IMMEDIATE:
-		return "Immediate";
-	case AcquisitionStartMode::PTP_ALARM:
-		return "PTP Alarm";
-	default:
-		return "none";
-	}
-}
-
-enum class ClockSource {
-	PTP,
-	DEBUG,
-	SOFTWARE
-};
-
-inline const std::vector<ClockSource> CLOCK_SOURCES = { ClockSource::PTP, ClockSource::DEBUG, ClockSource::SOFTWARE };
-
-inline QString toString(ClockSource const mode) noexcept {
-	switch (mode) {
-	case ClockSource::PTP:
-		return "PTP";
-	case ClockSource::DEBUG:
-		return "Debug";
-	case ClockSource::SOFTWARE:
-		return "Software";
-	default:
-		return "none";
-	}
-}
-
-enum class ScanRateUnits {
-	HZ,
-	US
-};
-
-inline const std::vector<ScanRateUnits> SCAN_RATE_UNITS = { ScanRateUnits::HZ, ScanRateUnits::US };
-
-inline QString toString(ScanRateUnits const units) noexcept {
-	switch (units) {
-	case ScanRateUnits::HZ:
-		return "Hz";
-	case ScanRateUnits::US:
-		return "us";
-	default:
-		return "none";
-	}
-}
-
-struct Status {
-	unsigned int id_;
-	QString state_;
-	ControlMode mode_;
-	std::map<int, bool> streams_;
-};
 
 struct Range {
 	std::function<double()> start_;
@@ -282,30 +180,6 @@ struct Range {
 	bool isLonger(const Range& range) const noexcept {
 		return length() > range.length();
 	}
-};
-
-struct AcquisitionStartModeModel {
-	AcquisitionStartMode mode_;
-	QDateTime dateTime_;
-};
-
-struct AcquisitionStopModeModel {
-	AcquisitionStopMode mode_;
-	int scansThreshold_;
-	QTime time_;
-	bool stopOnError_;
-};
-
-struct ScanRateModel {
-	ScanRateUnits units_;
-	int value_;
-};
-
-struct AcquisitionConfigurationDataModel {
-	AcquisitionStartModeModel startModeModel_;
-	AcquisitionStopModeModel stopModeModel_;
-	ScanRateModel scanRateModel_;
-	ClockSource clockSource_;
 };
 
 enum class TestType {

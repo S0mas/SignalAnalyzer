@@ -1,19 +1,19 @@
 #include "RegisterController.h"
 
-void TargetFrontendCardView::createConnections(AbstractDevice* device) noexcept {
+void TargetFrontendCardView::createConnections(AbstractDeviceXX* device) noexcept {
 	connect(this, &TargetFrontendCardView::sendCommand,
 		[this](unsigned int const cmd, unsigned int const address) {
 			if (isEnabled() && checkBox_->isChecked())
 				emit commandExecutionReq({ cmd , address, lineEdit_->text().toUInt(nullptr, 16) });
 		}
 	);
-	connect(this, &TargetFrontendCardView::stateReq, device, &AbstractDevice::handleDeviceStatusReq);
-	connect(this, &TargetFrontendCardView::commandExecutionReq, device, &AbstractDevice::handleCommandExecutionReq);
+	connect(this, &TargetFrontendCardView::stateReq, device, &AbstractDeviceXX::handleDeviceStatusReq);
+	connect(this, &TargetFrontendCardView::commandExecutionReq, device, &AbstractDeviceXX::handleCommandExecutionReq);
 
 	initializeStateMachine(device);
 }
 
-void TargetFrontendCardView::initializeStateMachine(AbstractDevice* device) noexcept {
+void TargetFrontendCardView::initializeStateMachine(AbstractDeviceXX* device) noexcept {
 	auto enabled = new QState();
 	auto active = new QState(enabled);
 	auto inactive = new QState(enabled);
@@ -28,8 +28,8 @@ void TargetFrontendCardView::initializeStateMachine(AbstractDevice* device) noex
 	unchecktransition->setTargetState(inactive);
 	active->addTransition(unchecktransition);
 
-	enabled->addTransition(device, &AbstractDevice::disable, disabled);
-	disabled->addTransition(device, &AbstractDevice::enable, enabled);
+	enabled->addTransition(device, &AbstractDeviceXX::disable, disabled);
+	disabled->addTransition(device, &AbstractDeviceXX::enable, enabled);
 
 	sm_.addState(enabled);
 	sm_.addState(disabled);
@@ -59,7 +59,7 @@ void TargetFrontendCardView::initializeStateMachine(AbstractDevice* device) noex
 	sm_.start();
 }
 
-TargetFrontendCardView::TargetFrontendCardView(AbstractDevice* device, int const index, QWidget* parent) : QGroupBox(QString("Front End %1").arg(index), parent) {
+TargetFrontendCardView::TargetFrontendCardView(AbstractDeviceXX* device, int const index, QWidget* parent) : QGroupBox(QString("Front End %1").arg(index), parent) {
 	lineEdit_->setMaximumWidth(70);
 	lineEdit_->setInputMask("\\0\\xHHHHHHHH;0");
 	lineEdit_->setEnabled(false);
@@ -74,7 +74,7 @@ TargetFrontendCardView::TargetFrontendCardView(AbstractDevice* device, int const
 	createConnections(device);
 }
 
-void RegisterController::createConnections(AbstractDevice* device1, AbstractDevice* device2) noexcept {
+void RegisterController::createConnections(AbstractDeviceXX* device1, AbstractDeviceXX* device2) noexcept {
 	connect(refreshButton, &QPushButton::clicked, frontend1_, &TargetFrontendCardView::stateReq);
 	connect(refreshButton, &QPushButton::clicked, frontend2_, &TargetFrontendCardView::stateReq);
 	connect(executeButton, &QPushButton::clicked,
@@ -85,7 +85,7 @@ void RegisterController::createConnections(AbstractDevice* device1, AbstractDevi
 	);
 }
 
-RegisterController::RegisterController(AbstractDevice* device1, AbstractDevice* device2, QWidget* parent)
+RegisterController::RegisterController(AbstractDeviceXX* device1, AbstractDeviceXX* device2, QWidget* parent)
 	: QGroupBox("Register Controller", parent), frontend1_(new TargetFrontendCardView(device1, 1)), frontend2_(new TargetFrontendCardView(device2, 2)){
 	auto frontendsLayout = new QHBoxLayout;
 	frontendsLayout->addWidget(frontend1_);

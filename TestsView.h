@@ -12,7 +12,7 @@
 #include <QStateMachine>
 #include <QTime>
 #include <QTimer>
-#include "AbstractDevice.h"
+#include "AbstractDeviceXX.h"
 #include <map>
 #include <set>
 #include "Defines.h"
@@ -64,9 +64,9 @@ class TestsView : public QGroupBox {
 	QStateMachine sm_;
 	QTime time_;
 private:
-	void createConnections(AbstractDevice* device) noexcept;
-	void initializeStateMachine(AbstractDevice* device) noexcept;
+	void createConnections(AbstractDeviceXX* device) noexcept;
+	void initializeStateMachine(AbstractDeviceXX* device) noexcept;
 	void updateTime() const noexcept;
 public:
-	TestsView(AbstractDevice* device, QWidget* parent = nullptr);
+	TestsView(AbstractDeviceXX* device, QWidget* parent = nullptr);
 };
