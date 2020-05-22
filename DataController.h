@@ -6,7 +6,8 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
-#include "ChannelsSelectionView.h"
+#include "../WizardFramework/Common/include/gui/ChannelsSelectionView.h"
+#include "../WizardFramework/Common/include/gui/ChannelStatus.h"
 #include "DataGenerator.h"
 #include "DataAcquisitor.h"
 #include "Defines.h"
@@ -46,19 +47,19 @@ public:
 		return dataGen_.generateRandomData(1000, max, 30, 90);
 	}
 
-	std::vector<double> getData(const ChannelId channelId) const noexcept {
+	std::vector<double> getData(const uint32_t channelId) const noexcept {
 		return isGeneratorSelected->isChecked() ? generateDataSingleLine() : dataAcq_.data(channelId);
 	}
 
-	std::vector<double> getData(const std::vector<ChannelId>& channelId) const noexcept {
+	std::vector<double> getData(const std::vector<uint32_t>& channelId) const noexcept {
 		return isGeneratorSelected->isChecked() ? generateDataVec(0xFFFF) : dataAcq_.data(channelId);
 	}
 
-	auto dataGetter(const ChannelId channelId) const noexcept {
+	auto dataGetter(const uint32_t channelId) const noexcept {
 		return [this, channelId]() { return getData(channelId); };
 	}
 
-	auto dataGetter(const std::vector<ChannelId>& channelsIds) const noexcept {
+	auto dataGetter(const std::vector<uint32_t>& channelsIds) const noexcept {
 		return [this, channelsIds]() { return getData(channelsIds); };
 	}
 };

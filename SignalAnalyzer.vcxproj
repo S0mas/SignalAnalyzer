@@ -13,14 +13,14 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D360A360-0047-4913-B84D-CBEB0D1B2DBA}</ProjectGuid>
     <Keyword>QtVS_v302</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
     <ProjectName>SignalAnalyzer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -43,7 +43,7 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtInstall>5.14</QtInstall>
+    <QtInstall>5.14_64</QtInstall>
     <QtModules>core;gui;network;opengl;printsupport;widgets;concurrent;svg;charts</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -61,11 +61,11 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>libs\qwt\src;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>libs\qwt\src;$(Qt_INCLUDEPATH_);..\WizardFramework\Common\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>QWT_DLL;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qwtd.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
@@ -84,7 +84,7 @@
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <AdditionalIncludeDirectories>libs\qwt\src;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>libs\qwt\src;$(Qt_INCLUDEPATH_);..\WizardFramework\Common\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -110,9 +110,12 @@
     <ClCompile Include="MyPlotMarker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="..\WizardFramework\Common\include\DataCollectorServer.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\DataCollectorClient.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\PacketReading.h" />
+    <ClInclude Include="SignalDataPacket.h" />
     <QtMoc Include="ScalePicker.h" />
     <QtMoc Include="CurveBuilderDialog.h" />
-    <QtMoc Include="ChannelStatus.h" />
     <QtMoc Include="DataController.h" />
     <QtMoc Include="CanvasMover.h" />
     <QtMoc Include="ContextMenuController.h" />
@@ -134,13 +137,7 @@
     <ClInclude Include="MyScaleDraw.h" />
     <QtMoc Include="Plot.h" />
     <ClInclude Include="MyPlotIntervalCurve.h" />
-    <QtMoc Include="IdentificationGroupView.h" />
-    <QtMoc Include="LatchButton.h" />
-    <QtMoc Include="AcquisitionGroupView.h" />
-    <QtMoc Include="ChannelsSelectionView.h" />
-    <QtMoc Include="ChannelsGroupSelectionButton.h" />
     <ClInclude Include="Defines.h" />
-    <QtMoc Include="Controller.h" />
     <QtMoc Include="View.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

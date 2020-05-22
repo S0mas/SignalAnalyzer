@@ -8,11 +8,11 @@ class DataAcquisitor {
 public:
 	DataAcquisitor() {}
 
-	std::vector<double> data(const ChannelId id) const noexcept {
+	std::vector<double> data(const uint32_t id) const noexcept {
 		return generator.generateRandomData(1000, 1, 5, 15);
 	}
 
-	std::vector<double> data(const std::vector<ChannelId> id) const noexcept {
+	std::vector<double> data(const std::vector<uint32_t> id) const noexcept {
 		return generator.generateRandomData(1000, 0xFFFF, 30, 90);
 	}
 };

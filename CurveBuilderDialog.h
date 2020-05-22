@@ -7,12 +7,12 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QVector>
-#include "ChannelsSelectionView.h"
+#include "../WizardFramework/Common/include/gui/ChannelsSelectionView.h"
 #include <QDebug>
 
 struct CurveData {
 	QString nameId_;
-	std::vector<ChannelId> channelsSelected;
+	std::vector<uint32_t> channelsSelected;
 	bool single = true;
 };
 
@@ -25,7 +25,7 @@ class CurveBuilderDialog : public QDialog {
 	QCheckBox* singleModeCheckBox_;
 public:
 	CurveBuilderDialog(const ChannelStatuses& statuses, const QString& groupDesc, QWidget* parent = nullptr) : QDialog(parent), statuses_(statuses) {
-		selectionView_ = new ChannelsSelectionView(statuses_, groupDesc, parent);
+		selectionView_ = new ChannelsSelectionView(statuses_, 8, groupDesc, 4, parent);
 		for(auto groupButton : selectionView_->groupsButtons())
 			for (auto channelbutton : groupButton->channelButtons())
 				channelbutton->setEnabled(statuses_.status(channelbutton->id()));

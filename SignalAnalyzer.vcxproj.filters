@@ -84,6 +84,12 @@
     <ClInclude Include="PlotRangeMarkers.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="SignalDataPacket.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\PacketReading.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ScalePicker.h">
@@ -95,31 +101,13 @@
     <QtMoc Include="MyPlot.h">
       <Filter>headers</Filter>
     </QtMoc>
-    <QtMoc Include="LatchButton.h">
-      <Filter>headers</Filter>
-    </QtMoc>
-    <QtMoc Include="IdentificationGroupView.h">
-      <Filter>headers</Filter>
-    </QtMoc>
     <QtMoc Include="DataController.h">
       <Filter>headers</Filter>
     </QtMoc>
     <QtMoc Include="CurveBuilderDialog.h">
       <Filter>headers</Filter>
     </QtMoc>
-    <QtMoc Include="Controller.h">
-      <Filter>headers</Filter>
-    </QtMoc>
     <QtMoc Include="ContextMenuController.h">
-      <Filter>headers</Filter>
-    </QtMoc>
-    <QtMoc Include="ChannelStatus.h">
-      <Filter>headers</Filter>
-    </QtMoc>
-    <QtMoc Include="ChannelsGroupSelectionButton.h">
-      <Filter>headers</Filter>
-    </QtMoc>
-    <QtMoc Include="ChannelsSelectionView.h">
       <Filter>headers</Filter>
     </QtMoc>
     <QtMoc Include="CanvasSelector.h">
@@ -134,8 +122,11 @@
     <QtMoc Include="View.h">
       <Filter>headers\gui</Filter>
     </QtMoc>
-    <QtMoc Include="AcquisitionGroupView.h">
-      <Filter>headers\gui</Filter>
+    <QtMoc Include="..\WizardFramework\Common\include\DataCollectorServer.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\DataCollectorClient.h">
+      <Filter>headers</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +141,11 @@
     </Filter>
     <Filter Include="sources\gui">
       <UniqueIdentifier>{2e4af73b-6eb5-45a8-8184-87f3f3010d3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <ParseFiles>true</ParseFiles>
     </Filter>
   </ItemGroup>
 </Project>
