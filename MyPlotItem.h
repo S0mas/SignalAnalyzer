@@ -3,6 +3,8 @@
 #include <QColor>
 #include <qwt_plot_item.h>
 #include "Defines.h"
+#include "DataEmitter.h"
+
 class MyPlot;
 
 class MyPlotItem {
@@ -13,6 +15,7 @@ protected:
 	MyPlot* plot_;
 	bool isPositionedExclusive_ = false;
 	MyPlotItem* root_ = this;
+	QString nameId_;
 public:
 	MyPlotItem(MyPlot* plot, MyPlotItem* parent = nullptr);
 	virtual ~MyPlotItem() {}
@@ -30,10 +33,31 @@ public:
 		return root_;
 	}
 
+	QString nameId() const noexcept;
 	void deselect() noexcept;
 	bool isPositionedExclusive() const noexcept;
 	bool isSelected() const noexcept;
 	void select() noexcept;
 	bool trySelect(const QPointF& point) noexcept;
 	bool trySelect(const QRectF& rect) noexcept;
+};
+
+class MyPlotAbstractCurve : public QObject, public MyPlotItem {
+	Q_OBJECT
+	bool isRealTimeCurve_;
+public:
+	MyPlotAbstractCurve(MyPlot* plot, bool const isRealTimeCurve = true, MyPlotItem* parent = nullptr) : MyPlotItem(plot, parent), isRealTimeCurve_(isRealTimeCurve) {}
+	void connectDataEmitter(DataEmitter* dataEmitter) noexcept {
+		connect(this, &MyPlotAbstractCurve::dataRequest, dataEmitter, &DataEmitter::handleDataRequest);
+		connect(dataEmitter, &DataEmitter::data, this, &MyPlotAbstractCurve::handleData);
+	}
+	~MyPlotAbstractCurve() override = default;
+	virtual bool isVisibleOnScreen() const noexcept = 0;
+	bool isRealTimeCurve() const noexcept {
+		return isRealTimeCurve_;
+	}
+public slots:
+	virtual void handleData(std::vector<double> const& data) = 0;
+signals:
+	void dataRequest() const;
 };

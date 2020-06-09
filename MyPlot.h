@@ -28,6 +28,14 @@
 
 #include <QTimer>
 
+enum class SignalCurveType {
+	SingleBitSignal = 0,
+	ComplexSignal_Block,
+	ComplexSignal_Wave
+};
+
+
+
 class MyPlot : public QwtPlot {
 	Q_OBJECT
 	QList<qreal> labels() const;
@@ -36,16 +44,17 @@ class MyPlot : public QwtPlot {
 
 	Positioner<MyPlotItem> positioner_;
 	PlotItemsContainer itemsContainer_;
+	QTimer* refreshTimer_ = new QTimer(this);
 public:
 	MyPlot(QWidget* parent = nullptr);
 	virtual ~MyPlot();
 	std::pair<int, int> visibleYRange() const noexcept;
 	void wheelEvent(QWheelEvent *event) override;
-	void forEachCurve(const std::function<void(MyPlotIntervalCurve*)>& function, const std::function<bool()>& continueCondition = []() { return true; }) const noexcept;
+	void forEachCurve(const std::function<void(MyPlotAbstractCurve*)>& function, const std::function<bool()>& continueCondition = []() { return true; }) const noexcept;
 	void forEachMyPlotItem(const std::function<void(MyPlotItem*)>& function, const std::function<bool()>& continueCondition = []() { return true; }) const noexcept;
-	MyPlotIntervalCurve* findCurveIf(const std::function<bool(MyPlotIntervalCurve*)> predicate) const noexcept;
-	std::vector<MyPlotIntervalCurve*> findCurvesIf(const std::function<bool(MyPlotIntervalCurve*)> predicate) const noexcept;
-	MyPlotIntervalCurve* findCurveByPosition(const int position) const noexcept;
+	MyPlotAbstractCurve* findCurveIf(const std::function<bool(MyPlotAbstractCurve*)> predicate) const noexcept;
+	std::vector<MyPlotAbstractCurve*> findCurvesIf(const std::function<bool(MyPlotAbstractCurve*)> predicate) const noexcept;
+	MyPlotAbstractCurve* findCurveByPosition(const int position) const noexcept;
 	void removeItems();
 	void updatePlot() noexcept;
 	bool isSomethingSelected() const noexcept;
@@ -59,11 +68,16 @@ public:
 	int valueYToPosition(const double y);
 	QwtScaleMap xMap() const noexcept;
 	QwtScaleMap yMap() const noexcept;
-	std::vector<MyPlotIntervalCurve*> selectedCurves() const noexcept;
+	std::vector<MyPlotAbstractCurve*> selectedCurves() const noexcept;
 	QPointF plotPointToValuePoint(const QPointF& point) const noexcept;
 	QPoint cursorPosition() const noexcept;
+	MyPlotAbstractCurve* addCurve(const QString& nameId, SignalCurveType const type);
+	void addCurve(std::unique_ptr<MyPlotAbstractCurve>&& curve);
+	void setRefreshTimeInterval(uint32_t const ms) noexcept;
+	uint32_t refreshTimeInterval() const noexcept;
+private slots:
+	void refreshVisibleCurves() const noexcept;
 public slots:
-	void addCurve(const QString& nameId, const DataGetterFunction& dataGetter, int type);
 	void addMarkerAction();
 	void addRangeMarkersAction();
 signals:

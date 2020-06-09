@@ -16,12 +16,10 @@ static inline QVector<QwtIntervalSample> convertToQwtIntervalImpl(const std::vec
 	return vec;
 }
 
-MyPlotIntervalCurve::MyPlotIntervalCurve(const QString& nameId, const DataGetterFunction& dataGetter, QwtIntervalSymbol* symbol, MyPlot* plot) : QwtPlotIntervalCurve(nameId), MyPlotItem(plot) {
+MyPlotIntervalCurve::MyPlotIntervalCurve(const QString& nameId, QwtIntervalSymbol* symbol, MyPlot* plot, bool const isRealTimeCurve) : QwtPlotIntervalCurve(nameId), MyPlotAbstractCurve(plot, isRealTimeCurve) {
 	nameId_ = nameId;
 	isPositionedExclusive_ = true;
 	setStyle(CurveStyle::NoCurve);
-	dataGetter_ = dataGetter;
-	setSamples(convertToQwtIntervalImpl(dataGetter()));
 	setOrientation(Qt::Orientation::Horizontal);
 
 	QBrush brush(Qt::BrushStyle::SolidPattern);
@@ -33,8 +31,6 @@ MyPlotIntervalCurve::MyPlotIntervalCurve(const QString& nameId, const DataGetter
 	setColor(mainColor_);
 	QwtPlotIntervalCurve::attach(plot);
 }
-
-MyPlotIntervalCurve::~MyPlotIntervalCurve() {}
 
 void MyPlotIntervalCurve::drawSymbols(QPainter* painter, const QwtIntervalSymbol& symbol, const QwtScaleMap& xMap, const QwtScaleMap& yMap,
 	const QRectF& canvasRect, int from, int to) const {
@@ -78,12 +74,11 @@ void MyPlotIntervalCurve::setColor(const QColor color) noexcept {
 	const_cast<QwtIntervalSymbol*>(symbol())->setPen(p); // it should not cause undefined behavior because symbol object is not really const
 }
 
-void MyPlotIntervalCurve::refresh() noexcept {
-	setSamples(convertToQwtIntervalImpl(dataGetter_()));
-}
-
-QString MyPlotIntervalCurve::nameId() const noexcept {
-	return nameId_;
+QRectF MyPlotIntervalCurve::boundingRect() const noexcept {
+	auto rect = QwtPlotIntervalCurve::boundingRect();
+	rect.setBottom(position());
+	rect.setTop(position() + 1);
+	return rect;
 }
 
 static inline bool qwtIsHSampleInside(const QwtIntervalSample &sample,
@@ -102,4 +97,8 @@ bool MyPlotIntervalCurve::isVisibleOnScreen() const noexcept {
 	auto const range = plot_->visibleYRange();
 	auto const pos = position();
 	return pos >= range.first && pos <= range.second;
+}
+
+void MyPlotIntervalCurve::handleData(std::vector<double> const& data) {
+	setSamples(convertToQwtIntervalImpl(data));
 }

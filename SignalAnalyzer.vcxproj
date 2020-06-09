@@ -86,9 +86,10 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <AdditionalIncludeDirectories>libs\qwt\src;$(Qt_INCLUDEPATH_);..\WizardFramework\Common\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessorDefinitions>QWT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qwt.lib;$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
@@ -102,6 +103,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CanvasSelector.cpp" />
     <ClCompile Include="MyPlot.cpp" />
+    <ClCompile Include="MyPlotCurve.cpp" />
     <ClCompile Include="MyPlotIntervalCurve.cpp" />
     <ClCompile Include="MyPlotItem.cpp" />
     <ClCompile Include="MyScaleDraw.cpp" />
@@ -110,33 +112,42 @@
     <ClCompile Include="MyPlotMarker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="SignalDataSource.h" />
     <QtMoc Include="..\WizardFramework\Common\include\DataCollectorServer.h" />
     <QtMoc Include="..\WizardFramework\Common\include\DataCollectorClient.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\ABCD.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelsSelectionView.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelStatus.h" />
+    <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelsGroupSelectionButton.h" />
     <ClInclude Include="..\WizardFramework\Common\include\PacketReading.h" />
-    <ClInclude Include="SignalDataPacket.h" />
     <QtMoc Include="ScalePicker.h" />
     <QtMoc Include="CurveBuilderDialog.h" />
     <QtMoc Include="DataController.h" />
     <QtMoc Include="CanvasMover.h" />
     <QtMoc Include="ContextMenuController.h" />
     <QtMoc Include="CanvasManipulator.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\ReadingStrategy.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\SignalDataPacket.h" />
     <ClInclude Include="CurvesPositioner.h" />
-    <ClInclude Include="DataAcquisitor.h" />
+    <QtMoc Include="DataAcquisitor.h" />
+    <QtMoc Include="DataEmitter.h" />
+    <QtMoc Include="CustomDataSources.h" />
     <ClInclude Include="DataGenerator.h" />
     <QtMoc Include="CanvasSelector.h" />
+    <QtMoc Include="MyPlotCurve.h" />
     <ClInclude Include="PlotItemsContainer.h" />
     <ClInclude Include="PlotRangeMarkers.h" />
     <ClInclude Include="MyPlotMarker.h" />
     <ClInclude Include="MyIntervalSymbol.h" />
     <QtMoc Include="MyPlot.h" />
     <ClInclude Include="MyPickerDragRectMachine.h" />
-    <ClInclude Include="MyPlotItem.h" />
+    <QtMoc Include="MyPlotItem.h" />
     <ClInclude Include="MyPlotMagnifier.h" />
     <ClInclude Include="MyPlotPanner.h" />
     <ClInclude Include="MyPlotPicker.h" />
     <ClInclude Include="MyScaleDraw.h" />
     <QtMoc Include="Plot.h" />
-    <ClInclude Include="MyPlotIntervalCurve.h" />
+    <QtMoc Include="MyPlotIntervalCurve.h" />
     <ClInclude Include="Defines.h" />
     <QtMoc Include="View.h" />
   </ItemGroup>

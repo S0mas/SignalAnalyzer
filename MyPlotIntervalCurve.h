@@ -9,31 +9,19 @@
 #include "MyIntervalSymbol.h"
 #include "MyPlotItem.h"
 
-using DataGetterFunction = std::function<std::vector<double>()>;
-
-class MyPlotIntervalCurve : public QwtPlotIntervalCurve, public MyPlotItem {
-	DataGetterFunction dataGetter_;
-	QString nameId_;
-
+class MyPlotIntervalCurve : public MyPlotAbstractCurve, public QwtPlotIntervalCurve {
+	Q_OBJECT
 public:
-	inline static int counter = 0;
-	MyPlotIntervalCurve(const QString& nameId, const DataGetterFunction& dataGetter, QwtIntervalSymbol* symbol, MyPlot* plot);
-	virtual ~MyPlotIntervalCurve();
+	MyPlotIntervalCurve(const QString& nameId, QwtIntervalSymbol* symbol, MyPlot* plot, bool const isRealTimeCurve = true);
+	~MyPlotIntervalCurve() override = default;
 	void drawSymbols(QPainter*, const QwtIntervalSymbol&,const QwtScaleMap&, const QwtScaleMap&, const QRectF&, int, int) const override;
 	void drawTube(QPainter*, const QwtScaleMap&, const QwtScaleMap&, const QRectF&, int, int) const override {}
 
 	void move(const double distanceX, const double distanceY) noexcept override;
 	void setColor(const QColor color) noexcept override;
-	QString nameId() const noexcept;
-	QRectF boundingRect() const noexcept override {
-		auto rect = QwtPlotIntervalCurve::boundingRect();
-		rect.setBottom(position());
-		rect.setTop(position()+1);
-		return rect;
-	}
-
-	bool isVisibleOnScreen() const noexcept;
+	QRectF boundingRect() const noexcept override;
+	bool isVisibleOnScreen() const noexcept override;
 	double position() const noexcept;
-
-	void refresh() noexcept;
+public slots:
+	void handleData(std::vector<double> const& data) override;
 };

@@ -63,7 +63,5 @@ public:
 		QwtPainter::drawLine(painter, QPointF(p1.x(), y), QPointF(p2.x(), y));
 	}
 
-	virtual ~MyIntervalSymbol2() {
-		qDebug() << "dupa";
-	}
+	~MyIntervalSymbol2() override = default;
 };

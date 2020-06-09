@@ -1,4 +1,5 @@
 #include "MyPlot.h"
+#include "MyPlotCurve.h"
 
 QList<qreal> MyPlot::labels() const {
 	QList<qreal> majorTicks;
@@ -56,9 +57,8 @@ MyPlot::MyPlot(QWidget * parent) : QwtPlot(parent) {
 	setAutoReplot(true);
 	updatePlot();
 
-	auto timer = new QTimer(this);
-	connect(timer, &QTimer::timeout, [this]() {forEachCurve([](MyPlotIntervalCurve* curve) {if (curve->isVisibleOnScreen())curve->refresh(); }); });
-	timer->start(10);
+	connect(refreshTimer_, &QTimer::timeout, this, &MyPlot::refreshVisibleCurves);
+	refreshTimer_->start(100);
 }
 
 std::pair<int, int> MyPlot::visibleYRange() const noexcept {
@@ -76,11 +76,11 @@ void MyPlot::wheelEvent(QWheelEvent * event) {
 	emit wheelSignal(event);
 }
 
-void MyPlot::forEachCurve(const std::function<void(MyPlotIntervalCurve*)>& function, const std::function<bool()>& continueCondition) const noexcept {
+void MyPlot::forEachCurve(const std::function<void(MyPlotAbstractCurve*)>& function, const std::function<bool()>& continueCondition) const noexcept {
 	const QwtPlotItemList& itmList = itemList();
 	for (QwtPlotItemIterator it = itmList.begin(); (it != itmList.end()) && continueCondition(); ++it) {
-		if ((*it)->rtti() == QwtPlotItem::Rtti_PlotIntervalCurve)
-			function(dynamic_cast<MyPlotIntervalCurve*>(*it));
+		if ((*it)->rtti() == QwtPlotItem::Rtti_PlotIntervalCurve || (*it)->rtti() == QwtPlotItem::Rtti_PlotCurve)
+			function(dynamic_cast<MyPlotAbstractCurve*>(*it));
 	}
 }
 
@@ -92,21 +92,21 @@ void MyPlot::forEachMyPlotItem(const std::function<void(MyPlotItem*)>& function,
 	}
 }
 
-MyPlotIntervalCurve * MyPlot::findCurveIf(const std::function<bool(MyPlotIntervalCurve*)> predicate) const noexcept {
-	MyPlotIntervalCurve* curve = nullptr;
+MyPlotAbstractCurve* MyPlot::findCurveIf(const std::function<bool(MyPlotAbstractCurve*)> predicate) const noexcept {
+	MyPlotAbstractCurve* curve = nullptr;
 	forEachCurve([&curve, predicate](auto ptr) {if (predicate(ptr)) curve = ptr; }, [&curve]() { return curve == nullptr; });
 	return curve;
 }
 
-std::vector<MyPlotIntervalCurve*> MyPlot::findCurvesIf(const std::function<bool(MyPlotIntervalCurve*)> predicate) const noexcept {
-	std::vector<MyPlotIntervalCurve*> curves;
+std::vector<MyPlotAbstractCurve*> MyPlot::findCurvesIf(const std::function<bool(MyPlotAbstractCurve*)> predicate) const noexcept {
+	std::vector<MyPlotAbstractCurve*> curves;
 	curves.reserve(itemList().size());
 	forEachCurve([&curves, predicate](auto ptr) {if (predicate(ptr)) curves.push_back(ptr); });
 	return curves;
 }
 
-MyPlotIntervalCurve * MyPlot::findCurveByPosition(const int position) const noexcept {
-	return dynamic_cast<MyPlotIntervalCurve*>(positioner_.curve(position));
+MyPlotAbstractCurve* MyPlot::findCurveByPosition(const int position) const noexcept {
+	return dynamic_cast<MyPlotAbstractCurve*>(positioner_.curve(position));
 }
 
 void MyPlot::removeItems() {
@@ -183,8 +183,8 @@ QwtScaleMap MyPlot::yMap() const noexcept {
 	return canvasMap(QwtPlot::yLeft);
 }
 
-std::vector<MyPlotIntervalCurve*> MyPlot::selectedCurves() const noexcept {
-	return findCurvesIf([](MyPlotIntervalCurve* curve) { return curve->isSelected(); });
+std::vector<MyPlotAbstractCurve*> MyPlot::selectedCurves() const noexcept {
+	return findCurvesIf([](MyPlotAbstractCurve* curve) { return curve->isSelected(); });
 }
 
 QPointF MyPlot::plotPointToValuePoint(const QPointF & point) const noexcept {
@@ -195,11 +195,29 @@ QPoint MyPlot::cursorPosition() const noexcept {
 	return canvas()->mapFromGlobal(QCursor::pos());
 }
 
-void MyPlot::addCurve(const QString& nameId, const DataGetterFunction& dataGetter, int type) {
-	auto newCurve = std::make_unique<MyPlotIntervalCurve>(nameId, dataGetter, type == 0 ? dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol()) : dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol2()), this);
-	auto position = positioner_.addExclusive(newCurve.get());
-	itemsContainer_.add(std::move(newCurve));
+MyPlotAbstractCurve* MyPlot::addCurve(const QString& nameId, SignalCurveType const type) {
+	std::unique_ptr<MyPlotAbstractCurve> item;
+	if(type == SignalCurveType::SingleBitSignal)
+		item = std::make_unique<MyPlotIntervalCurve>(nameId, dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol2()), this);
+	if(type == SignalCurveType::ComplexSignal_Block)
+		item = std::make_unique<MyPlotIntervalCurve>(nameId, dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol()), this);
+	if (type == SignalCurveType::ComplexSignal_Wave)
+		item = std::make_unique<MyPlotCurve>(nameId, this);
+	auto position = positioner_.addExclusive(item.get());
+	auto curve = item.get();
+	itemsContainer_.add(std::move(item));
 	updatePlot();
+	return curve;
+}
+
+void MyPlot::addCurve(std::unique_ptr<MyPlotAbstractCurve>&& curve) {
+	auto position = positioner_.addExclusive(curve.get());
+	itemsContainer_.add(std::move(curve));
+	updatePlot();
+}
+
+void MyPlot::refreshVisibleCurves() const noexcept {
+	forEachCurve([](MyPlotAbstractCurve* curve) {if (curve->isRealTimeCurve() && curve->isVisibleOnScreen()) emit curve->dataRequest(); });
 }
 
 void MyPlot::addMarkerAction() {
@@ -210,4 +228,12 @@ void MyPlot::addMarkerAction() {
 void MyPlot::addRangeMarkersAction() {
 	auto range = std::make_unique<PlotMarkerPair>(20, 300, this);
 	itemsContainer_.add(std::move(range));
+}
+
+void MyPlot::setRefreshTimeInterval(uint32_t ms) noexcept {
+	refreshTimer_->setInterval(ms);
+}
+
+uint32_t MyPlot::refreshTimeInterval() const noexcept {
+	return refreshTimer_->interval();
 }

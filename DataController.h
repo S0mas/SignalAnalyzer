@@ -9,7 +9,9 @@
 #include "../WizardFramework/Common/include/gui/ChannelsSelectionView.h"
 #include "../WizardFramework/Common/include/gui/ChannelStatus.h"
 #include "DataGenerator.h"
+#include "SignalDataSource.h"
 #include "DataAcquisitor.h"
+#include "DataEmitter.h"
 #include "Defines.h"
 #include <QMutex>
 #include <QMutexLocker>
@@ -18,25 +20,19 @@
 #include <QDebug>
 #include <vector>
 
-class DataController : public QGroupBox {
+class DataController : public QObject {
 	Q_OBJECT
-	QRadioButton* isGeneratorSelected;
-	QRadioButton* isAcquisitorSelected;
+	bool isGeneratorSelected;
 	QThread generatorThread;
-	ChannelsSelectionView* view_ = nullptr;
-	ChannelStatuses statuses_ = {256};
 	DataGenerator dataGen_;
 	DataAcquisitor dataAcq_;
-	bool guiSignalsControlEnabled = true;
-public:
-	DataController(QWidget* parent = nullptr) : QGroupBox("Data Controller", parent) {
-		auto layout = new QHBoxLayout(this);
-		isAcquisitorSelected = new QRadioButton("use acquisiton", this);
-		isGeneratorSelected = new QRadioButton("use software generator", this);
-		isGeneratorSelected->setChecked(true);
-		layout->addWidget(isAcquisitorSelected);
-		layout->addWidget(isGeneratorSelected);
-		setLayout(layout);
+	DataAcquisitor customDataSources_;
+	std::vector<DataEmitter*> dataEmitters_;
+
+	std::map<QString, SignalDataSource*> sources_;
+
+	void makeConnections() {
+		connect(&dataAcq_, &DataAcquisitor::logMsg, [this](QString const& msg) {emit logMsg(msg); });
 	}
 
 	std::vector<double> generateDataSingleLine() const noexcept {
@@ -47,19 +43,79 @@ public:
 		return dataGen_.generateRandomData(1000, max, 30, 90);
 	}
 
-	std::vector<double> getData(const uint32_t channelId) const noexcept {
-		return isGeneratorSelected->isChecked() ? generateDataSingleLine() : dataAcq_.data(channelId);
+	auto dataGetter(QString const& deviceId, const uint32_t channelId) noexcept {
+		return [this, deviceId, channelId]() { return data(deviceId, channelId); };
 	}
 
-	std::vector<double> getData(const std::vector<uint32_t>& channelId) const noexcept {
-		return isGeneratorSelected->isChecked() ? generateDataVec(0xFFFF) : dataAcq_.data(channelId);
+	auto dataGetter(QString const& deviceId, const std::vector<uint32_t>& channelsIds) noexcept {
+		return [this, deviceId, channelsIds]() { return data(deviceId, channelsIds); };
+	}
+public:
+	DataController(QObject* parent = nullptr) : QObject(parent) {}
+
+	QStringList connectedDevices() const noexcept {
+		auto devices = dataAcq_.devIds();
+		for(auto const& pair : sources_)
+			devices.append(pair.first);
+		return devices;
 	}
 
-	auto dataGetter(const uint32_t channelId) const noexcept {
-		return [this, channelId]() { return getData(channelId); };
+	ChannelStatuses& statuses(QString const& deviceId) noexcept {
+		if (dataAcq_.hasId(deviceId))
+			return dataAcq_.statuses(deviceId);
+		else
+			return sources_[deviceId]->statuses();
 	}
 
-	auto dataGetter(const std::vector<uint32_t>& channelsIds) const noexcept {
-		return [this, channelsIds]() { return getData(channelsIds); };
+	DeviceType deviceType(QString const& deviceId) const noexcept {
+		if (dataAcq_.hasId(deviceId))
+			return dataAcq_.deviceType(deviceId);
+		else
+			return sources_.at(deviceId)->deviceType();
 	}
+
+	DataEmitter* createDataEmitter(QString const& deviceId, const uint32_t channelId) noexcept {
+		dataEmitters_.push_back(new DataEmitter(dataGetter(deviceId, channelId), this));
+		return dataEmitters_.back();
+	}
+
+	DataEmitter* createDataEmitter(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
+		dataEmitters_.push_back(new DataEmitter(dataGetter(deviceId, channelIds), this));
+		return dataEmitters_.back();
+	}
+
+	void setScansToDisplayStep(uint32_t const step) noexcept {
+		dataAcq_.setScansToDisplayStep(step);
+	}
+
+	uint32_t scansToDisplayStep() const noexcept {
+		return dataAcq_.scansToDisplayStep();
+	}
+
+	void setMaximumDynamicSignalLength(uint32_t const size) noexcept {
+		dataAcq_.setQueuesSize(size);
+	}
+
+	uint32_t maximumDynamicSignalLength() const noexcept {
+		return dataAcq_.queuesSize();
+	}
+
+	std::vector<double> data(QString const& deviceId, const uint32_t channelId) noexcept {
+		if(dataAcq_.hasId(deviceId))
+			return dataAcq_.data(deviceId, channelId);
+		return sources_[deviceId]->data(channelId, 500, 0);
+	}
+
+	std::vector<double> data(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
+		if (dataAcq_.hasId(deviceId))
+			return dataAcq_.data(deviceId, channelIds);
+		return sources_[deviceId]->data(channelIds, 500, 0);
+	}
+
+	template<typename ScanType>
+	void loadDataFromFile(QString const& fileName, QString const& deviceType) noexcept {
+		sources_.insert({ fileName, new FileSignalDataSource(fileName, deviceType == "6111" ? DeviceType::_6111 : DeviceType::_6132) });
+	}
+signals:
+	void logMsg(QString const& msg) const;
 };

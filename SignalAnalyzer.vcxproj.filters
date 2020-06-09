@@ -37,6 +37,9 @@
     <ClCompile Include="main.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="MyPlotCurve.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlotItemsContainer.h">
@@ -57,12 +60,6 @@
     <ClInclude Include="MyPlotMagnifier.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="MyPlotItem.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="MyPlotIntervalCurve.h">
-      <Filter>headers</Filter>
-    </ClInclude>
     <ClInclude Include="MyPickerDragRectMachine.h">
       <Filter>headers</Filter>
     </ClInclude>
@@ -75,19 +72,22 @@
     <ClInclude Include="DataGenerator.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="DataAcquisitor.h">
-      <Filter>headers</Filter>
-    </ClInclude>
     <ClInclude Include="CurvesPositioner.h">
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="PlotRangeMarkers.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="SignalDataPacket.h">
+    <ClInclude Include="..\WizardFramework\Common\include\PacketReading.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\WizardFramework\Common\include\PacketReading.h">
+    <ClInclude Include="..\WizardFramework\Common\include\SignalDataPacket.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\ABCD.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\ReadingStrategy.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -126,6 +126,36 @@
       <Filter>headers</Filter>
     </QtMoc>
     <QtMoc Include="..\WizardFramework\Common\include\DataCollectorClient.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelsSelectionView.h">
+      <Filter>headers\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelStatus.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelsGroupSelectionButton.h">
+      <Filter>headers\gui</Filter>
+    </QtMoc>
+    <QtMoc Include="DataAcquisitor.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="MyPlotItem.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="DataEmitter.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="MyPlotCurve.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="MyPlotIntervalCurve.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="CustomDataSources.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="SignalDataSource.h">
       <Filter>headers</Filter>
     </QtMoc>
   </ItemGroup>

@@ -19,6 +19,10 @@ bool MyPlotItem::intersects(const QRectF& rect) const noexcept {
 	return boundingRect().intersects(rect);
 }
 
+QString MyPlotItem::nameId() const noexcept {
+	return nameId_;
+}
+
 void MyPlotItem::deselect() noexcept {
 	selected_ = false;
 	setColor(mainColor_);

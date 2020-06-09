@@ -14,5 +14,5 @@ void MyScaleDraw::refresh() noexcept {
 
 QwtText MyScaleDraw::label(double value) const {
 	auto curve = plot_->positioner().curve(value);
-	return curve ? QString("%1").arg(dynamic_cast<MyPlotIntervalCurve*>(curve)->nameId()) : "";
+	return curve ? QString("%1").arg(curve->nameId()) : "";
 }

@@ -13,6 +13,7 @@
 #include <QRandomGenerator>
 #include <functional>
 #include <QSplitter>
+#include <QToolBar>
 #include <vector>
 
 #include "MyPlot.h"
@@ -87,7 +88,7 @@ public:
 		splitter->addWidget(plot);
 		splitter->addWidget(propertiesColumn);
 		splitter->setContentsMargins(0, 0, 0, 0);
-		
+
 		auto layout = new QHBoxLayout();
 		layout->setSpacing(0);
 		layout->addWidget(splitter);
@@ -95,13 +96,37 @@ public:
 		layout->setContentsMargins(0, 0, 0, 0);
 		setLayout(layout);
 	}
-public slots:
-	void addCurveSingle(const QString& nameId, const DataGetterFunction& dataGetter) {
-		plot->addCurve(nameId, dataGetter, 1);
+
+	void setRefreshTimeInterval(uint32_t const ms) const noexcept {
+		plot->setRefreshTimeInterval(ms);
 	}
 
-	void addCurveVec(const QString& nameId, const DataGetterFunction& dataGetter) {
-		plot->addCurve(nameId, dataGetter, 0);
+	uint32_t refreshTimeInterval() const noexcept {
+		return plot->refreshTimeInterval();
+	}
+
+	MyPlot* myPlot() noexcept {
+		return plot;
+	}
+
+public slots:
+	void addSingleBitSignal(const QString& nameId, DataEmitter* dataEmitter) {
+		auto curve = plot->addCurve(nameId, SignalCurveType::SingleBitSignal);
+		curve->connectDataEmitter(dataEmitter);
+	}
+
+	void addComplexSignalWave(const QString& nameId, DataEmitter* dataEmitter) {
+		auto curve = plot->addCurve(nameId, SignalCurveType::ComplexSignal_Wave);
+		curve->connectDataEmitter(dataEmitter);
+	}
+
+	void addComplexSignalBlock(const QString& nameId, DataEmitter* dataEmitter) {
+		auto curve = plot->addCurve(nameId, SignalCurveType::ComplexSignal_Block);
+		curve->connectDataEmitter(dataEmitter);
+	}
+
+	void addStaticCurve(std::unique_ptr<MyPlotAbstractCurve>& curve) {
+		plot->addCurve(std::move(curve));
 	}
 signals:
 	void addCurveActionStarted() const;
