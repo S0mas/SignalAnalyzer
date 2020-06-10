@@ -39,6 +39,8 @@ public:
 	DeviceType deviceType() const noexcept {
 		return deviceType_;
 	}
+
+	virtual bool isRealTimeSource() const noexcept = 0;
 signals:
 	void logMsg(QString const& msg) const;
 };
@@ -109,6 +111,9 @@ public:
 		queuesSize_ = size;
 	}
 
+	bool isRealTimeSource() const noexcept override {
+		return true;
+	}
 };
 
 class FileSignalDataSource : public SignalDataSource {
@@ -153,9 +158,9 @@ public:
 
 	std::vector<double> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
 		auto const& signalData = data_[channelId - 1];
-		if(startSampleId >= signalData.size() || numberOfSamples == 0)
+		if(startSampleId >= signalData.size())
 			return {};
-		uint32_t count = numberOfSamples + startSampleId > signalData.size() ? signalData.size() - startSampleId : numberOfSamples;
+		uint32_t count = (numberOfSamples + startSampleId > signalData.size()) || numberOfSamples == 0 ? signalData.size() - startSampleId : numberOfSamples;
 		return std::vector<double>(signalData.begin() + startSampleId, signalData.begin() + startSampleId + numberOfSamples);
 	}
 	std::vector<double> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
@@ -175,6 +180,10 @@ public:
 
 	ChannelStatuses& statuses(QString const& devId) noexcept {
 		return statuses_;
+	}
+
+	bool isRealTimeSource() const noexcept override {
+		return false;
 	}
 signals:
 	void logMsg(QString const& msg) const;

@@ -10,6 +10,7 @@
 class MyPlotCurve : public MyPlotAbstractCurve, public QwtPlotCurve {
 	Q_OBJECT
 	QString nameId_;
+	std::vector<double> realData_;
 public:
 	MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealTimeCurve = true);
 	~MyPlotCurve() override = default;
@@ -19,6 +20,7 @@ public:
 	void setColor(const QColor color) noexcept;
 	QRectF boundingRect() const noexcept override;
 	bool isVisibleOnScreen() const noexcept override;
+	std::optional<double> value(int32_t const x) const noexcept override;
 public slots:
 	void handleData(std::vector<double> const& data) override;
 };

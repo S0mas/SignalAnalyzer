@@ -28,36 +28,45 @@ class View : public QWidget {
 private slots:
 	void openCurveBuilderDialog() {
 		auto sourceList = dataController_->connectedDevices();
-		sourceList.push_back("NoDevice");
-		auto source = QInputDialog::getItem(this, "Select the source of the signal data", "Source", sourceList, 0, false);
-
-		
-
-		auto curveBuilderDialog = new CurveBuilderDialog(dataController_->statuses(source), "Channels Selection", this);
-		connect(curveBuilderDialog, &CurveBuilderDialog::accepted, [this, source, curveBuilderDialog]() { addCurve(source, curveBuilderDialog->curveData()); });
-		curveBuilderDialog->open();
+		if (sourceList.isEmpty()) {
+			qDebug() << "No devices connected or loaded.";
+			return;
+		}
+		bool pressedOk = false;
+		auto source = QInputDialog::getItem(this, "Select the source of the signal data", "Source", sourceList, 0, false, &pressedOk);
+		if (pressedOk) {
+			bool isRealTimeDataSource = dataController_->isRealTimeSource(source);
+			auto curveBuilderDialog = new CurveBuilderDialog(dataController_->statuses(source), "Channels Selection", isRealTimeDataSource, this);
+			connect(curveBuilderDialog, &CurveBuilderDialog::accepted, [this, source, curveBuilderDialog]() { addCurve(source, curveBuilderDialog->curveData()); });
+			curveBuilderDialog->exec();
+		}
 	}
 
 	void addCurve(QString const& deviceId, const CurveData& data) noexcept {
 		DeviceType deviceType = dataController_->deviceType(deviceId);
-		if (data.single) {
-			for (auto const index : data.channelsSelected)
-				if (deviceType == DeviceType::_6111)
-					plot_->addSingleBitSignal(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->createDataEmitter(deviceId, index));
-				else if (deviceType == DeviceType::_6132)
-					plot_->addComplexSignalWave(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->createDataEmitter(deviceId, index));
-		}
-		else
-			//plot_->addComplexSignalBlock(data.nameId_, dataController_->createDataEmitter(deviceId, data.channelsSelected));
-		{
-			for (auto const index : data.channelsSelected) {
-				std::unique_ptr<MyPlotAbstractCurve> curve = std::make_unique<MyPlotIntervalCurve>(data.nameId_, new MyIntervalSymbol2, plot_->myPlot(), false);
-				curve->handleData(dataController_->data(deviceId, index));
-				plot_->addStaticCurve(curve);
+		bool isRealTimeDataSource = dataController_->isRealTimeSource(deviceId);
+		if (isRealTimeDataSource) {
+			if (data.single) {
+				for (auto const index : data.channelsSelected)
+					if (deviceType == DeviceType::_6111)
+						plot_->addSingleBitSignal(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->createDataEmitter(deviceId, index));
+					else if (deviceType == DeviceType::_6132)
+						plot_->addComplexSignalWave(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->createDataEmitter(deviceId, index));
 			}
-
+			else
+				plot_->addComplexSignalBlock(data.nameId_, dataController_->createDataEmitter(deviceId, data.channelsSelected));
 		}
-			
+		else {
+			if (data.single) {
+				for (auto const index : data.channelsSelected)
+					if (deviceType == DeviceType::_6111)
+						plot_->addStaticSingleBitSignal(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->staticData(deviceId, index, data.samplesNo_, data.firstSampleId_));
+					else if (deviceType == DeviceType::_6132)
+						plot_->addStaticComplexSignalWave(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->staticData(deviceId, index, data.samplesNo_, data.firstSampleId_));
+			}
+			else
+				plot_->addStaticComplexSignalBlock(data.nameId_, dataController_->staticData(deviceId, data.channelsSelected,  data.samplesNo_, data.firstSampleId_));
+		}		
 	} 
 
 	QToolBar* createToolBar() {
@@ -65,21 +74,28 @@ private slots:
 		menu->addAction("Set Refresh Time Interval",
 			[this]() {
 				auto dialog = new QInputDialog(this);
-				plot_->setRefreshTimeInterval(dialog->getInt(this, "Setting Refresh Time Interval", "Refresh Time Interval[ms, <10, 2000>]", plot_->refreshTimeInterval(), 10, 2000));
+				bool pressedOk = false;
+				auto input = dialog->getInt(this, "Setting Refresh Time Interval", "Refresh Time Interval[ms, <10, 2000>]", plot_->refreshTimeInterval(), 10, 2000, 1, &pressedOk);
+				if(pressedOk)
+					plot_->setRefreshTimeInterval(input);
 			}
 		);
 		menu->addAction("Set Scans To Display Step",
 			[this]() {
 				auto dialog = new QInputDialog(this);
-				dataController_->setScansToDisplayStep(dialog->getInt(this, "Setting Scans To Display Step", "Scans To Display Step[-, <1, 512>]", dataController_->scansToDisplayStep(), 1, 512));
+				bool pressedOk = false;
+				auto input = dialog->getInt(this, "Setting Scans To Display Step", "Scans To Display Step[-, <1, 512>]", dataController_->scansToDisplayStep(), 1, 512, 1, &pressedOk);
+				if (pressedOk)
+					dataController_->setScansToDisplayStep(input);
 			}
 		);
 		menu->addAction("Load data from file",
 			[this]() {
-				auto selectedDeviceType = QInputDialog::getItem(this, "Select device type the signal is comming from", "Type", { "6111", "6132" }, 0, false);
-				if(selectedDeviceType == "6111")
+				bool pressedOk = false;
+				auto selectedDeviceType = QInputDialog::getItem(this, "Select device type the signal is comming from", "Type", { "6111", "6132" }, 0, false, &pressedOk);
+				if(pressedOk && selectedDeviceType == "6111")
 					dataController_->loadDataFromFile<Scan6111>(QFileDialog::getOpenFileName(this, "Signal Data File"), selectedDeviceType);
-				else if (selectedDeviceType == "6132")
+				else if (pressedOk &&selectedDeviceType == "6132")
 					dataController_->loadDataFromFile<Scan6132>(QFileDialog::getOpenFileName(this, "Signal Data File"), selectedDeviceType);
 						
 			}
@@ -87,7 +103,10 @@ private slots:
 		menu->addAction("Set Maximum Signal Length",
 			[this]() {
 				auto dialog = new QInputDialog(this);
-				dataController_->setMaximumDynamicSignalLength(dialog->getInt(this, "Setting Maximum Dynamic Signal Length", "Maximum Dynamic Signal Length[-, <1, 50000>]", dataController_->maximumDynamicSignalLength(), 1, 50000));
+				bool pressedOk = false;
+				auto input = dialog->getInt(this, "Setting Maximum Dynamic Signal Length", "Maximum Dynamic Signal Length[-, <1, 50000>]", dataController_->maximumDynamicSignalLength(), 1, 50000, 1, &pressedOk);
+				if (pressedOk)
+					dataController_->setMaximumDynamicSignalLength(input);
 			}
 		);
 

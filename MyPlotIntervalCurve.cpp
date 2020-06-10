@@ -99,6 +99,17 @@ bool MyPlotIntervalCurve::isVisibleOnScreen() const noexcept {
 	return pos >= range.first && pos <= range.second;
 }
 
+std::optional<double> MyPlotIntervalCurve::value(int32_t const x) const noexcept {
+	auto const& d = data();
+	if(x < 0)
+		return std::nullopt;
+
+	for (int i = 0; i < d->size(); ++i)
+		if (d->sample(i).interval.contains(x + 1))
+			return d->sample(i).value;
+	return std::nullopt;
+}
+
 void MyPlotIntervalCurve::handleData(std::vector<double> const& data) {
 	setSamples(convertToQwtIntervalImpl(data));
 }

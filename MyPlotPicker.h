@@ -1,16 +1,16 @@
 #pragma once
+
 #include <qwt_plot_picker.h>
+#include <optional>
+
+class MyPlot;
 
 class MyPlotPicker : public QwtPlotPicker {
+	MyPlot* plot_;
 public:
-	MyPlotPicker(QWidget* canvas) : QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft, QwtPlotPicker::RectRubberBand, QwtPicker::AlwaysOn, canvas) {}
-	void reset() {
-		QwtPlotPicker::reset();
-	}
+	MyPlotPicker(MyPlot* plot, QWidget* canvas);
+	void reset();
+	std::optional<double> valueOfCurveUnderCursor(uint32_t const x, int32_t const y) const noexcept;
 protected:
-	QwtText trackerTextF(const QPointF& pos) const override {
-		QString text;
-		text.sprintf("%.4f", pos.x());
-		return QwtText(text);
-	}
+	QwtText trackerTextF(QPointF const& pos) const override;
 };

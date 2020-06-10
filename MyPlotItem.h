@@ -2,6 +2,7 @@
 #include <QObject>
 #include <QColor>
 #include <qwt_plot_item.h>
+#include <optional>
 #include "Defines.h"
 #include "DataEmitter.h"
 
@@ -56,6 +57,8 @@ public:
 	bool isRealTimeCurve() const noexcept {
 		return isRealTimeCurve_;
 	}
+
+	virtual std::optional<double> value(int32_t const x) const noexcept = 0;
 public slots:
 	virtual void handleData(std::vector<double> const& data) = 0;
 signals:

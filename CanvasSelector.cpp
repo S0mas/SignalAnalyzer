@@ -17,7 +17,7 @@ CanvasSelector::CanvasSelector(MyPlot* plot) : QObject(plot) {
 	canvas->setFocusPolicy(Qt::StrongFocus);
 	canvas->setFocusIndicator(QwtPlotCanvas::ItemFocusIndicator);
 
-	picker_ = new MyPlotPicker(canvas);
+	picker_ = new MyPlotPicker(plot, canvas);
 	picker_->setStateMachine(new MyPickerDragRectMachine());
 	picker_->setRubberBandPen(QColor(Qt::cyan));
 	picker_->setTrackerPen(QColor(Qt::green));

@@ -40,6 +40,9 @@
     <ClCompile Include="MyPlotCurve.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="MyPlotPicker.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlotItemsContainer.h">
@@ -150,9 +153,6 @@
       <Filter>headers</Filter>
     </QtMoc>
     <QtMoc Include="MyPlotIntervalCurve.h">
-      <Filter>headers</Filter>
-    </QtMoc>
-    <QtMoc Include="CustomDataSources.h">
       <Filter>headers</Filter>
     </QtMoc>
     <QtMoc Include="SignalDataSource.h">

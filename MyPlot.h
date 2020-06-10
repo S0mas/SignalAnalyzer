@@ -65,13 +65,13 @@ public:
 	Positioner<MyPlotItem>& positioner() noexcept;
 	double plotXToValueX(const double x) const noexcept;
 	double plotYToValueY(const double y) const noexcept;
-	int valueYToPosition(const double y);
+	int plotYToPosition(const double y);
 	QwtScaleMap xMap() const noexcept;
 	QwtScaleMap yMap() const noexcept;
 	std::vector<MyPlotAbstractCurve*> selectedCurves() const noexcept;
 	QPointF plotPointToValuePoint(const QPointF& point) const noexcept;
 	QPoint cursorPosition() const noexcept;
-	MyPlotAbstractCurve* addCurve(const QString& nameId, SignalCurveType const type);
+	MyPlotAbstractCurve* addCurve(const QString& nameId, SignalCurveType const type, bool const isRealTimeDataSource = true, std::vector<double> const& initialData = {});
 	void addCurve(std::unique_ptr<MyPlotAbstractCurve>&& curve);
 	void setRefreshTimeInterval(uint32_t const ms) noexcept;
 	uint32_t refreshTimeInterval() const noexcept;

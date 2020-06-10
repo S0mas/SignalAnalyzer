@@ -19,7 +19,7 @@ CanvasManipulator::CanvasManipulator(MyPlot* plot) : QObject(plot) {
 	canvas->setFocusPolicy(Qt::StrongFocus);
 	canvas->setFocusIndicator(QwtPlotCanvas::ItemFocusIndicator);
 
-	picker_ = new MyPlotPicker(canvas);
+	picker_ = new MyPlotPicker(plot, canvas);
 	picker_->setStateMachine(new MyPickerDragRectMachine());
 	picker_->setRubberBandPen(QColor(Qt::cyan));
 	picker_->setTrackerPen(QColor(Qt::green));
@@ -34,7 +34,6 @@ bool CanvasManipulator::eventFilter(QObject* object, QEvent* event) noexcept {
 	case QEvent::MouseButtonPress:
 		switch (static_cast<QMouseEvent*>(event)->button()) {
 		case Qt::MouseButton::LeftButton:
-			//if(state_ == STATE::NO_SELECTION)
 			if (!isControlButtonHold())
 				if (!isContainedBySelection(plot()->cursorPosition()))
 					deselect();

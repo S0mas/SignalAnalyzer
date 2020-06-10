@@ -44,11 +44,19 @@ class DataController : public QObject {
 	}
 
 	auto dataGetter(QString const& deviceId, const uint32_t channelId) noexcept {
-		return [this, deviceId, channelId]() { return data(deviceId, channelId); };
+		return [this, deviceId, channelId]() { return realTimeData(deviceId, channelId); };
 	}
 
 	auto dataGetter(QString const& deviceId, const std::vector<uint32_t>& channelsIds) noexcept {
-		return [this, deviceId, channelsIds]() { return data(deviceId, channelsIds); };
+		return [this, deviceId, channelsIds]() { return realTimeData(deviceId, channelsIds); };
+	}
+
+	std::vector<double> realTimeData(QString const& deviceId, const uint32_t channelId) noexcept {
+		return dataAcq_.data(deviceId, channelId);
+	}
+
+	std::vector<double> realTimeData(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
+		return dataAcq_.data(deviceId, channelIds);
 	}
 public:
 	DataController(QObject* parent = nullptr) : QObject(parent) {}
@@ -100,21 +108,24 @@ public:
 		return dataAcq_.queuesSize();
 	}
 
-	std::vector<double> data(QString const& deviceId, const uint32_t channelId) noexcept {
-		if(dataAcq_.hasId(deviceId))
-			return dataAcq_.data(deviceId, channelId);
-		return sources_[deviceId]->data(channelId, 500, 0);
+	std::vector<double> staticData(QString const& deviceId, const uint32_t channelId, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {
+		return sources_.at(deviceId)->data(channelId, maxSamplesNo, startingSampleId);
 	}
 
-	std::vector<double> data(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
-		if (dataAcq_.hasId(deviceId))
-			return dataAcq_.data(deviceId, channelIds);
-		return sources_[deviceId]->data(channelIds, 500, 0);
+	std::vector<double> staticData(QString const& deviceId, const std::vector<uint32_t>& channelIds, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {
+		return sources_.at(deviceId)->data(channelIds, maxSamplesNo, startingSampleId);
 	}
 
 	template<typename ScanType>
 	void loadDataFromFile(QString const& fileName, QString const& deviceType) noexcept {
 		sources_.insert({ fileName, new FileSignalDataSource(fileName, deviceType == "6111" ? DeviceType::_6111 : DeviceType::_6132) });
+	}
+
+	bool isRealTimeSource(QString const& deviceId) const noexcept {
+		if (dataAcq_.hasId(deviceId))
+			return true;
+		else
+			return sources_.at(deviceId)->isRealTimeSource();
 	}
 signals:
 	void logMsg(QString const& msg) const;

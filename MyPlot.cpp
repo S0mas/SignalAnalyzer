@@ -34,14 +34,14 @@ MyPlot::MyPlot(QWidget * parent) : QwtPlot(parent) {
 	auto magnifierX = new MyPlotMagnifier(canvas());
 	magnifierX->setMouseButton(Qt::NoButton);
 	magnifierX->setWheelModifiers(Qt::KeyboardModifier::ShiftModifier);
-	magnifierX->setAxisEnabled(QwtPlot::xBottom, true);
-	magnifierX->setAxisEnabled(QwtPlot::yLeft, false);
+	magnifierX->setAxisEnabled(QwtPlot::xBottom, false);
+	magnifierX->setAxisEnabled(QwtPlot::yLeft, true);
 
 	auto magnifierY = new MyPlotMagnifier(canvas());
 	magnifierY->setMouseButton(Qt::NoButton);
 	magnifierY->setWheelModifiers(Qt::KeyboardModifier::AltModifier);
-	magnifierY->setAxisEnabled(QwtPlot::xBottom, false);
-	magnifierY->setAxisEnabled(QwtPlot::yLeft, true);
+	magnifierY->setAxisEnabled(QwtPlot::xBottom, true);
+	magnifierY->setAxisEnabled(QwtPlot::yLeft, false);
 
 	auto magnifierBoth = new MyPlotMagnifier(canvas());
 	magnifierBoth->setMouseButton(Qt::NoButton);
@@ -149,8 +149,8 @@ void MyPlot::deselect() noexcept {
 }
 
 void MyPlot::setSelectedCurves(const QRect & slection) noexcept {
-	auto first = valueYToPosition(slection.bottomLeft().y());
-	auto last = valueYToPosition(slection.topRight().y());
+	auto first = plotYToPosition(slection.bottomLeft().y());
+	auto last = plotYToPosition(slection.topRight().y());
 	for (int i = first; i <= last; ++i) {
 		auto curve = positioner_.curve(i);
 		if (curve)
@@ -171,7 +171,7 @@ double MyPlot::plotYToValueY(const double y) const noexcept {
 	return yMap().invTransform(y);
 }
 
-int MyPlot::valueYToPosition(const double y) {
+int MyPlot::plotYToPosition(const double y) {
 	return floor(plotYToValueY(y));
 }
 
@@ -195,16 +195,18 @@ QPoint MyPlot::cursorPosition() const noexcept {
 	return canvas()->mapFromGlobal(QCursor::pos());
 }
 
-MyPlotAbstractCurve* MyPlot::addCurve(const QString& nameId, SignalCurveType const type) {
+MyPlotAbstractCurve* MyPlot::addCurve(const QString& nameId, SignalCurveType const type, bool const isRealTimeDataSource, std::vector<double> const& initialData) {
 	std::unique_ptr<MyPlotAbstractCurve> item;
 	if(type == SignalCurveType::SingleBitSignal)
-		item = std::make_unique<MyPlotIntervalCurve>(nameId, dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol2()), this);
+		item = std::make_unique<MyPlotIntervalCurve>(nameId, dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol2()), this, isRealTimeDataSource);
 	if(type == SignalCurveType::ComplexSignal_Block)
-		item = std::make_unique<MyPlotIntervalCurve>(nameId, dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol()), this);
+		item = std::make_unique<MyPlotIntervalCurve>(nameId, dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol()), this, isRealTimeDataSource);
 	if (type == SignalCurveType::ComplexSignal_Wave)
-		item = std::make_unique<MyPlotCurve>(nameId, this);
+		item = std::make_unique<MyPlotCurve>(nameId, this, isRealTimeDataSource);
 	auto position = positioner_.addExclusive(item.get());
 	auto curve = item.get();
+	if(!initialData.empty())
+		curve->handleData(initialData);
 	itemsContainer_.add(std::move(item));
 	updatePlot();
 	return curve;

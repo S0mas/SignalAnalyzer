@@ -121,6 +121,13 @@ bool MyPlotCurve::isVisibleOnScreen() const noexcept {
 	return pos >= range.first && pos <= range.second;
 }
 
+std::optional<double> MyPlotCurve::value(int32_t const x) const noexcept {
+	if(realData_.size() > x)
+		return realData_[x];
+	return std::nullopt;
+}
+
 void MyPlotCurve::handleData(std::vector<double> const& data) {
+	realData_ = data;
 	setSamples(convertToQwtIntervalImpl(position(), data));
 }

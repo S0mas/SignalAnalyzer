@@ -22,6 +22,7 @@ public:
 	QRectF boundingRect() const noexcept override;
 	bool isVisibleOnScreen() const noexcept override;
 	double position() const noexcept;
+	std::optional<double> value(int32_t const x) const noexcept override;
 public slots:
 	void handleData(std::vector<double> const& data) override;
 };
