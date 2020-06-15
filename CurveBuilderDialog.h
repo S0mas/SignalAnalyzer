@@ -9,12 +9,13 @@
 #include <QLineEdit>
 #include <QVector>
 #include "../WizardFramework/Common/include/gui/ChannelsSelectionView.h"
+#include "../WizardFramework/Common/include/Device6991/Defines6991.h"
 #include <QDebug>
 
 struct CurveData {
 	QString nameId_;
 	std::vector<uint32_t> channelsSelected;
-	bool single = true;
+	bool vectorize;
 	uint32_t samplesNo_;
 	uint32_t firstSampleId_;
 };
@@ -25,11 +26,11 @@ class CurveBuilderDialog : public QDialog {
 	ChannelStatuses statuses_;
 	CurveData curveData_;
 	QLineEdit* lineEdit;
-	QCheckBox* singleModeCheckBox_;
+	QCheckBox* vectorizeCheckBox_;
 	QSpinBox* spinBoxSamplesNo_ = nullptr;
 	QSpinBox* spinBoxFirstSampleId_ = nullptr;
 public:
-	CurveBuilderDialog(const ChannelStatuses& statuses, const QString& groupDesc, bool const isRealTimeDataSource, QWidget* parent = nullptr) : QDialog(parent), statuses_(statuses) {
+	CurveBuilderDialog(DeviceType const deviceType, const ChannelStatuses& statuses, const QString& groupDesc, bool const isRealTimeDataSource, QWidget* parent = nullptr) : QDialog(parent), statuses_(statuses) {
 		selectionView_ = new ChannelsSelectionView(statuses_, 8, groupDesc, 4);
 		for(auto groupButton : selectionView_->groupsButtons())
 			for (auto channelbutton : groupButton->channelButtons())
@@ -75,11 +76,12 @@ public:
 			layout->addLayout(hlayout);
 		}
 
-		singleModeCheckBox_ = new QCheckBox("single lines plots");
-		singleModeCheckBox_->setChecked(true);
-	
+		vectorizeCheckBox_ = new QCheckBox("Vectorize");
+		vectorizeCheckBox_->setChecked(false);
+
 		layout->addWidget(selectionView_);
-		layout->addWidget(singleModeCheckBox_);
+		if (deviceType == DeviceType::_6111)
+			layout->addWidget(vectorizeCheckBox_);
 		layout->addWidget(buttonBox);
 		setLayout(layout);
 		setAttribute(Qt::WA_DeleteOnClose);
@@ -87,7 +89,7 @@ public:
 		connect(this, &CurveBuilderDialog::accepted, [this]() {
 				curveData_.nameId_ = lineEdit->text();
 				curveData_.channelsSelected = statuses_.allEnabled();
-				curveData_.single = singleModeCheckBox_->isChecked() || curveData_.channelsSelected.size() == 1;
+				curveData_.vectorize = vectorizeCheckBox_->isChecked();
 				if (spinBoxSamplesNo_)
 					curveData_.samplesNo_ = spinBoxSamplesNo_->value();
 				if(spinBoxFirstSampleId_)

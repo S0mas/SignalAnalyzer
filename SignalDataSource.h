@@ -49,10 +49,10 @@ class RealTimeSignalDataSource : public SignalDataSource {
 	Q_OBJECT
 	std::vector<QContiguousCache<double>> data_;
 	mutable std::mutex m_;
-	uint32_t queuesSize_ = 256;
-	uint32_t scansToDisplayStep_ = 10;
+	uint32_t queuesSize_;
+	uint32_t scansToDisplayStep_;
 public:
-	RealTimeSignalDataSource(QString fileName, DeviceType const type, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent) {
+	RealTimeSignalDataSource(QString fileName, DeviceType const type, uint32_t const queueSize = 256, uint32_t const scansToDisplayStep = 10, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent), queuesSize_(queueSize), scansToDisplayStep_(scansToDisplayStep) {
 		for (auto const& channelId : statuses_.allEnabled())
 			data_.push_back(QContiguousCache<double>(queuesSize_));
 	}
@@ -102,13 +102,13 @@ public:
 		}
 	}
 
-
-	uint32_t queuesSize() const noexcept {
-		return queuesSize_;
+	void setQueuesSize(uint32_t const size) noexcept {
+		for (auto& buffer : data_)
+			buffer.setCapacity(size);
 	}
 
-	void setQueuesSize(uint32_t const size) noexcept {
-		queuesSize_ = size;
+	void setScansToDisplayStep(uint32_t const step) noexcept {
+		scansToDisplayStep_ = step;
 	}
 
 	bool isRealTimeSource() const noexcept override {
@@ -168,8 +168,9 @@ public:
 		
 		for (int i = 1; i < channelIds.size(); ++i) {
 			auto const& next = data(channelIds[i], numberOfSamples, startSampleId);
-			for (int j = 0; j << next.size(); ++j)
-				result[j] += next[j] * (1 << i);
+			for (int j = 0; j < next.size(); ++j)
+				if(next[j])
+					result[j] += 1 << i;
 		}
 		return result;
 	}

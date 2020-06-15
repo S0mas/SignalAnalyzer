@@ -93,6 +93,9 @@
     <ClInclude Include="..\WizardFramework\Common\include\ReadingStrategy.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\WizardFramework\Common\include\Device6991\Defines6991.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ScalePicker.h">

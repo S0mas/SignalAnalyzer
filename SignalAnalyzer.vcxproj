@@ -106,6 +106,7 @@
     <ClCompile Include="MyPlotCurve.cpp" />
     <ClCompile Include="MyPlotIntervalCurve.cpp" />
     <ClCompile Include="MyPlotItem.cpp" />
+    <ClCompile Include="MyPlotPicker.cpp" />
     <ClCompile Include="MyScaleDraw.cpp" />
     <ClCompile Include="PlotRangeMarkers.cpp" />
     <ClCompile Include="ScalePicker.cpp" />
@@ -119,6 +120,7 @@
     <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelsSelectionView.h" />
     <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelStatus.h" />
     <QtMoc Include="..\WizardFramework\Common\include\gui\ChannelsGroupSelectionButton.h" />
+    <ClInclude Include="..\WizardFramework\Common\include\Device6991\Defines6991.h" />
     <ClInclude Include="..\WizardFramework\Common\include\PacketReading.h" />
     <QtMoc Include="ScalePicker.h" />
     <QtMoc Include="CurveBuilderDialog.h" />
@@ -131,7 +133,6 @@
     <ClInclude Include="CurvesPositioner.h" />
     <QtMoc Include="DataAcquisitor.h" />
     <QtMoc Include="DataEmitter.h" />
-    <QtMoc Include="CustomDataSources.h" />
     <ClInclude Include="DataGenerator.h" />
     <QtMoc Include="CanvasSelector.h" />
     <QtMoc Include="MyPlotCurve.h" />
