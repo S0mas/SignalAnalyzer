@@ -36,7 +36,8 @@ private slots:
 		auto source = QInputDialog::getItem(this, "Select the source of the signal data", "Source", sourceList, 0, false, &pressedOk);
 		if (pressedOk) {
 			bool isRealTimeDataSource = dataController_->isRealTimeSource(source);
-			auto curveBuilderDialog = new CurveBuilderDialog(dataController_->statuses(source), "Channels Selection", isRealTimeDataSource, this);
+			DeviceType deviceType = dataController_->deviceType(source);
+			auto curveBuilderDialog = new CurveBuilderDialog(deviceType, dataController_->statuses(source), "Channels Selection", isRealTimeDataSource, this);
 			connect(curveBuilderDialog, &CurveBuilderDialog::accepted, [this, source, curveBuilderDialog]() { addCurve(source, curveBuilderDialog->curveData()); });
 			curveBuilderDialog->exec();
 		}
@@ -46,7 +47,7 @@ private slots:
 		DeviceType deviceType = dataController_->deviceType(deviceId);
 		bool isRealTimeDataSource = dataController_->isRealTimeSource(deviceId);
 		if (isRealTimeDataSource) {
-			if (data.single) {
+			if (!data.vectorize) {
 				for (auto const index : data.channelsSelected)
 					if (deviceType == DeviceType::_6111)
 						plot_->addSingleBitSignal(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->createDataEmitter(deviceId, index));
@@ -57,7 +58,7 @@ private slots:
 				plot_->addComplexSignalBlock(data.nameId_, dataController_->createDataEmitter(deviceId, data.channelsSelected));
 		}
 		else {
-			if (data.single) {
+			if (!data.vectorize) {
 				for (auto const index : data.channelsSelected)
 					if (deviceType == DeviceType::_6111)
 						plot_->addStaticSingleBitSignal(QString("%1 %2").arg(data.nameId_).arg(index), dataController_->staticData(deviceId, index, data.samplesNo_, data.firstSampleId_));

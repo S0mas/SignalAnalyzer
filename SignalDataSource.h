@@ -7,6 +7,7 @@
 #include "DataCollectorServer.h"
 #include "PacketReading.h"
 #include <mutex>
+#include <QString>
 #include <atomic>
 #include <vector>
 
@@ -30,7 +31,6 @@ public:
 	SignalDataSource(QString const& deviceName, DeviceType const& deviceType, QObject* parent = nullptr) : QObject(parent), deviceName_(deviceName), deviceType_(deviceType), statuses_(deviceType == DeviceType::_6111 ? 256 : 32) {
 		statuses_.enableAll();
 	}
-
 	virtual std::pair<std::vector<double>, std::vector<Timestamp6991>> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept = 0;
 	virtual std::pair<std::vector<double>, std::vector<Timestamp6991>> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept = 0;
 	ChannelStatuses& statuses() noexcept {
@@ -51,10 +51,10 @@ class RealTimeSignalDataSource : public SignalDataSource {
 	std::vector<QContiguousCache<double>> data_;
 	QContiguousCache<Timestamp6991> timestampsQueue_;
 	mutable std::mutex m_;
-	uint32_t queuesSize_ = 256;
-	uint32_t scansToDisplayStep_ = 10;
+	uint32_t queuesSize_;
+	uint32_t scansToDisplayStep_;
 public:
-	RealTimeSignalDataSource(QString fileName, DeviceType const type, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent) {
+	RealTimeSignalDataSource(QString fileName, DeviceType const type, uint32_t const queueSize = 256, uint32_t const scansToDisplayStep = 10, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent), queuesSize_(queueSize), scansToDisplayStep_(scansToDisplayStep) {
 		for (auto const& channelId : statuses_.allEnabled())
 			data_.push_back(QContiguousCache<double>(queuesSize_));
 	}
@@ -86,7 +86,6 @@ public:
 		for (int sampleNo = 0; sampleNo < samplesCount; ++sampleNo)
 			for (int bitNo = 0; bitNo < vecs.size(); ++bitNo)
 				result[sampleNo] += vecs[bitNo][sampleNo] ? 1 << bitNo : 0;
-
 		return { result, take(samplesCount, copyTs) };
 	}
 
@@ -116,12 +115,16 @@ public:
 		}
 	}
 
-	uint32_t queuesSize() const noexcept {
-		return queuesSize_;
 	}
 
 	void setQueuesSize(uint32_t const size) noexcept {
 		queuesSize_ = size;
+		for (auto& buffer : data_)
+			buffer.setCapacity(size);
+	}
+
+	void setScansToDisplayStep(uint32_t const step) noexcept {
+		scansToDisplayStep_ = step;
 	}
 
 	bool isRealTimeSource() const noexcept override {
@@ -202,6 +205,7 @@ public:
 			for (int j = 0; j << next.size(); ++j)
 				result.first[j] += next[j] * (1 << i);
 		}
+}
 		return result;
 	}
 

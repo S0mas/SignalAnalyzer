@@ -52,7 +52,7 @@ public:
 	void handleData(SignalPacketHeader const& header, SignalPacketData<ScanType> const& data) {
 		if (sources_.find(header.deviceAddress_.toString()) == sources_.end()) {
 			//emit sourceCreated(new RealTimeSignalDataSource(header.deviceAddress_.toString(), header.deviceType_));
-			sources_.insert({ header.deviceAddress_.toString() , new RealTimeSignalDataSource(header.deviceAddress_.toString(), header.deviceType_) });
+			sources_.insert({ header.deviceAddress_.toString() , new RealTimeSignalDataSource(header.deviceAddress_.toString(), header.deviceType_, queuesSize_, scansToDisplayStep_) });
 		}
 		sources_[header.deviceAddress_.toString()]->enqueueData(header, data);
 	}
@@ -78,6 +78,8 @@ public:
 
 	void setScansToDisplayStep(uint32_t const step) noexcept {
 		scansToDisplayStep_ = step;
+		for (auto& id_source_pair : sources_)
+			id_source_pair.second->setScansToDisplayStep(step);
 	}
 
 	uint32_t scansToDisplayStep() const noexcept {
