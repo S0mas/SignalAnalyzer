@@ -60,7 +60,7 @@ public:
 
 	virtual std::optional<double> value(int32_t const x) const noexcept = 0;
 public slots:
-	virtual void handleData(std::vector<double> const& data) = 0;
+	virtual void handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) = 0;
 signals:
 	void dataRequest() const;
 };

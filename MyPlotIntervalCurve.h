@@ -24,5 +24,5 @@ public:
 	double position() const noexcept;
 	std::optional<double> value(int32_t const x) const noexcept override;
 public slots:
-	void handleData(std::vector<double> const& data) override;
+	void handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) override;
 };

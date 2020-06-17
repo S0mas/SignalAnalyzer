@@ -125,15 +125,15 @@ public slots:
 		curve->connectDataEmitter(dataEmitter);
 	}
 
-	void addStaticSingleBitSignal(const QString& nameId, std::vector<double> const& data) {
+	void addStaticSingleBitSignal(const QString& nameId, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
 		auto curve = plot->addCurve(nameId, SignalCurveType::SingleBitSignal, false, data);
 	}
 
-	void addStaticComplexSignalWave(const QString& nameId, std::vector<double> const& data) {
+	void addStaticComplexSignalWave(const QString& nameId, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
 		auto curve = plot->addCurve(nameId, SignalCurveType::ComplexSignal_Wave, false, data);
 	}
 
-	void addStaticComplexSignalBlock(const QString& nameId, std::vector<double> const& data) {
+	void addStaticComplexSignalBlock(const QString& nameId, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
 		auto curve = plot->addCurve(nameId, SignalCurveType::ComplexSignal_Block, false, data);
 	}
 signals:

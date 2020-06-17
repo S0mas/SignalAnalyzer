@@ -6,7 +6,7 @@
 #include "qwt_clipper.h"
 #include "qwt_curve_fitter.h"
 
-static QVector<QPointF> convertToQwtIntervalImpl(double const position, const std::vector<double>& signalsData) noexcept {
+static auto calculateScale(const std::vector<double>& signalsData) noexcept {
 	double max = std::numeric_limits<double>::min();
 	double min = std::numeric_limits<double>::max();
 	for (auto const& sample : signalsData) {
@@ -15,13 +15,29 @@ static QVector<QPointF> convertToQwtIntervalImpl(double const position, const st
 		if (sample < min)
 			min = sample;
 	}
-	auto scaleFunc = [min, max](double const sample) { return ((sample - min) / (max - min)); };
-	QVector<QPointF> data;
-	data.reserve(signalsData.size());
-	int x = 0; //TODO use Timestamp data
-	for (auto const& sample : signalsData)
-		data.push_back(QPointF(x++, position + scaleFunc(sample)));
-	return data;
+	return [min, max](double const sample) { return ((sample - min) / (max - min)); };
+}
+
+static QVector<QPointF> convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept {
+	auto const& [signalData, timestamps] = data;
+	auto scaleFunc = calculateScale(signalData);
+	QVector<QPointF> samples;
+	samples.reserve(data.first.size());
+	
+	//TODO remove this condition check replace with some better one
+	if (timestamps[0].seconds_ == timestamps[1].seconds_ && timestamps[0].nanoseconds_ == timestamps[1].nanoseconds_) {
+		int x = 0;
+		for (auto const& sample : signalData)
+			samples.push_back(QPointF(x++, position + scaleFunc(sample)));
+	}
+	else {
+		//TODO use the whole timestamp data not only seconds
+		int i = 0; 
+		for (auto const& sample : signalData)
+			samples.push_back(QPointF(timestamps[i++].seconds_ - timestamps[0].seconds_, position + scaleFunc(sample)));
+	}
+
+	return samples;
 }
 
 MyPlotCurve::MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealTimeCurve) : QwtPlotCurve(nameId), MyPlotAbstractCurve(plot, isRealTimeCurve) {
@@ -122,12 +138,13 @@ bool MyPlotCurve::isVisibleOnScreen() const noexcept {
 }
 
 std::optional<double> MyPlotCurve::value(int32_t const x) const noexcept {
-	if(realData_.size() > x)
-		return realData_[x];
+	if(realData_.first.size() > x)
+		return realData_.first[x];
 	return std::nullopt;
 }
 
-void MyPlotCurve::handleData(std::vector<double> const& data) {
+void MyPlotCurve::handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
 	realData_ = data;
-	setSamples(convertToQwtIntervalImpl(position(), data));
+	auto scaleFunc = calculateScale(data.first);
+	setSamples(convertToSamples(position(), data));
 }

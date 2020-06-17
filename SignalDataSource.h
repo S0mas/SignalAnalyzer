@@ -10,8 +10,9 @@
 #include <atomic>
 #include <vector>
 
-inline std::vector<double> take(uint32_t const maximumElementsToTake, QContiguousCache<double>& queue) {
-	std::vector<double> taken;
+template<typename T>
+inline std::vector<T> take(uint32_t const maximumElementsToTake, QContiguousCache<T>& queue) {
+	std::vector<T> taken;
 	int32_t toTake = maximumElementsToTake > queue.size() ? queue.size() : maximumElementsToTake;
 	taken.reserve(toTake);
 	while (toTake-- > 0)
@@ -30,8 +31,8 @@ public:
 		statuses_.enableAll();
 	}
 
-	virtual std::vector<double> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept = 0;
-	virtual std::vector<double> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept = 0;
+	virtual std::pair<std::vector<double>, std::vector<Timestamp6991>> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept = 0;
+	virtual std::pair<std::vector<double>, std::vector<Timestamp6991>> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept = 0;
 	ChannelStatuses& statuses() noexcept {
 		return statuses_;
 	}
@@ -48,6 +49,7 @@ signals:
 class RealTimeSignalDataSource : public SignalDataSource {
 	Q_OBJECT
 	std::vector<QContiguousCache<double>> data_;
+	QContiguousCache<Timestamp6991> timestampsQueue_;
 	mutable std::mutex m_;
 	uint32_t queuesSize_ = 256;
 	uint32_t scansToDisplayStep_ = 10;
@@ -57,18 +59,21 @@ public:
 			data_.push_back(QContiguousCache<double>(queuesSize_));
 	}
 
-	std::vector<double> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
+	std::pair<std::vector<double>, std::vector<Timestamp6991>> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
 		std::lock_guard lock(m_);
 		auto copy = data_[channelId - 1];
-		return take(copy.size(), copy);
+		auto copyTs = timestampsQueue_;
+		return {take(copy.size(), copy), take(copyTs.size(), copyTs)};
 	}
 
-	std::vector<double> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
+	std::pair<std::vector<double>, std::vector<Timestamp6991>> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
 		std::vector<std::vector<double>> vecs;
 		vecs.resize(channelIds.size());
 		uint32_t samplesCount = std::numeric_limits<uint32_t>::max();
+		QContiguousCache<Timestamp6991> copyTs;
 		{
 			std::lock_guard lock(m_);
+			copyTs = timestampsQueue_;
 			for (int i = 0; i < channelIds.size(); ++i) {
 				auto copy = data_[channelIds[i] - 1];
 				if (copy.size() < samplesCount)
@@ -81,12 +86,17 @@ public:
 		for (int sampleNo = 0; sampleNo < samplesCount; ++sampleNo)
 			for (int bitNo = 0; bitNo < vecs.size(); ++bitNo)
 				result[sampleNo] += vecs[bitNo][sampleNo] ? 1 << bitNo : 0;
-		return result;
+
+		return { result, take(samplesCount, copyTs) };
 	}
 
 	void enqueueData(SignalPacketHeader const& header, SignalPacketData<Scan6111> const& data) {
 		for (int scanId = 0; scanId < data.scans_.size(); scanId += scansToDisplayStep_) {
 			uint32_t channelId = 0;
+			if (data.scans_[scanId].ignoreTimestamp)
+				timestampsQueue_.append({ 0, 0 });
+			else
+				timestampsQueue_.append(data.scans_[scanId].ts_);
 			for (auto& samplePack : data.scans_[scanId].samples_) {
 				for (auto& sample : samplePack.samples())
 					data_[channelId++].append(sample ? 1 : 0);
@@ -97,11 +107,14 @@ public:
 	void enqueueData(SignalPacketHeader const& header, SignalPacketData<Scan6132> const& data) {
 		for (int scanId = 0; scanId < data.scans_.size(); scanId += scansToDisplayStep_) {
 			uint32_t channelId = 0;
+			if (data.scans_[scanId].ignoreTimestamp)
+				timestampsQueue_.append({ 0, 0 });
+			else
+				timestampsQueue_.append(data.scans_[scanId].ts_);
 			for (auto& sample : data.scans_[scanId].samples_)
 				data_[channelId++].append(sample);
 		}
 	}
-
 
 	uint32_t queuesSize() const noexcept {
 		return queuesSize_;
@@ -119,14 +132,23 @@ public:
 class FileSignalDataSource : public SignalDataSource {
 	Q_OBJECT
 	std::vector<QList<double>> data_;
+	QList<Timestamp6991> timestamps_;
 public:
 	void readScan(Scan6111 const& scan) noexcept {
+		if (scan.ignoreTimestamp)
+			timestamps_.append({ 0, 0 });
+		else
+			timestamps_.append(scan.ts_);
 		for (int i = 0; i < scan.samples_.size(); ++i)
 			for (int j = 0; j < scan.samples_[i].samples().size(); ++j)
 				data_[i*8 + j].push_back(scan.samples_[i].samples()[j] ? 1 : 0);
 	}
 
 	void readScan(Scan6132 const& scan) noexcept {
+		if (scan.ignoreTimestamp)
+			timestamps_.append({ 0, 0 });
+		else
+			timestamps_.append(scan.ts_);
 		for (int i = 0; i < scan.samples_.size(); ++i)
 			data_[i].push_back(scan.samples_[i]);
 	}
@@ -156,20 +178,29 @@ public:
 			readFile<Scan6132>(fileName);		
 	}
 
-	std::vector<double> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
+	std::vector<double> dataWithoutTimestamps(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept {
+		auto const& signalData = data_[channelId - 1];
+		if (startSampleId >= signalData.size())
+			return {};
+		uint32_t count = (numberOfSamples + startSampleId > signalData.size()) || numberOfSamples == 0 ? signalData.size() - startSampleId : numberOfSamples;
+		return std::vector<double>(signalData.begin() + startSampleId, signalData.begin() + count);
+	}
+
+	std::pair<std::vector<double>, std::vector<Timestamp6991>> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
 		auto const& signalData = data_[channelId - 1];
 		if(startSampleId >= signalData.size())
 			return {};
 		uint32_t count = (numberOfSamples + startSampleId > signalData.size()) || numberOfSamples == 0 ? signalData.size() - startSampleId : numberOfSamples;
-		return std::vector<double>(signalData.begin() + startSampleId, signalData.begin() + startSampleId + numberOfSamples);
+		return { std::vector<double>(signalData.begin() + startSampleId, signalData.begin() + count), std::vector<Timestamp6991>(timestamps_.begin() + startSampleId, timestamps_.begin() + count) };
 	}
-	std::vector<double> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
-		std::vector<double> result = data(channelIds[0], numberOfSamples, startSampleId);
+
+	std::pair<std::vector<double>, std::vector<Timestamp6991>> data(std::vector<uint32_t> const& channelIds, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
+		auto result = data(channelIds[0], numberOfSamples, startSampleId);
 		
 		for (int i = 1; i < channelIds.size(); ++i) {
-			auto const& next = data(channelIds[i], numberOfSamples, startSampleId);
+			auto const& next = dataWithoutTimestamps(channelIds[i], numberOfSamples, startSampleId);
 			for (int j = 0; j << next.size(); ++j)
-				result[j] += next[j] * (1 << i);
+				result.first[j] += next[j] * (1 << i);
 		}
 		return result;
 	}

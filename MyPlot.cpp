@@ -195,7 +195,7 @@ QPoint MyPlot::cursorPosition() const noexcept {
 	return canvas()->mapFromGlobal(QCursor::pos());
 }
 
-MyPlotAbstractCurve* MyPlot::addCurve(const QString& nameId, SignalCurveType const type, bool const isRealTimeDataSource, std::vector<double> const& initialData) {
+MyPlotAbstractCurve* MyPlot::addCurve(const QString& nameId, SignalCurveType const type, bool const isRealTimeDataSource, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& initialData) {
 	std::unique_ptr<MyPlotAbstractCurve> item;
 	if(type == SignalCurveType::SingleBitSignal)
 		item = std::make_unique<MyPlotIntervalCurve>(nameId, dynamic_cast<QwtIntervalSymbol*>(new MyIntervalSymbol2()), this, isRealTimeDataSource);
@@ -205,7 +205,7 @@ MyPlotAbstractCurve* MyPlot::addCurve(const QString& nameId, SignalCurveType con
 		item = std::make_unique<MyPlotCurve>(nameId, this, isRealTimeDataSource);
 	auto position = positioner_.addExclusive(item.get());
 	auto curve = item.get();
-	if(!initialData.empty())
+	if(!initialData.first.empty())
 		curve->handleData(initialData);
 	itemsContainer_.add(std::move(item));
 	updatePlot();

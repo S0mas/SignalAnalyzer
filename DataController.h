@@ -51,11 +51,11 @@ class DataController : public QObject {
 		return [this, deviceId, channelsIds]() { return realTimeData(deviceId, channelsIds); };
 	}
 
-	std::vector<double> realTimeData(QString const& deviceId, const uint32_t channelId) noexcept {
+	std::pair<std::vector<double>, std::vector<Timestamp6991>> realTimeData(QString const& deviceId, const uint32_t channelId) noexcept {
 		return dataAcq_.data(deviceId, channelId);
 	}
 
-	std::vector<double> realTimeData(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
+	std::pair<std::vector<double>, std::vector<Timestamp6991>> realTimeData(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
 		return dataAcq_.data(deviceId, channelIds);
 	}
 public:
@@ -108,11 +108,11 @@ public:
 		return dataAcq_.queuesSize();
 	}
 
-	std::vector<double> staticData(QString const& deviceId, const uint32_t channelId, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {
+	auto staticData(QString const& deviceId, const uint32_t channelId, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {
 		return sources_.at(deviceId)->data(channelId, maxSamplesNo, startingSampleId);
 	}
 
-	std::vector<double> staticData(QString const& deviceId, const std::vector<uint32_t>& channelIds, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {
+	auto staticData(QString const& deviceId, const std::vector<uint32_t>& channelIds, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {
 		return sources_.at(deviceId)->data(channelIds, maxSamplesNo, startingSampleId);
 	}
 

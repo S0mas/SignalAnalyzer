@@ -94,11 +94,11 @@ public:
 			id_source_pair.second->setQueuesSize(size);
 	}
 
-	std::vector<double> data(QString const& deviceId, const uint32_t channelId) noexcept {
+	auto data(QString const& deviceId, const uint32_t channelId) noexcept {
 		return sources_[deviceId]->data(channelId, 0, 0);
 	}
 
-	std::vector<double> data(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
+	auto data(QString const& deviceId, const std::vector<uint32_t>& channelIds) noexcept {
 		return sources_[deviceId]->data(channelIds, 0, 0);
 	}
 signals:

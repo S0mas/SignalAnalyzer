@@ -2,16 +2,22 @@
 #include "MyPlotIntervalCurve.h"
 #include "MyPlot.h"
 
-static inline QVector<QwtIntervalSample> convertToQwtIntervalImpl(const std::vector<double>& signalsData) noexcept {
+static inline QVector<QwtIntervalSample> convertToQwtIntervalImpl(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept {
 	QVector<QwtIntervalSample> vec;
 	vec.reserve(100);
-	double samplesNo = signalsData.size();
+	auto const& [signalData, timestamps] = data;
+	double samplesNo = signalData.size();
+	//TODO remove this condition check replace with some better one
+	bool ignoreTimestamps = timestamps[0].seconds_ == timestamps[1].seconds_ && timestamps[1].nanoseconds_ == timestamps[1].nanoseconds_;
 	for (double sampleIndex = 0; sampleIndex < samplesNo;) {
-		double tempVal = signalsData[sampleIndex];
+		double tempVal = signalData[sampleIndex];
 		double length = 1;
-		while (++sampleIndex < samplesNo && signalsData[sampleIndex] == tempVal)
+		while (++sampleIndex < samplesNo && signalData[sampleIndex] == tempVal)
 			++length;
-		vec.push_back({ tempVal, sampleIndex - length, sampleIndex });
+		if(ignoreTimestamps)
+			vec.push_back({ tempVal, sampleIndex - length, sampleIndex });
+		else
+			vec.push_back({ tempVal, static_cast<double>(timestamps[sampleIndex - length].seconds_ - timestamps[0].seconds_), static_cast<double>(timestamps[sampleIndex < samplesNo ? sampleIndex : samplesNo -1].seconds_ - timestamps[0].seconds_) }); //TODO use the whole timestamp data not only seconds
 	}
 	return vec;
 }
@@ -110,6 +116,6 @@ std::optional<double> MyPlotIntervalCurve::value(int32_t const x) const noexcept
 	return std::nullopt;
 }
 
-void MyPlotIntervalCurve::handleData(std::vector<double> const& data) {
+void MyPlotIntervalCurve::handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
 	setSamples(convertToQwtIntervalImpl(data));
 }

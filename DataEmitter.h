@@ -2,16 +2,17 @@
 #include <functional>
 #include <vector>
 #include <QObject>
+#include "SignalDataPacket.h"
 
 class DataEmitter : public QObject {
 	Q_OBJECT
-	std::function<std::vector<double>()> dataGetter_;
+	std::function<std::pair<std::vector<double>, std::vector<Timestamp6991>>()> dataGetter_;
 public:
-	DataEmitter(std::function<std::vector<double>()> const& dataGetter, QObject* parent = nullptr) : QObject(parent), dataGetter_(dataGetter) {}
+	DataEmitter(std::function<std::pair<std::vector<double>, std::vector<Timestamp6991>>()> const& dataGetter, QObject* parent = nullptr) : QObject(parent), dataGetter_(dataGetter) {}
 public slots:
 	void handleDataRequest() {
 		emit data(dataGetter_());
 	}
 signals:
-	void data(std::vector<double> const& data) const;
+	void data(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) const;
 };

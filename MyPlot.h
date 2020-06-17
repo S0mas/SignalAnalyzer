@@ -71,7 +71,7 @@ public:
 	std::vector<MyPlotAbstractCurve*> selectedCurves() const noexcept;
 	QPointF plotPointToValuePoint(const QPointF& point) const noexcept;
 	QPoint cursorPosition() const noexcept;
-	MyPlotAbstractCurve* addCurve(const QString& nameId, SignalCurveType const type, bool const isRealTimeDataSource = true, std::vector<double> const& initialData = {});
+	MyPlotAbstractCurve* addCurve(const QString& nameId, SignalCurveType const type, bool const isRealTimeDataSource = true, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& initialData = {});
 	void addCurve(std::unique_ptr<MyPlotAbstractCurve>&& curve);
 	void setRefreshTimeInterval(uint32_t const ms) noexcept;
 	uint32_t refreshTimeInterval() const noexcept;
