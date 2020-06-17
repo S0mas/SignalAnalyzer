@@ -115,8 +115,6 @@ public:
 		}
 	}
 
-	}
-
 	void setQueuesSize(uint32_t const size) noexcept {
 		queuesSize_ = size;
 		for (auto& buffer : data_)
@@ -205,7 +203,6 @@ public:
 			for (int j = 0; j << next.size(); ++j)
 				result.first[j] += next[j] * (1 << i);
 		}
-}
 		return result;
 	}
 
