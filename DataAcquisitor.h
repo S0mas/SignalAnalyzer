@@ -52,8 +52,10 @@ public:
 	void handleData(SignalPacketHeader const& header, SignalPacketData<ScanType> const& data) {
 		if (sources_.find(header.deviceAddress_.toString()) == sources_.end()) {
 			//emit sourceCreated(new RealTimeSignalDataSource(header.deviceAddress_.toString(), header.deviceType_));
-			sources_.insert({ header.deviceAddress_.toString() , new RealTimeSignalDataSource(header.deviceAddress_.toString(), header.deviceType_, queuesSize_, scansToDisplayStep_) });
+			sources_.insert({ header.deviceAddress_.toString() , new RealTimeSignalDataSource(header.deviceAddress_.toString(), header.deviceType_, header.channelsStates_, queuesSize_, scansToDisplayStep_) });
 		}
+		else if (header.containsChannelStates_)
+			sources_[header.deviceAddress_.toString()]->setChannelsStates(header.channelsStates_);
 		sources_[header.deviceAddress_.toString()]->enqueueData(header, data);
 	}
 

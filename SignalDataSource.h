@@ -48,20 +48,23 @@ signals:
 
 class RealTimeSignalDataSource : public SignalDataSource {
 	Q_OBJECT
-	std::vector<QContiguousCache<double>> data_;
+	std::map<uint32_t, QContiguousCache<double>> data_;
 	QContiguousCache<Timestamp6991> timestampsQueue_;
 	mutable std::mutex m_;
 	uint32_t queuesSize_;
 	uint32_t scansToDisplayStep_;
 public:
-	RealTimeSignalDataSource(QString fileName, DeviceType const type, uint32_t const queueSize = 256, uint32_t const scansToDisplayStep = 10, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent), queuesSize_(queueSize), scansToDisplayStep_(scansToDisplayStep) {
-		for (auto const& channelId : statuses_.allEnabled())
-			data_.push_back(QContiguousCache<double>(queuesSize_));
+	RealTimeSignalDataSource(QString fileName, DeviceType const type, std::vector<bool> const& channelStates, uint32_t const queueSize = 256, uint32_t const scansToDisplayStep = 10, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent), queuesSize_(queueSize), scansToDisplayStep_(scansToDisplayStep) {
+		timestampsQueue_.setCapacity(queuesSize_);
+		for (int i = 0; i < channelStates.size(); ++i)
+			channelStates[i] ? statuses_.enable(i + 1) : statuses_.disable(i + 1);
+		for (auto const& channelId : statuses_.allIds())
+			data_[channelId] = QContiguousCache<double>(queuesSize_);
 	}
 
 	std::pair<std::vector<double>, std::vector<Timestamp6991>> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
 		std::lock_guard lock(m_);
-		auto copy = data_[channelId - 1];
+		auto copy = data_[channelId];
 		auto copyTs = timestampsQueue_;
 		return {take(copy.size(), copy), take(copyTs.size(), copyTs)};
 	}
@@ -75,7 +78,7 @@ public:
 			std::lock_guard lock(m_);
 			copyTs = timestampsQueue_;
 			for (int i = 0; i < channelIds.size(); ++i) {
-				auto copy = data_[channelIds[i] - 1];
+				auto copy = data_[channelIds[i]];
 				if (copy.size() < samplesCount)
 					samplesCount = copy.size();
 				vecs[i] = take(copy.size(), copy);
@@ -90,35 +93,38 @@ public:
 	}
 
 	void enqueueData(SignalPacketHeader const& header, SignalPacketData<Scan6111> const& data) {
-		for (int scanId = 0; scanId < data.scans_.size(); scanId += scansToDisplayStep_) {
-			uint32_t channelId = 0;
+		auto enabledChannels = statuses_.allEnabled();
+		for (int scanId = 0; scanId < data.scans_.size(); scanId += scansToDisplayStep_) {		
 			if (data.scans_[scanId].ignoreTimestamp)
 				timestampsQueue_.append({ 0, 0 });
 			else
 				timestampsQueue_.append(data.scans_[scanId].ts_);
+			int i = 0;
 			for (auto& samplePack : data.scans_[scanId].samples_) {
 				for (auto& sample : samplePack.samples())
-					data_[channelId++].append(sample ? 1 : 0);
+					data_[enabledChannels[i++]].append(sample ? 1 : 0);
 			}
 		}
 	}
 
 	void enqueueData(SignalPacketHeader const& header, SignalPacketData<Scan6132> const& data) {
+		auto enabledChannels = statuses_.allEnabled();
 		for (int scanId = 0; scanId < data.scans_.size(); scanId += scansToDisplayStep_) {
-			uint32_t channelId = 0;
 			if (data.scans_[scanId].ignoreTimestamp)
 				timestampsQueue_.append({ 0, 0 });
 			else
 				timestampsQueue_.append(data.scans_[scanId].ts_);
+			int i = 0;
 			for (auto& sample : data.scans_[scanId].samples_)
-				data_[channelId++].append(sample);
+				data_[enabledChannels[i++]].append(sample);
 		}
 	}
 
 	void setQueuesSize(uint32_t const size) noexcept {
 		queuesSize_ = size;
 		for (auto& buffer : data_)
-			buffer.setCapacity(size);
+			buffer.second.setCapacity(size);
+		timestampsQueue_.setCapacity(size);
 	}
 
 	void setScansToDisplayStep(uint32_t const step) noexcept {
@@ -128,11 +134,23 @@ public:
 	bool isRealTimeSource() const noexcept override {
 		return true;
 	}
+
+	void setChannelsStates(std::vector<bool> const& states) noexcept {
+		for (int i = 0; i < states.size(); ++i)
+			statuses_.set(i + 1, states[i]);
+	}
+};
+
+struct DeviceInformation {
+	QString type_;
+	QString serialnumber_;
+	QString ipAddress_;
+	QString scanRate_;
 };
 
 class FileSignalDataSource : public SignalDataSource {
 	Q_OBJECT
-	std::vector<QList<double>> data_;
+	std::map<uint32_t, QList<double>> data_;
 	QList<Timestamp6991> timestamps_;
 public:
 	void readScan(Scan6111 const& scan) noexcept {
@@ -160,19 +178,39 @@ public:
 		if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 			return;
 		QTextStream in(&file);
+		DeviceInformation info;
+		in.readLineInto(&info.type_);
+		in.readLineInto(&info.serialnumber_);
+		in.readLineInto(&info.ipAddress_);
+		in.readLineInto(&info.scanRate_);
+
+		QString channelsConfigurationLine = in.readLine();
+		statuses_.disableAll();
+		QTextStream helperStream(&channelsConfigurationLine);
+		while (!helperStream.atEnd()) {
+			uint32_t channelId;
+			helperStream >> channelId;
+			if(channelId != 0)
+				statuses_.enable(channelId);
+			else {
+				char charToSkip;
+				helperStream >> charToSkip;
+			}
+		}
+		
+		for (auto const& channelId : statuses_.allEnabled()) {
+			QList<double> list;
+			list.reserve(10000);
+			data_[channelId] = list;
+		}
+
 		while (!in.atEnd()) {
 			ScanType scan;
 			in >> scan;
 			readScan(scan);
 		}
 	}
-	FileSignalDataSource(QString fileName, DeviceType const type,  QObject* parent = nullptr) : SignalDataSource(fileName, type, parent) {
-		for (auto const& channelId : statuses_.allEnabled()) {
-			QList<double> list;
-			list.reserve(10000);
-			data_.push_back(list);
-		}
-		
+	FileSignalDataSource(QString fileName, DeviceType const type,  QObject* parent = nullptr) : SignalDataSource(fileName, type, parent) {	
 		if(type == DeviceType::_6111)
 			readFile<Scan6111>(fileName);
 		else
@@ -180,7 +218,7 @@ public:
 	}
 
 	std::vector<double> dataWithoutTimestamps(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept {
-		auto const& signalData = data_[channelId - 1];
+		auto const& signalData = data_[channelId];
 		if (startSampleId >= signalData.size())
 			return {};
 		uint32_t count = (numberOfSamples + startSampleId > signalData.size()) || numberOfSamples == 0 ? signalData.size() - startSampleId : numberOfSamples;
@@ -188,7 +226,7 @@ public:
 	}
 
 	std::pair<std::vector<double>, std::vector<Timestamp6991>> data(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept override {
-		auto const& signalData = data_[channelId - 1];
+		auto const& signalData = data_[channelId];
 		if(startSampleId >= signalData.size())
 			return {};
 		uint32_t count = (numberOfSamples + startSampleId > signalData.size()) || numberOfSamples == 0 ? signalData.size() - startSampleId : numberOfSamples;

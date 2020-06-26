@@ -9,7 +9,6 @@
 
 class MyPlotCurve : public MyPlotAbstractCurve, public QwtPlotCurve {
 	Q_OBJECT
-	QString nameId_;
 	std::pair<std::vector<double>, std::vector<Timestamp6991>> realData_;
 public:
 	MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealTimeCurve = true);
