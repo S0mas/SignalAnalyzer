@@ -218,7 +218,7 @@ void MyPlot::addCurve(std::unique_ptr<MyPlotAbstractCurve>&& curve) {
 	updatePlot();
 }
 
-void MyPlot::refreshVisibleCurves() const noexcept {
+void MyPlot::refreshVisibleCurves() const {
 	forEachCurve([](MyPlotAbstractCurve* curve) {if (curve->isRealTimeCurve() && curve->isVisibleOnScreen()) emit curve->dataRequest(); });
 }
 

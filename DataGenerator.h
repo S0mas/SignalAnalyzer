@@ -1,5 +1,5 @@
 #pragma once
-#include <QRandomGenerator>
+#include <QtGlobal>
 #include <QDebug>
 
 class DataGenerator {
@@ -13,8 +13,8 @@ public:
 		std::vector<double> data;
 		data.reserve(dataSize);
 		while (data.size() != dataSize) {
-			long long int randomValue = QRandomGenerator::global()->bounded(maxValue + 1);
-			int randomLenght = QRandomGenerator::global()->bounded(minSameStateLength, maxSameStateLength + 1);
+			long long int randomValue = rand() % (static_cast<int>(maxValue) + 1);
+			int randomLenght = rand() % (maxSameStateLength - minSameStateLength + 1) + minSameStateLength;
 			int spaceLeft = dataSize - data.size();
 			data.insert(data.end(), randomLenght > spaceLeft ? spaceLeft : randomLenght, randomValue);
 		}

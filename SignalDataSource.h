@@ -91,18 +91,20 @@ public:
 				result[sampleNo] += vecs[bitNo][sampleNo] ? 1 << bitNo : 0;
 		return { result, take(samplesCount, copyTs) };
 	}
-
+	//In 6111 even when channels are disabled the data is comming (but disabled channels data is all 0s)
+	//so we will skip the channels that are disabled
 	void enqueueData(SignalPacketHeader const& header, SignalPacketData<Scan6111> const& data) {
-		auto enabledChannels = statuses_.allEnabled();
+		auto allChannels = statuses_.allIds();
 		for (int scanId = 0; scanId < data.scans_.size(); scanId += scansToDisplayStep_) {		
 			if (data.scans_[scanId].ignoreTimestamp)
 				timestampsQueue_.append({ 0, 0 });
 			else
 				timestampsQueue_.append(data.scans_[scanId].ts_);
-			int i = 0;
+			int channelId = 1;
 			for (auto& samplePack : data.scans_[scanId].samples_) {
 				for (auto& sample : samplePack.samples())
-					data_[enabledChannels[i++]].append(sample ? 1 : 0);
+					if (statuses_.status(channelId++))
+						data_[channelId-1].append(sample ? 1 : 0); //only add sample if channel is enabled(it is the real sample) 
 			}
 		}
 	}

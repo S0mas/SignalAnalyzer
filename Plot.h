@@ -10,7 +10,7 @@
 #include <QSlider>
 #include <QVector>
 #include <QColumnView>
-#include <QRandomGenerator>
+#include <QtGlobal>
 #include <functional>
 #include <QSplitter>
 #include <QToolBar>

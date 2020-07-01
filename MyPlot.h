@@ -76,7 +76,7 @@ public:
 	void setRefreshTimeInterval(uint32_t const ms) noexcept;
 	uint32_t refreshTimeInterval() const noexcept;
 private slots:
-	void refreshVisibleCurves() const noexcept;
+	void refreshVisibleCurves() const;
 public slots:
 	void addMarkerAction();
 	void addRangeMarkersAction();

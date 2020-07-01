@@ -43,6 +43,9 @@
     <ClCompile Include="MyPlotPicker.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="SettingsToolbar.cpp">
+      <Filter>sources\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlotItemsContainer.h">
@@ -95,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="..\WizardFramework\Common\include\Device6991\Defines6991.h">
       <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsToolbar.h">
+      <Filter>headers\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
