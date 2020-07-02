@@ -47,20 +47,20 @@ const MyPlot* ContextMenuController::plot() const noexcept {
 
 void ContextMenuController::contextMenuSingle() {
 	QMenu* menu = new QMenu(plot());
-	menu->addAction("Remove", plot(),"removeItems");
+	menu->addAction("Remove", plot(), SLOT(removeItems()));
 	menu->popup(QCursor::pos());
 }
 
 void ContextMenuController::contextMenuMulit() {
 	QMenu* menu = new QMenu(plot());
-	menu->addAction("Remove", plot(), "removeItems");
+	menu->addAction("Remove", plot(), SLOT(removeItems()));
 	menu->popup(QCursor::pos());
 }
 
 void ContextMenuController::contextMenuEmpty() {
 	QMenu* menu = new QMenu(plot());
-	menu->addAction("Add Curve", plot(), "addCurveActionStarted");
-	menu->addAction("Add Marker", plot(),"addMarkerAction");
-	menu->addAction("Add Range Markers", plot(), "addRangeMarkersAction");
+	menu->addAction("Add Curve", plot(), SIGNAL(addCurveActionStarted()));
+	menu->addAction("Add Marker", plot(), SLOT(addMarkerAction()));
+	menu->addAction("Add Range Markers", plot(), SLOT(addRangeMarkersAction()));
 	menu->popup(QCursor::pos());
 }

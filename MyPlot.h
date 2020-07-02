@@ -55,7 +55,6 @@ public:
 	MyPlotAbstractCurve* findCurveIf(const std::function<bool(MyPlotAbstractCurve*)> predicate) const noexcept;
 	std::vector<MyPlotAbstractCurve*> findCurvesIf(const std::function<bool(MyPlotAbstractCurve*)> predicate) const noexcept;
 	MyPlotAbstractCurve* findCurveByPosition(const int position) const noexcept;
-	void removeItems();
 	void updatePlot() noexcept;
 	bool isSomethingSelected() const noexcept;
 	bool isMultipleObjectsSelected() const noexcept;
@@ -80,6 +79,7 @@ private slots:
 public slots:
 	void addMarkerAction();
 	void addRangeMarkersAction();
+	void removeItems();
 signals:
 	void addCurveActionStarted() const;
 	void wheelSignal(QWheelEvent*) const;

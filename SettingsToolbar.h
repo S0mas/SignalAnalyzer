@@ -4,6 +4,7 @@
 class MyPlot;
 class DataController;
 class SettingsToolbar : public QToolBar {
+	Q_OBJECT
 private slots:
 	void setMaximumSignalLength();
 	void loadDataFromFile();

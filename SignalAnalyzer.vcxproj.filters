@@ -99,9 +99,6 @@
     <ClInclude Include="..\WizardFramework\Common\include\Device6991\Defines6991.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="SettingsToolbar.h">
-      <Filter>headers\gui</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ScalePicker.h">
@@ -166,6 +163,9 @@
     </QtMoc>
     <QtMoc Include="SignalDataSource.h">
       <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="SettingsToolbar.h">
+      <Filter>headers\gui</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
