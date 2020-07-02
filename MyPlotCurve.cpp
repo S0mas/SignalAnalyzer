@@ -6,7 +6,7 @@
 #include "qwt_clipper.h"
 #include "qwt_curve_fitter.h"
 
-static auto calculateScale(const std::vector<double>& signalsData) noexcept {
+auto MyPlotCurve::calculateScale(const std::vector<double>& signalsData) noexcept {
 	double max = std::numeric_limits<double>::min();
 	double min = std::numeric_limits<double>::max();
 	for (auto const& sample : signalsData) {
@@ -15,10 +15,16 @@ static auto calculateScale(const std::vector<double>& signalsData) noexcept {
 		if (sample < min)
 			min = sample;
 	}
-	return [min, max](double const sample) { return ((sample - min) / (max - min)); };
+	//only update scale if min/max values are not in the apresent range or are ~30% hihger/lower.
+	if (max > max_ || ((max_ > 0) && (max < 0.7 * max_)) || ((max_ <= 0) && (max < 1.3 * max_)))
+		max_ = max;
+	if (min < min_ || ((min_ > 0) && (min > 1.3 * min_)) || ((min_ <= 0) && (min > 0.7 * min_)))
+		min_ = min;
+	
+	return [this](double const sample) { return ((sample - min_) / (max_ - min_)); };
 }
 
-static QVector<QPointF> convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept {
+QVector<QPointF> MyPlotCurve::convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept {
 	auto const& [signalData, timestamps] = data;
 	auto scaleFunc = calculateScale(signalData);
 	QVector<QPointF> samples;

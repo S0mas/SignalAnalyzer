@@ -10,6 +10,10 @@
 class MyPlotCurve : public MyPlotAbstractCurve, public QwtPlotCurve {
 	Q_OBJECT
 	std::pair<std::vector<double>, std::vector<Timestamp6991>> realData_;
+	double min_ = std::numeric_limits<double>::max();
+	double max_ = std::numeric_limits<double>::min();
+	auto calculateScale(const std::vector<double>& signalsData) noexcept;
+	QVector<QPointF> convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept;
 public:
 	MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealTimeCurve = true);
 	~MyPlotCurve() override = default;
