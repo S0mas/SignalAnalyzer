@@ -6,7 +6,15 @@
 #include "qwt_clipper.h"
 #include "qwt_curve_fitter.h"
 
-auto MyPlotCurve::calculateScale(const std::vector<double>& signalsData) noexcept {
+static inline QString getColor(int const i) noexcept {
+	static std::array<QString, 32> colors = { "#0000ff", "#8a2be2", "#a52a2a", "#deb887", "#5f9ea0", "#7fff00", "#d2691e", "#6495ed",
+											 "#dc143c", "#a9a9a9", "#006400", "#8b008b", "#8b0000", "#8fbc8f", "#ff1493", "#1e90ff",
+											 "#ffd700", "#adff2f", "#cd5c5c", "#20b2aa", "#ffb6c1", "#66cdaa", "#00fa9a", "#ffe4b5",
+											 "#9acd32", "#008080", "#a0522d", "#fa8072", "#b0e0e6", "#ffffff", "#2e8b57", "#bc8f8f" };
+	return colors[i % 32];
+}
+
+void MyPlotCurve::calculateScale(const std::vector<double>& signalsData) noexcept {
 	double max = std::numeric_limits<double>::min();
 	double min = std::numeric_limits<double>::max();
 	for (auto const& sample : signalsData) {
@@ -20,28 +28,27 @@ auto MyPlotCurve::calculateScale(const std::vector<double>& signalsData) noexcep
 		max_ = max;
 	if (min < min_ || ((min_ > 0) && (min > 1.3 * min_)) || ((min_ <= 0) && (min > 0.7 * min_)))
 		min_ = min;
-	
-	return [this](double const sample) { return ((sample - min_) / (max_ - min_)); };
+}
+
+double MyPlotCurve::unscale(double const value) const noexcept {
+	return (value - position()) * (max_ - min_) + min_;
+}
+
+double MyPlotCurve::scale(double const sample) const noexcept {
+	return (sample - min_) / (max_ - min_) + position();
 }
 
 QVector<QPointF> MyPlotCurve::convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept {
 	auto const& [signalData, timestamps] = data;
-	auto scaleFunc = calculateScale(signalData);
+	calculateScale(signalData);
 	QVector<QPointF> samples;
-	samples.reserve(data.first.size());
-	
+	samples.resize(data.first.size());
+
 	//TODO remove this condition check replace with some better one
-	if (timestamps[0].seconds_ == timestamps[1].seconds_ && timestamps[0].nanoseconds_ == timestamps[1].nanoseconds_) {
-		int x = 0;
-		for (auto const& sample : signalData)
-			samples.push_back(QPointF(x++, position + scaleFunc(sample)));
-	}
-	else {
-		//TODO use the whole timestamp data not only seconds
-		int i = 0; 
-		for (auto const& sample : signalData)
-			samples.push_back(QPointF(timestamps[i++].seconds_ - timestamps[0].seconds_, position + scaleFunc(sample)));
-	}
+	if (timestamps[0].seconds_ == timestamps[1].seconds_ && timestamps[0].nanoseconds_ == timestamps[1].nanoseconds_)
+		std::transform(signalData.begin(), signalData.end(), samples.begin(), [x = 0, this](double const sample) mutable { return QPointF(x++, scale(sample)); });
+	else //TODO use also the nanoseconds
+		std::transform(signalData.begin(), signalData.end(), samples.begin(), [i = 0, timestamps, this](double const sample) mutable { return QPointF(timestamps[i++].seconds_ - timestamps[0].seconds_, scale(sample)); });
 
 	return samples;
 }
@@ -52,11 +59,8 @@ MyPlotCurve::MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealT
 	setStyle(CurveStyle::Lines);
 	setOrientation(Qt::Orientation::Horizontal);
 
-	QBrush brush(Qt::BrushStyle::SolidPattern);
-	brush.setColor(Qt::black);
-	setBrush(brush);
-	static int color = 5;
-	mainColor_ = QColor(static_cast<Qt::GlobalColor>(color++));
+	static int color = 0;
+	mainColor_ = getColor(color++);
 
 	setColor(mainColor_);
 	QwtPlotCurve::attach(plot);
@@ -65,11 +69,8 @@ MyPlotCurve::MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealT
 void MyPlotCurve::drawLines(QPainter* painter, const QwtScaleMap& xMap, const QwtScaleMap& yMap, const QRectF& canvasRect, int from, int to) const {
 	if (from > to)
 		return;
-
 	const bool doAlign = QwtPainter::roundingAlignment(painter);
 	const bool doFit = (testCurveAttribute(Fitted) && curveFitter());
-	const bool doFill = (brush().style() != Qt::NoBrush)
-		&& (brush().color().alpha() > 0);
 
 	QRectF clipRect;
 	if (testPaintAttribute(ClipPolygons)) {
@@ -85,25 +86,9 @@ void MyPlotCurve::drawLines(QPainter* painter, const QwtScaleMap& xMap, const Qw
 	QPolygonF polyline = mapper.toPolygonF(xMap, yMap, data(), from, to);
 	if (doFit)
 		polyline = curveFitter()->fitCurve(polyline);
-	if (doFill) {
-		if (painter->pen().style() != Qt::NoPen) {
-			// here we are wasting memory for the filled copy,
-			// do polygon clipping twice etc .. TODO
-			QPolygonF filled = polyline;
-			fillCurve(painter, xMap, yMap, canvasRect, filled);
-			filled.clear();
-			if (testPaintAttribute(ClipPolygons))
-				polyline = QwtClipper::clipPolygonF(clipRect, polyline, false);
-			QwtPainter::drawPolyline(painter, polyline);
-		}
-		else
-			fillCurve(painter, xMap, yMap, canvasRect, polyline);
-	}
-	else {
-		if (testPaintAttribute(ClipPolygons))
-			polyline = QwtClipper::clipPolygonF(clipRect, polyline, false);
-		QwtPainter::drawPolyline(painter, polyline);
-	}
+	if (testPaintAttribute(ClipPolygons))
+		polyline = QwtClipper::clipPolygonF(clipRect, polyline, false);
+	QwtPainter::drawPolyline(painter, polyline);
 }
 
 double MyPlotCurve::position() const noexcept {
@@ -143,14 +128,27 @@ bool MyPlotCurve::isVisibleOnScreen() const noexcept {
 	return pos >= range.first && pos <= range.second;
 }
 
+double MyPlotCurve::extrapolate(QPointF const& p1, QPointF const& p2, double const toFind) const noexcept {
+	return ((toFind - p1.x()) / (p2.x() - p1.x())) * (p2.y() - p1.y()) + p1.y();
+}
+
 std::optional<double> MyPlotCurve::value(double const x) const noexcept {
-	//if(realData_.first.size() > x)
-	//	return realData_.first[x];
-	return std::nullopt;
+	auto const& d = data();
+	if (d->size() > 0 && (x < d->sample(0).x() || x > d->sample(d->size() - 1).x()))
+		return std::nullopt;
+	QPointF closestSampleWithLessX;
+	for (int i = 0; i < d->size(); ++i) {
+		auto const& sample = d->sample(i);
+		if (sample.x() == x)
+			return unscale(sample.y()); // exact sample found
+		if (sample.x() < x)
+			closestSampleWithLessX = sample;
+		if (sample.x() > x)
+			return unscale(extrapolate(closestSampleWithLessX, sample, x));
+	}
+	return std::nullopt;//shouldnt ever execute
 }
 
 void MyPlotCurve::handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
-	//realData_ = data;
-	auto scaleFunc = calculateScale(data.first);
 	setSamples(convertToSamples(position(), data));
 }

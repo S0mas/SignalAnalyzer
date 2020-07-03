@@ -15,7 +15,7 @@ class MyPlotCurve : public MyPlotAbstractCurve, public QwtPlotCurve {
 	double extrapolate(QPointF const& p1, QPointF const& p2, double const toFind) const noexcept;
 	double scale(double const value) const noexcept;
 	double unscale(double const value) const noexcept;
-	auto calculateScale(const std::vector<double>& signalsData) noexcept;
+	void calculateScale(const std::vector<double>& signalsData) noexcept;
 	QVector<QPointF> convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept;
 public:
 	MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealTimeCurve = true);
