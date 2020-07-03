@@ -23,6 +23,10 @@ public:
 			items_.erase(it);
 	}
 
+	void clear() noexcept {
+		items_.clear();
+	}
+
 	void add(std::unique_ptr<MyPlotItem> item) noexcept {
 		items_.insert(std::move(item));
 	}

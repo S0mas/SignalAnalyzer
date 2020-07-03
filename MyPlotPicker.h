@@ -10,7 +10,7 @@ class MyPlotPicker : public QwtPlotPicker {
 public:
 	MyPlotPicker(MyPlot* plot, QWidget* canvas);
 	void reset();
-	std::optional<double> valueOfCurveUnderCursor(uint32_t const x, int32_t const y) const noexcept;
+	std::optional<double> valueOfCurveUnderCursor(double const x, int32_t const y) const noexcept;
 protected:
 	QwtText trackerTextF(QPointF const& pos) const override;
 };

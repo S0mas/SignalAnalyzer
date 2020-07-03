@@ -26,7 +26,7 @@ inline uint64_t hostToId(QHostAddress const& address) noexcept {
 class DataAcquisitor : public QObject {
 	Q_OBJECT
 	std::map<QString, RealTimeSignalDataSource*> sources_;
-	std::atomic<uint32_t> scansToDisplayStep_ = 10;
+	std::atomic<uint32_t> scansToDisplayStep_ = 1;
 	uint32_t queuesSize_ = 256;
 
 	PacketReading<SignalPacketHeader, Scan6111>* readingStrategy6111_ = new PacketReading<SignalPacketHeader, Scan6111>;

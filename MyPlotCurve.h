@@ -9,9 +9,12 @@
 
 class MyPlotCurve : public MyPlotAbstractCurve, public QwtPlotCurve {
 	Q_OBJECT
-	std::pair<std::vector<double>, std::vector<Timestamp6991>> realData_;
+	uint32_t xResolution_ = 1;//if timestamps are enabled then it depends on the scan rate of the acq
 	double min_ = std::numeric_limits<double>::max();
 	double max_ = std::numeric_limits<double>::min();
+	double extrapolate(QPointF const& p1, QPointF const& p2, double const toFind) const noexcept;
+	double scale(double const value) const noexcept;
+	double unscale(double const value) const noexcept;
 	auto calculateScale(const std::vector<double>& signalsData) noexcept;
 	QVector<QPointF> convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept;
 public:
@@ -23,7 +26,7 @@ public:
 	void setColor(const QColor color) noexcept;
 	QRectF boundingRect() const noexcept override;
 	bool isVisibleOnScreen() const noexcept override;
-	std::optional<double> value(int32_t const x) const noexcept override;
+	std::optional<double> value(double const x) const noexcept override;
 public slots:
 	void handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) override;
 };

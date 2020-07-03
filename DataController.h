@@ -59,7 +59,9 @@ class DataController : public QObject {
 		return dataAcq_.data(deviceId, channelIds);
 	}
 public:
-	DataController(QObject* parent = nullptr) : QObject(parent) {}
+	DataController(QObject* parent = nullptr) : QObject(parent) {
+		connect(&dataAcq_, &DataAcquisitor::logMsg, this, &DataController::logMsg);
+	}
 
 	QStringList connectedDevices() const noexcept {
 		auto devices = dataAcq_.devIds();
@@ -109,7 +111,7 @@ public:
 	}
 
 	auto staticData(QString const& deviceId, const uint32_t channelId, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {
-		return sources_.at(deviceId)->data(channelId, maxSamplesNo, startingSampleId);
+		return  sources_.at(deviceId)->data(channelId, maxSamplesNo, startingSampleId);
 	}
 
 	auto staticData(QString const& deviceId, const std::vector<uint32_t>& channelIds, uint32_t const maxSamplesNo = 0, uint32_t const startingSampleId = 0) const noexcept {

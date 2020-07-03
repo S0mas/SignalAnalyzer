@@ -82,8 +82,6 @@ public:
 		splitter->addWidget(plot_);
 		splitter->setContentsMargins(0, 0, 0, 0);
 
-
-		
 		auto layout = new QVBoxLayout;
 		layout->setMenuBar(new SettingsToolbar(plot_->myPlot(), dataController_));
 		layout->addWidget(splitter);

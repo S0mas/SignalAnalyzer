@@ -80,6 +80,9 @@ public slots:
 	void addMarkerAction();
 	void addRangeMarkersAction();
 	void removeItems();
+	void removeAll();
+	void separate();
+	void overlap();
 signals:
 	void addCurveActionStarted() const;
 	void wheelSignal(QWheelEvent*) const;

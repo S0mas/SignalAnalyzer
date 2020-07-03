@@ -54,6 +54,10 @@ void ContextMenuController::contextMenuSingle() {
 void ContextMenuController::contextMenuMulit() {
 	QMenu* menu = new QMenu(plot());
 	menu->addAction("Remove", plot(), SLOT(removeItems()));
+	menu->addAction("Overlap", plot(), SLOT(overlap()));
+	menu->addAction("Separate", plot(), SLOT(separate()));
+	//menu->addAction("Vectorize", plot(), SLOT(separate()));
+	//menu->addAction("Explode", plot(), SLOT(separate()));
 	menu->popup(QCursor::pos());
 }
 
@@ -62,5 +66,6 @@ void ContextMenuController::contextMenuEmpty() {
 	menu->addAction("Add Curve", plot(), SIGNAL(addCurveActionStarted()));
 	menu->addAction("Add Marker", plot(), SLOT(addMarkerAction()));
 	menu->addAction("Add Range Markers", plot(), SLOT(addRangeMarkersAction()));
+	menu->addAction("Remove All", plot(), SLOT(removeAll()));
 	menu->popup(QCursor::pos());
 }

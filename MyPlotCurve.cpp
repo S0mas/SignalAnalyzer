@@ -143,14 +143,14 @@ bool MyPlotCurve::isVisibleOnScreen() const noexcept {
 	return pos >= range.first && pos <= range.second;
 }
 
-std::optional<double> MyPlotCurve::value(int32_t const x) const noexcept {
-	if(realData_.first.size() > x)
-		return realData_.first[x];
+std::optional<double> MyPlotCurve::value(double const x) const noexcept {
+	//if(realData_.first.size() > x)
+	//	return realData_.first[x];
 	return std::nullopt;
 }
 
 void MyPlotCurve::handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
-	realData_ = data;
+	//realData_ = data;
 	auto scaleFunc = calculateScale(data.first);
 	setSamples(convertToSamples(position(), data));
 }

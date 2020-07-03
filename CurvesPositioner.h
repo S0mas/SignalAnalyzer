@@ -10,52 +10,80 @@ using Position = int;
 
 template<typename T>
 class Positioner {
-	std::map<Position, T*> itemsExclusive_;
-	std::map<const T*, Position> itemsExclusive_2;
+	std::map<Position, std::vector<T*>> positionToItemsMap_;
+	std::map<const T*, Position> itemToPositionMap_;
 
 	bool contains(const T* obj) const noexcept {
-		return itemsExclusive_2.find(obj) != itemsExclusive_2.end();
+		return itemToPositionMap_.find(obj) != itemToPositionMap_.end();
 	}
 public:
 	Positioner() {}
 
 	Position freePosition() const noexcept  {
-		return itemsExclusive_.rbegin() == itemsExclusive_.rend() ? 0 : itemsExclusive_.rbegin()->first + 1;
+		return positionToItemsMap_.rbegin() == positionToItemsMap_.rend() ? 0 : positionToItemsMap_.rbegin()->first + 1;
 	}
 
 	Position addExclusive(T* item) noexcept {
 		auto pos = freePosition();
-		itemsExclusive_[pos] = item;
-		itemsExclusive_2[itemsExclusive_[pos]] = pos;
+		positionToItemsMap_[pos].push_back(item);
+		itemToPositionMap_[item] = pos;
 		return pos;
+	}
+
+	void clear() noexcept {
+		itemToPositionMap_.clear();
+		positionToItemsMap_.clear();
+	}
+
+	void restoreExclusivePosition(const T* item) noexcept {
+		auto& items = positionToItemsMap_[position(item)];
+		while (items.size() > 1) {
+			auto toReposition = items.back();
+			items.pop_back();
+			auto newPosition = freePosition();
+			positionToItemsMap_[newPosition].push_back(toReposition);
+			itemToPositionMap_[toReposition] = newPosition;
+		}
+	}
+
+	void overlap(const T* base, T* toOverlap) noexcept {
+		auto oldPosition = itemToPositionMap_[toOverlap];
+		auto overlapedPosition = itemToPositionMap_[base];
+		if(oldPosition == overlapedPosition)
+			return;
+		for (auto item : positionToItemsMap_[oldPosition]) {
+			itemToPositionMap_[item] = overlapedPosition;
+			positionToItemsMap_[overlapedPosition].push_back(item);
+		}
+		positionToItemsMap_.erase(oldPosition);
 	}
 
 	void remove(const Position& posToRemove) noexcept {
 		if (!isFree(posToRemove)) {
-			itemsExclusive_2.erase(itemsExclusive_[posToRemove]);
-			itemsExclusive_.erase(posToRemove);			
+			itemToPositionMap_.erase(positionToItemsMap_[posToRemove]);
+			positionToItemsMap_.erase(posToRemove);			
 		}
 	}
 
 	void remove(const T* itemToRemove) noexcept {
 		if (contains(itemToRemove)) {
-			itemsExclusive_.erase(itemsExclusive_2[itemToRemove]);
-			itemsExclusive_2.erase(itemToRemove);
+			positionToItemsMap_.erase(itemToPositionMap_[itemToRemove]);
+			itemToPositionMap_.erase(itemToRemove);
 		}
 	}
 
 	int size() const noexcept {
-		return itemsExclusive_.size();
+		return positionToItemsMap_.size();
 	}
 
 	Position position(const T* obj) const noexcept {
 		if (contains(obj))
-			return itemsExclusive_2.at(obj);
+			return itemToPositionMap_.at(obj);
 		return 0xFFFFFFFF;
 	}
 
 	void show() const noexcept {
-		for (auto item : itemsExclusive_)
+		for (auto item : positionToItemsMap_)
 			qDebug() << item.first << "  " << *item.second;
 	}
 
@@ -88,35 +116,46 @@ public:
 	}
 
 	bool isFree(const Position& pos) const noexcept {
-		return itemsExclusive_.find(pos) == itemsExclusive_.end();
+		return positionToItemsMap_.find(pos) == positionToItemsMap_.end();
 	}
 
 	T* curve(const Position& pos) const noexcept {
-		return itemsExclusive_.find(pos) == itemsExclusive_.end() ? nullptr : itemsExclusive_.at(pos);
+		return positionToItemsMap_.find(pos) == positionToItemsMap_.end() ? nullptr : positionToItemsMap_.at(pos).back();
+	}
+
+	std::vector<T*>* curves(const Position& pos) const noexcept {
+		return positionToItemsMap_.find(pos) == positionToItemsMap_.end() ? nullptr : &positionToItemsMap_.at(pos);
 	}
 
 	void swap(const Position& lhs, const Position& rhs) noexcept {
-		T* left = isFree(lhs) ? nullptr : itemsExclusive_[lhs];
-		T* right = isFree(rhs) ? nullptr : itemsExclusive_[rhs];
+		std::vector<T*>* left = isFree(lhs) ? nullptr : &positionToItemsMap_[lhs];
+		std::vector<T*>* right = isFree(rhs) ? nullptr : &positionToItemsMap_[rhs];
 		if (left && right) {
-			std::swap(itemsExclusive_2[itemsExclusive_[lhs]], itemsExclusive_2[itemsExclusive_[rhs]]);
-			std::swap(itemsExclusive_[lhs], itemsExclusive_[rhs]);
+			for (auto& item : positionToItemsMap_[rhs])
+				itemToPositionMap_[item] = lhs;
+			for (auto& item : positionToItemsMap_[lhs])
+				itemToPositionMap_[item] = rhs;
+			std::swap(positionToItemsMap_[lhs], positionToItemsMap_[rhs]);
 		}
 		else if (left) {
-			itemsExclusive_2[itemsExclusive_[lhs]] = rhs;
-			itemsExclusive_[rhs] = itemsExclusive_[lhs];
-			itemsExclusive_.erase(lhs);
+			for(auto& item : positionToItemsMap_[lhs])
+				itemToPositionMap_[item] = rhs;	
+			positionToItemsMap_[rhs] = positionToItemsMap_[lhs];
+			positionToItemsMap_.erase(lhs);
 		}
 		else if (right) {
-			itemsExclusive_2[itemsExclusive_[rhs]] = lhs;
-			itemsExclusive_[lhs] = itemsExclusive_[rhs];
-			itemsExclusive_.erase(lhs);
+			for (auto& item : positionToItemsMap_[rhs])
+				itemToPositionMap_[item] = lhs;
+			positionToItemsMap_[lhs] = positionToItemsMap_[rhs];
+			positionToItemsMap_.erase(lhs);
 		}
 	}
 
 	void select(const Position& posToSelect) noexcept {
-			if (!isFree(posToSelect))
-				itemsExclusive_[posToSelect]->select();
+		if (!isFree(posToSelect)) {
+			for (auto& item : positionToItemsMap_[posToSelect])
+				item->select();
+		}
 	}
 
 	void select(const std::set<Position>& posToSelect) noexcept {
@@ -125,13 +164,17 @@ public:
 	}
 
 	void deselect() noexcept {
-		for (auto item : itemsExclusive_)
-			item.second->deselect();
+		for (auto& itemGroup : positionToItemsMap_) {
+			for (auto& item : itemGroup.second)
+				item->deselect();
+		}
 	}
 
 
 	void deselect(const Position& posToDeselect) noexcept {
-		if (!isFree(posToDeselect))
-			item[posToDeselect]->deselect();
+		if (!isFree(posToDeselect)) {
+			for (auto& item : positionToItemsMap_[posToDeselect])
+				item->deselect();
+		}
 	}
 };

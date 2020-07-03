@@ -54,7 +54,7 @@ class RealTimeSignalDataSource : public SignalDataSource {
 	uint32_t queuesSize_;
 	uint32_t scansToDisplayStep_;
 public:
-	RealTimeSignalDataSource(QString fileName, DeviceType const type, std::vector<bool> const& channelStates, uint32_t const queueSize = 256, uint32_t const scansToDisplayStep = 10, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent), queuesSize_(queueSize), scansToDisplayStep_(scansToDisplayStep) {
+	RealTimeSignalDataSource(QString fileName, DeviceType const type, std::vector<bool> const& channelStates, uint32_t const queueSize = 256, uint32_t const scansToDisplayStep = 1, QObject* parent = nullptr) : SignalDataSource(fileName, type, parent), queuesSize_(queueSize), scansToDisplayStep_(scansToDisplayStep) {
 		timestampsQueue_.setCapacity(queuesSize_);
 		for (int i = 0; i < channelStates.size(); ++i)
 			channelStates[i] ? statuses_.enable(i + 1) : statuses_.disable(i + 1);
@@ -216,7 +216,7 @@ public:
 		if(type == DeviceType::_6111)
 			readFile<Scan6111>(fileName);
 		else
-			readFile<Scan6132>(fileName);		
+			readFile<Scan6132>(fileName);
 	}
 
 	std::vector<double> dataWithoutTimestamps(uint32_t const channelId, uint32_t const numberOfSamples, uint32_t const startSampleId = 0) noexcept {

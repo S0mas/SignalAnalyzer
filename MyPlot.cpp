@@ -117,7 +117,26 @@ void MyPlot::removeItems() {
 	updatePlot();
 }
 
-void MyPlot::updatePlot() noexcept {
+void MyPlot::removeAll() {
+	positioner_.clear();
+	itemsContainer_.clear();
+	updatePlot();
+}
+
+void MyPlot::separate() {
+	for (auto item : selection())
+		positioner_.restoreExclusivePosition(item);
+	updatePlot();
+}
+
+void MyPlot::overlap() {
+	auto& itemsToOverlap = selection();
+	for (int i = 1; i < itemsToOverlap.size(); ++i)
+		positioner_.overlap(itemsToOverlap[0], itemsToOverlap[i]);
+	updatePlot();
+}
+
+void MyPlot::updatePlot()  noexcept {
 	yAxisScaleDraw()->refresh();
 	update();
 	replot();
