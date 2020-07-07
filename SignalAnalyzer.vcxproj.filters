@@ -99,6 +99,9 @@
     <ClInclude Include="..\WizardFramework\Common\include\Device6991\Defines6991.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="SetScaleDialog.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ScalePicker.h">

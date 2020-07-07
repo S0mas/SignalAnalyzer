@@ -17,6 +17,7 @@ class MyPlotCurve : public MyPlotAbstractCurve, public QwtPlotCurve {
 	double unscale(double const value) const noexcept;
 	void calculateScale(const std::vector<double>& signalsData) noexcept;
 	QVector<QPointF> convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept;
+	bool autoScale = true;
 public:
 	MyPlotCurve(const QString& nameId, MyPlot* plot, bool const isRealTimeCurve = true);
 	~MyPlotCurve() override = default;
@@ -27,6 +28,8 @@ public:
 	QRectF boundingRect() const noexcept override;
 	bool isVisibleOnScreen() const noexcept override;
 	std::optional<double> value(double const x) const noexcept override;
+	void setScaleManual(double const min, double const max) noexcept override;
+	void setScaleAuto() noexcept override;
 public slots:
 	void handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) override;
 };

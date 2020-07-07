@@ -41,6 +41,7 @@ public:
 	void select() noexcept;
 	bool trySelect(const QPointF& point) noexcept;
 	bool trySelect(const QRectF& rect) noexcept;
+	virtual bool isCurve() const noexcept { return false; }
 };
 
 class MyPlotAbstractCurve : public QObject, public MyPlotItem {
@@ -59,6 +60,9 @@ public:
 	}
 
 	virtual std::optional<double> value(double const x) const noexcept = 0;
+	virtual void setScaleManual(double const min, double const max) noexcept {}
+	virtual void setScaleAuto() noexcept {}
+	bool isCurve() const noexcept override { return true; }
 public slots:
 	virtual void handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) = 0;
 signals:

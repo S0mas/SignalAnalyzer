@@ -256,6 +256,7 @@
     <ClCompile Include="SettingsToolbar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SetScaleDialog.h" />
     <QtMoc Include="SettingsToolbar.h" />
     <QtMoc Include="SignalDataSource.h" />
     <QtMoc Include="..\WizardFramework\Common\include\DataCollectorServer.h" />

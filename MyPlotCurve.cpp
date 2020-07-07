@@ -40,7 +40,8 @@ double MyPlotCurve::scale(double const sample) const noexcept {
 
 QVector<QPointF> MyPlotCurve::convertToSamples(double const position, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) noexcept {
 	auto const& [signalData, timestamps] = data;
-	calculateScale(signalData);
+	if(autoScale)
+		calculateScale(signalData);
 	QVector<QPointF> samples;
 	samples.resize(data.first.size());
 
@@ -147,6 +148,16 @@ std::optional<double> MyPlotCurve::value(double const x) const noexcept {
 			return unscale(extrapolate(closestSampleWithLessX, sample, x));
 	}
 	return std::nullopt;//shouldnt ever execute
+}
+
+void MyPlotCurve::setScaleManual(double const min, double const max) noexcept {
+	autoScale = false;
+	min_ = min;
+	max_ = max;
+}
+
+void MyPlotCurve::setScaleAuto() noexcept {
+	autoScale = true;
 }
 
 void MyPlotCurve::handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {

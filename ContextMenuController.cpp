@@ -48,6 +48,7 @@ const MyPlot* ContextMenuController::plot() const noexcept {
 void ContextMenuController::contextMenuSingle() {
 	QMenu* menu = new QMenu(plot());
 	menu->addAction("Remove", plot(), SLOT(removeItems()));
+	menu->addAction("Set Scale", plot(), SLOT(setScale()));
 	menu->popup(QCursor::pos());
 }
 
@@ -56,6 +57,7 @@ void ContextMenuController::contextMenuMulit() {
 	menu->addAction("Remove", plot(), SLOT(removeItems()));
 	menu->addAction("Overlap", plot(), SLOT(overlap()));
 	menu->addAction("Separate", plot(), SLOT(separate()));
+	menu->addAction("Set Scale", plot(), SLOT(setScale()));
 	//menu->addAction("Vectorize", plot(), SLOT(separate()));
 	//menu->addAction("Explode", plot(), SLOT(separate()));
 	menu->popup(QCursor::pos());

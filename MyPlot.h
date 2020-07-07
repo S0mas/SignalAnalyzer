@@ -83,6 +83,7 @@ public slots:
 	void removeAll();
 	void separate();
 	void overlap();
+	void setScale();
 signals:
 	void addCurveActionStarted() const;
 	void wheelSignal(QWheelEvent*) const;

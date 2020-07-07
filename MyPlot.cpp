@@ -1,5 +1,6 @@
 #include "MyPlot.h"
 #include "MyPlotCurve.h"
+#include "SetScaleDialog.h"
 
 QList<qreal> MyPlot::labels() const {
 	QList<qreal> majorTicks;
@@ -134,6 +135,23 @@ void MyPlot::overlap() {
 	for (int i = 1; i < itemsToOverlap.size(); ++i)
 		positioner_.overlap(itemsToOverlap[0], itemsToOverlap[i]);
 	updatePlot();
+}
+
+void MyPlot::setScale() {
+	auto scaleDialog = new SetScaleDialog(this);
+	auto& itemsToScale = selection();
+	connect(scaleDialog, &QDialog::accepted,
+		[this, scaleDialog, itemsToScale]() {
+			for (auto& item : itemsToScale)
+				if (item->isCurve())
+					if (scaleDialog->result().autoScale_)
+						dynamic_cast<MyPlotAbstractCurve*>(item)->setScaleAuto();
+					else
+						dynamic_cast<MyPlotAbstractCurve*>(item)->setScaleManual(scaleDialog->result().min_, scaleDialog->result().max_);
+			updatePlot();
+		}
+	);
+	scaleDialog->exec();
 }
 
 void MyPlot::updatePlot()  noexcept {
