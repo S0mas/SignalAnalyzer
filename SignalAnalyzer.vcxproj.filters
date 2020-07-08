@@ -51,9 +51,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlotItemsContainer.h">
-      <Filter>headers</Filter>
-    </ClInclude>
     <ClInclude Include="MyScaleDraw.h">
       <Filter>headers</Filter>
     </ClInclude>
@@ -171,6 +168,9 @@
       <Filter>headers\gui</Filter>
     </QtMoc>
     <QtMoc Include="AttributeExplorer.h">
+      <Filter>headers</Filter>
+    </QtMoc>
+    <QtMoc Include="PlotItemsContainer.h">
       <Filter>headers</Filter>
     </QtMoc>
   </ItemGroup>

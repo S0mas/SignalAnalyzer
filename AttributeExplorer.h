@@ -4,38 +4,80 @@
 #include <QColumnView>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QDebug>
+#include <QMetaProperty>
+#include "PlotItemsContainer.h"
+
+class PropertyItem : public QStandardItem {
+	QObject* object_;
+public:
+	PropertyItem(QObject* propertyHolder) : QStandardItem(propertyHolder->property("nameId").toString()), object_(propertyHolder) {}
+	void setData(const QVariant& value, int role = Qt::UserRole + 1) override {
+		object_->setProperty("nameId", value);
+		QStandardItem::setData(value, role);
+		emitDataChanged();
+	}
+
+	bool selected() const {
+		return object_->property("selected").toBool();
+	}
+
+	QStringList propertiesNames() {
+		const QMetaObject* metaObject = object_->metaObject();
+		QStringList properties;
+		for (int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i)
+			properties << QString::fromLatin1(metaObject->property(i).name());
+		return properties;
+	}
+
+	QObject* object() {
+		return object_;
+	}
+
+	//QVariant data(int role = Qt::UserRole + 1) const override {
+	//	qDebug() << "Loaded : " << object_->property("nameId").toString();
+	//	return object_->property("nameId").toString();
+	//}
+};
 
 class AttributeExplorer : public QWidget {
 	Q_OBJECT
-	QColumnView* propertiesColumnView() {
-		QColumnView* cview = new QColumnView;
-
-		/* Create the data model */
-		auto model = new QStandardItemModel;
-
-		for (int groupnum = 0; groupnum < 3; ++groupnum) {
-			/* Create the phone groups as QStandardItems */
-			QStandardItem* group = new QStandardItem(QString("Group %1").arg(groupnum));
-
-			/* Append to each group 5 person as children */
-			for (int personnum = 0; personnum < 5; ++personnum) {
-				QStandardItem* child = new QStandardItem(QString("Person %1 (group %2)").arg(personnum).arg(groupnum));
-				/* the appendRow function appends the child as new row */
-				group->appendRow(child);
-			}
-			/* append group as new row to the model. model takes the ownership of the item */
-			model->appendRow(group);
-		}
-
-		cview->setModel(model);
-
-		return cview;
-	}
+	QColumnView* cview_ = new QColumnView;
+	PlotItemsContainer* itemsContainer_;
 public:
-	AttributeExplorer(QWidget* parent = nullptr) : QWidget(parent) {
+	AttributeExplorer(PlotItemsContainer& itemsContainer, QWidget* parent = nullptr) : QWidget(parent), itemsContainer_(&itemsContainer) {
+		cview_->setModel(new QStandardItemModel);
+		connect(cview_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &AttributeExplorer::selectionChanged);
+		connect(itemsContainer_, &PlotItemsContainer::containerChanged, this, &AttributeExplorer::updateItems);
 		auto vlayout = new QVBoxLayout;
-		vlayout->addWidget(propertiesColumnView());
+		vlayout->addWidget(cview_);
 		vlayout->setContentsMargins(0, 0, 0, 0);
 		setLayout(vlayout);
+	}
+public slots:
+	void updateItems() {
+		auto model = dynamic_cast<QStandardItemModel*>(cview_->model());
+		model->clear();
+		for (auto const& item : *itemsContainer_) {
+			auto propertyItem = new PropertyItem(qobject_cast<QObject*>(item.get()));
+			if (propertyItem->selected())
+				for (auto& name : propertyItem->propertiesNames()) {
+					auto data = propertyItem->object()->property(name.toLocal8Bit().data()).toString();
+					qDebug() << data; //TODO 
+					propertyItem->appendRow(new QStandardItem(data));
+				}
+		
+			model->appendRow(propertyItem);
+		}
+	}
+
+	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+		auto model = dynamic_cast<QStandardItemModel*>(cview_->model());
+		int index = 0;
+		while(index < model->rowCount())
+			dynamic_cast<PropertyItem*>(model->itemFromIndex(model->index(index++, 0)))->object()->setProperty("selected", false);
+		for(auto const& range : selected)
+			for (auto const& index : range.indexes())
+				dynamic_cast<PropertyItem*>(model->itemFromIndex(index))->object()->setProperty("selected", true);			
 	}
 };

@@ -283,7 +283,7 @@
     <ClInclude Include="DataGenerator.h" />
     <QtMoc Include="CanvasSelector.h" />
     <QtMoc Include="MyPlotCurve.h" />
-    <ClInclude Include="PlotItemsContainer.h" />
+    <QtMoc Include="PlotItemsContainer.h" />
     <ClInclude Include="PlotRangeMarkers.h" />
     <ClInclude Include="MyPlotMarker.h" />
     <ClInclude Include="MyIntervalSymbol.h" />

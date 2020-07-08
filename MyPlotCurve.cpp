@@ -96,7 +96,17 @@ double MyPlotCurve::position() const noexcept {
 	return plot_->positioner().position(this);
 }
 
-void MyPlotCurve::move(const double distanceX, const double distanceY) noexcept {}
+void MyPlotCurve::move(const double distanceX, const double distanceY) noexcept { // distanceY is position change here
+	if (!isRealTimeCurve()) {
+		QVector<QPointF> newData;
+		for (int i = 0; i < data()->size(); ++i) {
+			auto point = data()->sample(i);
+			point.setY(point.y() - distanceY);
+			newData.push_back(point);
+		}
+		setSamples(newData);
+	}
+}
 
 void MyPlotCurve::setColor(const QColor color) noexcept {
 	auto p = pen();

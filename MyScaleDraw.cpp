@@ -11,8 +11,7 @@ void MyScaleDraw::refresh() noexcept {
 	invalidateCache();
 }
 
-
 QwtText MyScaleDraw::label(double value) const {
 	auto curve = plot_->positioner().curve(value);
-	return curve ? QString("%1").arg(curve->nameId()) : "";
+	return curve ? QString("%1").arg(curve->property("nameId").toString()) : "";
 }

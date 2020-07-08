@@ -109,10 +109,22 @@ public:
 
 	void moveUp(const Position& posToMove) noexcept {
 		swap(posToMove, posToMove + 1);
+		if (auto movedGroup = curves(posToMove); movedGroup)
+			for (auto movedCurve : *movedGroup)
+				movedCurve->move(0, 1);
+		if (auto movedGroup = curves(posToMove + 1); movedGroup)
+			for (auto movedCurve : *movedGroup)
+				movedCurve->move(0, -1);
 	}
 
 	void moveDown(const Position& posToMove) noexcept {
 		swap(posToMove, posToMove - 1);
+		if (auto movedGroup = curves(posToMove); movedGroup)
+			for (auto movedCurve : *movedGroup)
+				movedCurve->move(0, - 1);
+		if (auto movedGroup = curves(posToMove - 1); movedGroup)
+			for (auto movedCurve : *movedGroup)
+				movedCurve->move(0, 1);
 	}
 
 	bool isFree(const Position& pos) const noexcept {
@@ -123,7 +135,7 @@ public:
 		return positionToItemsMap_.find(pos) == positionToItemsMap_.end() ? nullptr : positionToItemsMap_.at(pos).back();
 	}
 
-	std::vector<T*>* curves(const Position& pos) const noexcept {
+	const std::vector<T*>* curves(const Position& pos) const noexcept {
 		return positionToItemsMap_.find(pos) == positionToItemsMap_.end() ? nullptr : &positionToItemsMap_.at(pos);
 	}
 
@@ -154,7 +166,7 @@ public:
 	void select(const Position& posToSelect) noexcept {
 		if (!isFree(posToSelect)) {
 			for (auto& item : positionToItemsMap_[posToSelect])
-				item->select();
+				item->setProperty("selected", true);
 		}
 	}
 
@@ -166,7 +178,7 @@ public:
 	void deselect() noexcept {
 		for (auto& itemGroup : positionToItemsMap_) {
 			for (auto& item : itemGroup.second)
-				item->deselect();
+				item->setProperty("selected", false);
 		}
 	}
 
@@ -174,7 +186,7 @@ public:
 	void deselect(const Position& posToDeselect) noexcept {
 		if (!isFree(posToDeselect)) {
 			for (auto& item : positionToItemsMap_[posToDeselect])
-				item->deselect();
+				item->setProperty("selected", false);
 		}
 	}
 };

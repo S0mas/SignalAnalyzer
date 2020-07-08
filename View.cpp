@@ -31,3 +31,19 @@ void View::addCurve(QString const& deviceId, const CurveData& data) {
 			: plot_->addStaticCurve(curveName, type, dataController_->staticData(deviceId, index, data.samplesNo_, data.firstSampleId_));
 	}
 }
+
+View::View(QWidget* parent) : QWidget(parent) {
+	connect(dataController_, &DataController::logMsg, [](auto const& msg) { qDebug() << "LOG: " << msg; });
+	connect(plot_, &MyPlot::addCurveActionStarted, this, &View::openCurveBuilderDialog);
+
+	auto splitter = new QSplitter(Qt::Orientation::Horizontal);
+	splitter->addWidget(plot_);
+	splitter->addWidget(attributeExplorer_);
+	splitter->setContentsMargins(0, 0, 0, 0);
+
+	auto layout = new QVBoxLayout;
+	layout->setMenuBar(settingsToolBar_);
+	layout->addWidget(splitter);
+	layout->setSpacing(0);
+	setLayout(layout);
+}

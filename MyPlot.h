@@ -72,6 +72,7 @@ public:
 	void addCurve(std::unique_ptr<MyPlotAbstractCurve>&& curve);
 	void setRefreshTimeInterval(uint32_t const ms) noexcept;
 	uint32_t refreshTimeInterval() const noexcept;
+	PlotItemsContainer& itemsContainer() noexcept;
 private slots:
 	void refreshVisibleCurves() const;
 public slots:

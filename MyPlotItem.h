@@ -5,12 +5,16 @@
 #include <optional>
 #include "Defines.h"
 #include "DataEmitter.h"
+#include <QStandardItem>
 
 class MyPlot;
 
-class MyPlotItem {
+class MyPlotItem : public QObject {
+	Q_OBJECT
 	inline static const QColor selectedColor = Qt::GlobalColor::cyan;
 protected:
+	Q_PROPERTY(QString nameId MEMBER nameId_)
+	Q_PROPERTY(bool selected MEMBER selected_ NOTIFY selectedChanged)
 	bool selected_ = false;
 	QColor mainColor_ = Qt::GlobalColor::green;
 	MyPlot* plot_;
@@ -34,17 +38,18 @@ public:
 		return root_;
 	}
 
-	QString nameId() const noexcept;
-	void deselect() noexcept;
 	bool isPositionedExclusive() const noexcept;
 	bool isSelected() const noexcept;
-	void select() noexcept;
 	bool trySelect(const QPointF& point) noexcept;
 	bool trySelect(const QRectF& rect) noexcept;
 	virtual bool isCurve() const noexcept { return false; }
+public slots:
+	void updateColorAfterSelectionChanged(bool const selected);
+signals:
+	void selectedChanged(bool const selected) const;
 };
 
-class MyPlotAbstractCurve : public QObject, public MyPlotItem {
+class MyPlotAbstractCurve : public MyPlotItem {
 	Q_OBJECT
 	bool isRealTimeCurve_;
 public:

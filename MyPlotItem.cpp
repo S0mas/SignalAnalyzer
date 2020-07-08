@@ -6,10 +6,7 @@
 
 MyPlotItem::MyPlotItem(MyPlot* plot, MyPlotItem* parent) : root_(parent ? parent : this) {
 	plot_ = plot;
-	//auto canvas = dynamic_cast<QwtPlotCanvas*>(plot->canvas());
-	//canvas->installEventFilter(this);
-	//canvas->setFocusPolicy(Qt::StrongFocus);
-	//canvas->setFocusIndicator(QwtPlotCanvas::ItemFocusIndicator);
+	connect(this, &MyPlotItem::selectedChanged, this, &MyPlotItem::updateColorAfterSelectionChanged);
 }
 
 bool MyPlotItem::contains(const QPointF& point) const noexcept {
@@ -17,15 +14,6 @@ bool MyPlotItem::contains(const QPointF& point) const noexcept {
 }
 bool MyPlotItem::intersects(const QRectF& rect) const noexcept {
 	return boundingRect().intersects(rect);
-}
-
-QString MyPlotItem::nameId() const noexcept {
-	return nameId_;
-}
-
-void MyPlotItem::deselect() noexcept {
-	selected_ = false;
-	setColor(mainColor_);
 }
 
 bool MyPlotItem::isPositionedExclusive() const noexcept {
@@ -36,14 +24,9 @@ bool MyPlotItem::isSelected() const noexcept {
 	return selected_;
 }
 
-void MyPlotItem::select() noexcept {
-	selected_ = true;
-	setColor(Qt::GlobalColor::cyan);
-}
-
 bool MyPlotItem::trySelect(const QPointF& point) noexcept {
 	if (contains(point)) {
-		select();
+		setProperty("selected", true);
 		return true;
 	}
 	return false;
@@ -51,8 +34,12 @@ bool MyPlotItem::trySelect(const QPointF& point) noexcept {
 
 bool MyPlotItem::trySelect(const QRectF& rect) noexcept {
 	if (intersects(rect)) {
-		select();
+		setProperty("selected", true);
 		return true;
 	}
 	return false;
+}
+
+void MyPlotItem::updateColorAfterSelectionChanged(bool const selected) {
+	selected ? setColor(Qt::GlobalColor::cyan) : setColor(mainColor_);
 }

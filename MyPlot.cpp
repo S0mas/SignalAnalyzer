@@ -181,7 +181,7 @@ std::vector<MyPlotItem*> MyPlot::selection() const noexcept {
 void MyPlot::deselect() noexcept {
 	positioner_.deselect();
 	for (auto item : selection())
-		item->deselect();
+		item->setProperty("selected", false);
 	updatePlot();
 }
 
@@ -191,7 +191,7 @@ void MyPlot::setSelectedCurves(const QRect & slection) noexcept {
 	for (int i = first; i <= last; ++i) {
 		auto curve = positioner_.curve(i);
 		if (curve)
-			curve->select();
+			curve->setProperty("selected", true);
 	}
 	updatePlot();
 }
@@ -275,4 +275,8 @@ void MyPlot::setRefreshTimeInterval(uint32_t ms) noexcept {
 
 uint32_t MyPlot::refreshTimeInterval() const noexcept {
 	return refreshTimer_->interval();
+}
+
+PlotItemsContainer& MyPlot::itemsContainer() noexcept {
+	return itemsContainer_;
 }
