@@ -160,6 +160,14 @@ void MyPlotCurve::setScaleAuto() noexcept {
 	autoScale = true;
 }
 
+double MyPlotCurve::min() const noexcept {
+	return min_;
+}
+
+double MyPlotCurve::max() const noexcept {
+	return max_;
+}
+
 void MyPlotCurve::handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
 	setSamples(convertToSamples(position(), data));
 }

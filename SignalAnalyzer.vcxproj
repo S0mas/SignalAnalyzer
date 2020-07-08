@@ -256,6 +256,7 @@
     <ClCompile Include="SettingsToolbar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="AttributeExplorer.h" />
     <ClInclude Include="SetScaleDialog.h" />
     <QtMoc Include="SettingsToolbar.h" />
     <QtMoc Include="SignalDataSource.h" />

@@ -30,6 +30,8 @@ public:
 	std::optional<double> value(double const x) const noexcept override;
 	void setScaleManual(double const min, double const max) noexcept override;
 	void setScaleAuto() noexcept override;
+	double min() const noexcept;
+	double max() const noexcept;
 public slots:
 	void handleData(std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) override;
 };

@@ -34,8 +34,6 @@ enum class SignalCurveType {
 	ComplexSignal_Wave
 };
 
-
-
 class MyPlot : public QwtPlot {
 	Q_OBJECT
 	QList<qreal> labels() const;

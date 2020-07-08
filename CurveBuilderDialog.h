@@ -47,7 +47,7 @@ public:
 
 
 		auto label = new QLabel("NameId:");
-		lineEdit = new QLineEdit("curve name");
+		lineEdit = new QLineEdit("Channel");
 
 		auto hlayout = new QHBoxLayout;
 		hlayout->addWidget(label);

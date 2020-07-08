@@ -78,13 +78,10 @@ public:
 		connect(plot_, &PlotView::addCurveActionStarted, this, &View::openCurveBuilderDialog);
 		connect(dataController_, &DataController::logMsg, [](auto const& msg) { qDebug() << "LOG: " << msg; });
 
-		auto splitter = new QSplitter(Qt::Orientation::Horizontal);
-		splitter->addWidget(plot_);
-		splitter->setContentsMargins(0, 0, 0, 0);
 
 		auto layout = new QVBoxLayout;
 		layout->setMenuBar(new SettingsToolbar(plot_->myPlot(), dataController_));
-		layout->addWidget(splitter);
+		layout->addWidget(plot_);
 		setLayout(layout);
 	}
 signals:

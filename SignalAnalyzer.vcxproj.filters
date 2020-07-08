@@ -170,6 +170,9 @@
     <QtMoc Include="SettingsToolbar.h">
       <Filter>headers\gui</Filter>
     </QtMoc>
+    <QtMoc Include="AttributeExplorer.h">
+      <Filter>headers</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="headers">

@@ -22,6 +22,7 @@
 #include "MyScaleDraw.h"
 #include "MyPlotMagnifier.h"
 #include "MyPlotPanner.h"
+#include "AttributeExplorer.h"
 
 #include "CanvasSelector.h"
 #include "ScalePicker.h"
@@ -48,45 +49,20 @@
 #include <qwt_plot_panner.h>
 #include <qwt_scale_engine.h>
 
-class PlotView : public QGroupBox {
+class PlotView : public QWidget {
 	Q_OBJECT
 	MyPlot* plot;
-	QColumnView* propertiesColumnView() {
-		QColumnView *cview = new QColumnView;
-
-		/* Create the data model */
-		auto model = new QStandardItemModel;
-
-		for (int groupnum = 0; groupnum < 3; ++groupnum) {
-			/* Create the phone groups as QStandardItems */
-			QStandardItem *group = new QStandardItem(QString("Group %1").arg(groupnum));
-
-			/* Append to each group 5 person as children */
-			for (int personnum = 0; personnum < 5; ++personnum) {
-				QStandardItem *child = new QStandardItem(QString("Person %1 (group %2)").arg(personnum).arg(groupnum));
-				/* the appendRow function appends the child as new row */
-				group->appendRow(child);
-			}
-			/* append group as new row to the model. model takes the ownership of the item */
-			model->appendRow(group);
-		}
-
-		cview->setModel(model);
-
-		return cview;
-	}
 public:
-	PlotView(QWidget* parent = nullptr) : QGroupBox("Plot", parent) {
+	PlotView(QWidget* parent = nullptr) : QWidget(parent) {
 		plot = new MyPlot(this);
 		connect(plot, &MyPlot::addCurveActionStarted, this, &PlotView::addCurveActionStarted);
 
 		auto splitter = new QSplitter(Qt::Orientation::Horizontal);
 		splitter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 		plot->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-		auto propertiesColumn = propertiesColumnView();
-		propertiesColumn->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 		splitter->addWidget(plot);
-		splitter->addWidget(propertiesColumn);
+		auto attributeExplorer = new AttributeExplorer(this);
+		splitter->addWidget(attributeExplorer);
 		splitter->setContentsMargins(0, 0, 0, 0);
 
 		auto layout = new QHBoxLayout();
@@ -95,14 +71,6 @@ public:
 		layout->setMargin(0);
 		layout->setContentsMargins(0, 0, 0, 0);
 		setLayout(layout);
-	}
-
-	void setRefreshTimeInterval(uint32_t const ms) const noexcept {
-		plot->setRefreshTimeInterval(ms);
-	}
-
-	uint32_t refreshTimeInterval() const noexcept {
-		return plot->refreshTimeInterval();
 	}
 
 	MyPlot* myPlot() noexcept {
