@@ -46,6 +46,9 @@
     <ClCompile Include="SettingsToolbar.cpp">
       <Filter>sources\gui</Filter>
     </ClCompile>
+    <ClCompile Include="View.cpp">
+      <Filter>sources\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlotItemsContainer.h">
@@ -105,9 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ScalePicker.h">
-      <Filter>headers</Filter>
-    </QtMoc>
-    <QtMoc Include="Plot.h">
       <Filter>headers</Filter>
     </QtMoc>
     <QtMoc Include="MyPlot.h">

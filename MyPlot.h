@@ -82,6 +82,15 @@ public slots:
 	void separate();
 	void overlap();
 	void setScale();
+
+	void addDynamicCurve(const QString& nameId, SignalCurveType const type, DataEmitter* dataEmitter) {
+		auto curve = addCurve(nameId, type);
+		curve->connectDataEmitter(dataEmitter);
+	}
+
+	void addStaticCurve(const QString& nameId, SignalCurveType const type, std::pair<std::vector<double>, std::vector<Timestamp6991>> const& data) {
+		auto curve = addCurve(nameId, type, false, data);
+	}
 signals:
 	void addCurveActionStarted() const;
 	void wheelSignal(QWheelEvent*) const;

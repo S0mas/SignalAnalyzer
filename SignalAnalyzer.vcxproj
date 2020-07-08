@@ -254,6 +254,7 @@
     <ClCompile Include="ScalePicker.cpp" />
     <ClCompile Include="MyPlotMarker.cpp" />
     <ClCompile Include="SettingsToolbar.cpp" />
+    <ClCompile Include="View.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="AttributeExplorer.h" />
@@ -293,7 +294,6 @@
     <ClInclude Include="MyPlotPanner.h" />
     <ClInclude Include="MyPlotPicker.h" />
     <ClInclude Include="MyScaleDraw.h" />
-    <QtMoc Include="Plot.h" />
     <QtMoc Include="MyPlotIntervalCurve.h" />
     <ClInclude Include="Defines.h" />
     <QtMoc Include="View.h" />

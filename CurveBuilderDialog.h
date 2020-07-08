@@ -18,6 +18,8 @@ struct CurveData {
 	bool vectorize;
 	uint32_t samplesNo_;
 	uint32_t firstSampleId_;
+	bool isRealTimeDataSource_;
+	DeviceType deviceType_;
 };
 
 class CurveBuilderDialog : public QDialog {
@@ -86,6 +88,9 @@ public:
 		setLayout(layout);
 		setAttribute(Qt::WA_DeleteOnClose);
 
+		curveData_.deviceType_ = deviceType;
+		curveData_.isRealTimeDataSource_ = isRealTimeDataSource;
+
 		connect(this, &CurveBuilderDialog::accepted, [this]() {
 				curveData_.nameId_ = lineEdit->text();
 				curveData_.channelsSelected = statuses_.allEnabled();
@@ -101,4 +106,6 @@ public:
 	CurveData curveData() const noexcept {
 		return curveData_;
 	}
+signals:
+	void curveToAdd(QString const& source, CurveData const& curveData) const;
 };
